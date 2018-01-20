@@ -3,6 +3,7 @@ package com.palyrobotics.frc2019.config;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Arm;
+import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.util.DriveSignal;
@@ -42,6 +43,7 @@ public class Commands {
 	public boolean disableArmScaling = true;
 	public boolean customShooterSpeed = false;
 	public boolean customIntakeSpeed = false;
+	public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.CALIBRATING;
 
 	public void addWantedRoutine(Routine wantedRoutine) {
 		for(Routine routine : wantedRoutines) {
@@ -65,6 +67,7 @@ public class Commands {
 	public static class Setpoints {
 		public Optional<DriveSignal> drivePowerSetpoint = Optional.empty();
 		public Optional<Double> armPositionSetpoint = Optional.empty();
+		public Optional<Double> elevatorPositionSetpoint = Optional.empty();
 
 		/**
 		 * Resets all the setpoints
@@ -72,6 +75,7 @@ public class Commands {
 		public void reset() {
 			drivePowerSetpoint = Optional.empty();
 			armPositionSetpoint = Optional.empty();
+			elevatorPositionSetpoint = Optional.empty();
 		}
 	}
 
@@ -89,6 +93,8 @@ public class Commands {
 		copy.wantedDriveState = this.wantedDriveState;
 		copy.wantedArmState = this.wantedArmState;
 		copy.wantedShooterState = this.wantedShooterState;
+		copy.wantedElevatorState = this.wantedElevatorState;
+		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.wantedIntakingState = this.wantedIntakingState;
 		copy.wantedIntakeOpenCloseState = this.wantedIntakeOpenCloseState;
@@ -105,8 +111,7 @@ public class Commands {
 		copy.robotSetpoints = new Setpoints();
 		//Copy optionals that are present
 		robotSetpoints.drivePowerSetpoint.ifPresent((DriveSignal signal) -> copy.robotSetpoints.drivePowerSetpoint = Optional.of(signal));
-		robotSetpoints.armPositionSetpoint
-				.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.armPositionSetpoint = Optional.of(elevatorPositionSetpoint));
+		robotSetpoints.elevatorPositionSetpoint.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.elevatorPositionSetpoint = Optional.of(elevatorPositionSetpoint));
 		return copy;
 	}
 

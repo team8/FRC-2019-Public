@@ -21,6 +21,7 @@ public abstract class Routine {
 	protected final Intake intake = Intake.getInstance();
 	protected final Arm arm = Arm.getInstance();
 	protected final Shooter shooter = Shooter.getInstance();
+	protected final Elevator elevator = Elevator.getInstance();
 	protected final RobotState robotState = RobotState.getInstance();
 
 	//Called to start a routine

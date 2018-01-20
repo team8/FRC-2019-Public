@@ -69,7 +69,12 @@ public class RobotState {
 	public double armVelocity = 0;  // rad/s
 	public double armAccel = 0;  // rad/s^2
 	public double armAngle = 0; //
-	public boolean hasArmStickyFaults = false; 
+	public boolean hasArmStickyFaults = false;
+
+	//Elevator sensor data
+    public double elevatorPosition = 0;
+    public double elevatorVelocity = 0;
+    public boolean elevatorHFX = false;
 	
 
 	//Robot position

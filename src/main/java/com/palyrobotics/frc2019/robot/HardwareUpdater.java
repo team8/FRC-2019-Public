@@ -8,6 +8,7 @@ import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Drive;
+import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.util.ClimberSignal;
@@ -37,6 +38,7 @@ class HardwareUpdater {
 	//Subsystem references
 	private Drive mDrive;
 	private Arm mArm;
+	private Elevator mElevator;
 	private Intake mIntake;
 	private Shooter mShooter;
 
@@ -47,9 +49,10 @@ class HardwareUpdater {
 	/**
 	 * Hardware Updater for Vidar
 	 */
-	protected HardwareUpdater(Drive drive, Arm arm, Intake intake, Shooter shooter) {
+	protected HardwareUpdater(Drive drive, Arm arm, Intake intake, Elevator elevator, Shooter shooter) {
 		this.mDrive = drive;
 		this.mArm = arm;
+		this.mElevator = elevator;
 		this.mIntake = intake;
 		this.mShooter = shooter;
 	}
@@ -74,6 +77,10 @@ class HardwareUpdater {
 		HardwareAdapter.getInstance().getDrivetrain().rightSlave1Victor.set(ControlMode.Disabled, 0);
 		HardwareAdapter.getInstance().getDrivetrain().rightSlave2Victor.set(ControlMode.Disabled, 0);
 
+		//Disable elevator talons
+        HardwareAdapter.getInstance().getElevator().elevatorMasterTalon.set(ControlMode.Disabled, 0);
+        HardwareAdapter.getInstance().getElevator().elevatorSlaveTalon.set(ControlMode.Disabled, 0);
+
 		//Disable arm talons 
 		HardwareAdapter.getInstance().getArm().armMasterTalon.set(ControlMode.Disabled, 0);
 		HardwareAdapter.getInstance().getArm().armSlaveVictor.set(ControlMode.Disabled, 0);
@@ -90,6 +97,7 @@ class HardwareUpdater {
 	void configureHardware() {
 		configureDriveHardware();
 		configureArmHardware();
+		configureElevatorHardware();
 		configureIntakeHardware();
 		configureShooterHardware();
 	}
@@ -195,6 +203,40 @@ class HardwareUpdater {
         rightSlave1Victor.follow(rightMasterTalon);
         rightSlave2Victor.follow(rightMasterTalon);
     }
+
+    void configureElevatorHardware() {
+	    WPI_TalonSRX masterTalon = HardwareAdapter.getInstance().getElevator().elevatorMasterTalon;
+	    WPI_TalonSRX slaveTalon = HardwareAdapter.getInstance().getElevator().elevatorSlaveTalon;
+
+	    masterTalon.setInverted(true);
+	    slaveTalon.setInverted(false);
+
+	    slaveTalon.follow(masterTalon);
+
+	    masterTalon.enableVoltageCompensation(true);
+	    slaveTalon.enableVoltageCompensation(true);
+
+	    masterTalon.configVoltageCompSaturation(14, 0);
+	    slaveTalon.configVoltageCompSaturation(14, 0);
+
+	    // Change HFX location later
+        masterTalon.configReverseLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
+
+        masterTalon.overrideLimitSwitchesEnable(true);
+        slaveTalon.overrideLimitSwitchesEnable(true);
+
+        masterTalon.configPeakOutputForward(1, 0);
+        masterTalon.configPeakOutputReverse(-1, 0);
+        slaveTalon.configPeakOutputForward(1, 0);
+        slaveTalon.configPeakOutputReverse(-1, 0);
+
+        masterTalon.configClosedloopRamp(0.4, 0);
+        masterTalon.configOpenloopRamp(0.4, 0);
+
+        masterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+        masterTalon.setSensorPhase(true);
+        masterTalon.setSelectedSensorPosition(0, 0, 0);
+	}
 
 	void configureArmHardware() {
 		WPI_TalonSRX masterTalon = HardwareAdapter.getInstance().getArm().armMasterTalon;
@@ -359,6 +401,10 @@ class HardwareUpdater {
 			default:
 				break;
 		}
+		robotState.elevatorPosition = HardwareAdapter.getInstance().getElevator().elevatorMasterTalon.getSelectedSensorPosition(0);
+		robotState.elevatorVelocity = HardwareAdapter.getInstance().getElevator().elevatorSlaveTalon.getSelectedSensorVelocity(0);
+		// Change HFX Talon location
+		robotState.elevatorHFX = HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getSensorCollection().isRevLimitSwitchClosed();
 
 		PigeonIMU gyro = HardwareAdapter.getInstance().getDrivetrain().gyro;
 		if(gyro != null) {
@@ -493,6 +539,7 @@ class HardwareUpdater {
 	 */
 	void updateHardware() {
 		updateDrivetrain();
+		updateElevator();
 		updateArm();
 		updateIntake();
 		updateShooter();
@@ -506,7 +553,6 @@ class HardwareUpdater {
 		updateTalonSRX(HardwareAdapter.getInstance().getDrivetrain().leftMasterTalon, mDrive.getDriveSignal().leftMotor);
 		updateTalonSRX(HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon, mDrive.getDriveSignal().rightMotor);
 	}
-
 
     /**
      * Checks if the compressor should compress and updates it accordingly
@@ -537,6 +583,19 @@ class HardwareUpdater {
         HardwareAdapter.getInstance().getShooter().shooterMasterVictor.set(mShooter.getOutput());
     }
 
+
+    /*
+     * Updates the elevator
+     */
+    private void updateElevator() {
+        if(mElevator.getIsAtTop() && mElevator.movingUpwards()) {
+            TalonSRXOutput elevatorHoldOutput = new TalonSRXOutput();
+            elevatorHoldOutput.setPercentOutput(Constants.kElevatorHoldVoltage);
+            updateTalonSRX(HardwareAdapter.getInstance().getElevator().elevatorMasterTalon, elevatorHoldOutput);
+        } else {
+            updateTalonSRX(HardwareAdapter.getInstance().getElevator().elevatorMasterTalon, mElevator.getOutput());
+        }
+    }
 
     /**
 	 * Updates the arm
