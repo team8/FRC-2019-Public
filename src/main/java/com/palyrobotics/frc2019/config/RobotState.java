@@ -62,7 +62,6 @@ public class RobotState {
 
 	//Arm sensor data
 	public double armPotentiometer = 0; // ticks
-	public double armEncoder = 0; // ticks
 	public double armPosition = 0;  // Angle in degrees
 	public double armVelocity = 0;  // rad/s
 	public double armAccel = 0;  // rad/s^2

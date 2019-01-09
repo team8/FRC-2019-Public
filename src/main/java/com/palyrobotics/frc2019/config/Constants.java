@@ -201,8 +201,9 @@ public class Constants {
 	public static final int kForsetiRightDriveSlave2DeviceID = 13;
 
 	//ARM
-	public static final int kForesetiArmMasterTalonID = 12;
-	public static final int kForsetiArmSlaveVictorID = 11;
+	public static final int kForsetiArmMasterTalonID = 12;
+	public static final int kArmSlaveTalonID = 0; //new uwu
+	public static final int kForsetiArmMasterVictorID = 11;
 	public static final int kForsetiArmPotID = 0;
 
 	//INTAKE

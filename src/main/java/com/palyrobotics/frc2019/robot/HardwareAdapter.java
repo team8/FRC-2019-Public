@@ -66,13 +66,15 @@ public class HardwareAdapter {
 			return instance; 
 		}
 
-		public final WPI_TalonSRX armMasterTalon; 
-		public final WPI_VictorSPX armSlaveVictor; 
+		public final WPI_TalonSRX armMasterTalon;
+		public final WPI_TalonSRX armSlaveTalon;
+		public final WPI_VictorSPX armMasterVictor;
 		public final AnalogPotentiometer armPot;
 
 		protected ArmHardware() {
-			armMasterTalon = new WPI_TalonSRX(Constants.kForesetiArmMasterTalonID); 
-			armSlaveVictor = new WPI_VictorSPX(Constants.kForsetiArmSlaveVictorID); 
+			armMasterTalon = new WPI_TalonSRX(Constants.kForsetiArmMasterTalonID);
+			armSlaveTalon = new WPI_TalonSRX(Constants.kArmSlaveTalonID);
+			armMasterVictor = new WPI_VictorSPX(Constants.kForsetiArmMasterVictorID);
 			armPot = new AnalogPotentiometer(Constants.kForsetiArmPotID, 360, 0);
 		}
 	}

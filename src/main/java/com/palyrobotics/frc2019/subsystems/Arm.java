@@ -19,7 +19,7 @@ public class Arm extends Subsystem {
 	}
 
 	public enum ArmState {
-		HOLD, //Keeping the arm position fixeds
+		HOLD, //Keeping the arm position fixed
 		MANUAL_POSITIONING, //Moving the arm with the joystick
 		CUSTOM_POSITIONING, //Moving the arm with a control loop
 		IDLE //Not moving
@@ -34,7 +34,6 @@ public class Arm extends Subsystem {
 	private boolean isAtTop = false;
 
 	//Used for specifying where to hold/move to
-	public double mEncoderWantedPosition = 0.0;
 	public double mPotentiometerWantedPosition = 0.0;
 
 	//Used to store the robot state for use in methods other than update()
@@ -44,7 +43,6 @@ public class Arm extends Subsystem {
 	private TalonSRXOutput mOutput = new TalonSRXOutput();
 
 	//Sensor functionality fields
-	private boolean isEncoderFunctional = true;
 	private boolean isPotentiometerFunctional = false;
 
 	/**
@@ -74,13 +72,9 @@ public class Arm extends Subsystem {
 
 		mState = commands.wantedArmState;
 
-		if(isEncoderFunctional){
-			if (onTargetEncoderPositioning()){
-				commands.wantedArmState = ArmState.HOLD;
-			}
-		} else if (isPotentiometerFunctional){
+		if (isPotentiometerFunctional){
 			if (onTargetPotentiometerPositioning()){
-				commands.wantedArmState = ArmState.HOLD; // wack. smack.
+				commands.wantedArmState = ArmState.HOLD;
 			}
 		}
 		checkFrontBack(mRobotState);
@@ -93,11 +87,7 @@ public class Arm extends Subsystem {
 					if (isAtFront || isAtBack) {
 						mOutput.setPercentOutput(0.0);
 					} else {
-						if (isEncoderFunctional) {
-							mEncoderWantedPosition = mRobotState.armEncoder;
-							mOutput.setPosition(mEncoderWantedPosition, Gains.armHold);
-						} else if (isPotentiometerFunctional) {
-							mEncoderWantedPosition = mRobotState.armPotentiometer;
+						if (isPotentiometerFunctional) {
 							mOutput.setPosition(mPotentiometerWantedPosition, Gains.armHold);
 						}
 					}
@@ -117,15 +107,12 @@ public class Arm extends Subsystem {
 				break;
 			case CUSTOM_POSITIONING:
 				//Control loop
-				if(isEncoderFunctional) {
-					mOutput.setPosition(mEncoderWantedPosition, Gains.armPosition);
-				} else if(isPotentiometerFunctional){
+				if(isPotentiometerFunctional){
 					mOutput.setPosition(mPotentiometerWantedPosition, Gains.armPosition);
 				}
 
 				break;
 			case IDLE:
-				mEncoderWantedPosition = 0;
 				mPotentiometerWantedPosition = 0;
 				mOutput.setPercentOutput(0.0);
 				break;
@@ -168,10 +155,6 @@ public class Arm extends Subsystem {
 		return mOutput;
 	}
 
-	public double getArmEncoderPosition() {
-		return mRobotState.armEncoder;
-	}
-
 	public double getArmPotentiometerPosition() { return mRobotState.armPotentiometer; }
 
 	public boolean getIsAtTop() {
@@ -184,15 +167,6 @@ public class Arm extends Subsystem {
 
 	public boolean getIsAtBack() {
 		return isAtBack;
-	}
-
-
-	public boolean onTargetEncoderPositioning(){
-		if(mState != ArmState.CUSTOM_POSITIONING){
-			return false;
-		}
-		return (Math.abs(mEncoderWantedPosition - mRobotState.armPosition) < Constants.kArmAcceptableEncoderError &&
-				(Math.abs(mRobotState.armVelocity) < Constants.kArmAcceptableVelocityError));
 	}
 
 	public boolean onTargetPotentiometerPositioning(){

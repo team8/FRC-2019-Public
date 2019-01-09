@@ -69,7 +69,8 @@ class HardwareUpdater {
 
 		//Disable arm talons 
 		HardwareAdapter.getInstance().getArm().armMasterTalon.set(ControlMode.Disabled, 0);
-		HardwareAdapter.getInstance().getArm().armSlaveVictor.set(ControlMode.Disabled, 0);
+		HardwareAdapter.getInstance().getArm().armSlaveTalon.set(ControlMode.Disabled, 0);
+		HardwareAdapter.getInstance().getArm().armMasterVictor.set(ControlMode.Disabled, 0);
 
 		//Disable intake talons
 		HardwareAdapter.getInstance().getIntake().masterTalon.set(ControlMode.Disabled, 0);
@@ -186,29 +187,36 @@ class HardwareUpdater {
 
 	void configureArmHardware() {
 		WPI_TalonSRX masterTalon = HardwareAdapter.getInstance().getArm().armMasterTalon;
-		WPI_VictorSPX slaveVictor = HardwareAdapter.getInstance().getArm().armSlaveVictor;
+		WPI_TalonSRX slaveTalon = HardwareAdapter.getInstance().getArm().armSlaveTalon;
+		WPI_VictorSPX masterVictor = HardwareAdapter.getInstance().getArm().armMasterVictor;
 
 		masterTalon.setInverted(true);
-		slaveVictor.setInverted(false);
+		slaveTalon.setInverted(true);
+		masterVictor.setInverted(false);
 
-		slaveVictor.follow(masterTalon);
+		slaveTalon.follow(masterTalon);
 
 		masterTalon.enableVoltageCompensation(true);
-		slaveVictor.enableVoltageCompensation(true);
+		slaveTalon.enableVoltageCompensation(true);
+		masterVictor.enableVoltageCompensation(true);
 
 		masterTalon.configVoltageCompSaturation(14, 0);
-		slaveVictor.configVoltageCompSaturation(14, 0);
+		slaveTalon.configVoltageCompSaturation(14, 0);
+		masterVictor.configVoltageCompSaturation(14, 0);
 
 		masterTalon.configReverseLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
 //		masterTalon.configForwardLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
 
 		masterTalon.overrideLimitSwitchesEnable(true);
-		slaveVictor.overrideLimitSwitchesEnable(true);
+		slaveTalon.overrideLimitSwitchesEnable(true);
+		masterVictor.overrideLimitSwitchesEnable(true);
 
 		masterTalon.configPeakOutputForward(1, 0);
 		masterTalon.configPeakOutputReverse(-1, 0);
-		slaveVictor.configPeakOutputForward(1, 0);
-		slaveVictor.configPeakOutputReverse(-1, 0);
+		slaveTalon.configPeakOutputForward(1, 0);
+		slaveTalon.configPeakOutputReverse(-1, 0);
+		masterVictor.configPeakOutputForward(1, 0);
+		masterVictor.configPeakOutputReverse(-1, 0);
 
 		masterTalon.configClosedloopRamp(0.4, 0);
 		masterTalon.configOpenloopRamp(0.4, 0);
