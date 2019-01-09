@@ -5,6 +5,7 @@ import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Shooter;
+import com.palyrobotics.frc2019.subsystems.Shovel;
 import com.palyrobotics.frc2019.util.DriveSignal;
 import com.palyrobotics.frc2019.util.logger.Logger;
 
@@ -36,13 +37,19 @@ public class Commands {
 	//Store WantedStates for each subsystem state machine
 	public Drive.DriveState wantedDriveState = Drive.DriveState.NEUTRAL;
 	public Arm.ArmState wantedArmState = Arm.ArmState.IDLE;
+
 	public Shooter.ShooterState wantedShooterState = Shooter.ShooterState.IDLE;
+
+	public Shovel.WheelState wantedShovelWheelState = Shovel.WheelState.IDLE;
+	public Shovel.UpDownState wantedShovelUpDownState = Shovel.UpDownState.UP;
+
 	public boolean disableArmScaling = true;
 	public boolean customShooterSpeed = false;
 	public boolean customIntakeSpeed = false;
 	public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.CALIBRATING;
 	public Elevator.ClimberState wantedClimberState = Elevator.ClimberState.INACTIVE;
 	public Elevator.GearboxState wantedGearboxState = Elevator.GearboxState.ELEVATOR;
+	public boolean customShovelSpeed = false;
 
 	public void addWantedRoutine(Routine wantedRoutine) {
 		for(Routine routine : wantedRoutines) {
@@ -99,10 +106,13 @@ public class Commands {
 		copy.wantedGearboxState = this.wantedGearboxState;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
+		copy.wantedShovelWheelState = this.wantedShovelWheelState;
+		copy.wantedShovelUpDownState = this.wantedShovelUpDownState;
 		copy.disableArmScaling = this.disableArmScaling;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.customShooterSpeed = this.customShooterSpeed;
 		copy.customIntakeSpeed = this.customIntakeSpeed;
+		copy.customShovelSpeed = this.customShovelSpeed;
 
 		for(Routine r : this.wantedRoutines) {
 			copy.wantedRoutines.add(r);

@@ -144,6 +144,22 @@ public class HardwareAdapter {
 		}
 	}
 
+	/**
+	 * Hatch Intake - 1 WPI_VictorSPX, 1 SingleSolenoid
+	 */
+	public static class ShovelHardware {
+		private static ShovelHardware instance = new ShovelHardware();
+
+		private static ShovelHardware getInstance() { return instance; }
+
+		public final WPI_VictorSPX ShovelVictor;
+		public final Solenoid upDownSolenoid;
+
+		protected ShovelHardware() {
+			ShovelVictor = new WPI_VictorSPX(Constants.kShovelID);
+			upDownSolenoid = new Solenoid(0, Constants.kShovelUpDownSolenoid);
+		}
+	}
 	//Joysticks for operator interface
 	public static class Joysticks {
 		private static Joysticks instance = new Joysticks();
@@ -206,6 +222,7 @@ public class HardwareAdapter {
 	}
 
 	public ShooterHardware getShooter() { return ShooterHardware.getInstance(); }
+	public ShovelHardware getShovel() { return ShovelHardware.getInstance(); }
 
 	public Joysticks getJoysticks() {
 		return Joysticks.getInstance();
