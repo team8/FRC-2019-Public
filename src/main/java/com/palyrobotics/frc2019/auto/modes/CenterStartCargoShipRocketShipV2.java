@@ -20,8 +20,8 @@ public class CenterStartCargoShipRocketShipV2 extends AutoModeBase { //starts at
 
     public static int SPEED = 50; //start from level 1
     public static double kOffsetX = Constants.kLowerPlatformLength;
-    public static double kCargoShipRightFrontX = mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength - Constants.kRobotLengthInches * 2;
-    public static double kCargoShipRightFrontY = -(mDistances.kFieldWidth - (mDistances.kCargoLeftY + mDistances.kCargoOffsetY));
+    public static double kCargoShipRightFrontX = mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength - Constants.kRobotLengthInches;
+    public static double kCargoShipRightFrontY = -(mDistances.kFieldWidth * .5 - (mDistances.kCargoLeftY + mDistances.kCargoOffsetY));
     public static double kHabLineX = Constants.kUpperPlatformLength + Constants.kLowerPlatformLength;
     public static double kRightLoadingStationX = 0;
     public static double kRightLoadingStationY = mDistances.kFieldWidth * .5 - mDistances.kRightLoadingY;
