@@ -55,31 +55,8 @@ public class HardwareAdapter {
 		}
 	}
 
-
 	/**
-	 * Arm - 1 WPI_TalonSRX, 1 WPI_VictorSPX
-	 */
-	public static class ArmHardware {
-		private static ArmHardware instance = new ArmHardware(); 
-
-		private static ArmHardware getInstance() {
-			return instance; 
-		}
-
-		public final WPI_TalonSRX armMasterTalon;
-		public final WPI_TalonSRX armSlaveTalon;
-		public final WPI_VictorSPX armMasterVictor;
-		public final AnalogPotentiometer armPot;
-
-		protected ArmHardware() {
-			armMasterTalon = new WPI_TalonSRX(Constants.kForsetiArmMasterTalonID);
-			armSlaveTalon = new WPI_TalonSRX(Constants.kArmSlaveTalonID);
-			armMasterVictor = new WPI_VictorSPX(Constants.kForsetiArmMasterVictorID);
-			armPot = new AnalogPotentiometer(Constants.kForsetiArmPotID, 360, 0);
-		}
-	}
-	/**
-	 * Intake - 2 WPI_TalonSRX's, 2 DoubleSolenoids, 1 Distance Sensor (AnalogInput)
+	 * Intake - 2 WPI_TalonSRX's, 1 WPI_VictorSPX, 2 Ultrasonics
 	 */
 	public static class IntakeHardware {
 		private static IntakeHardware instance = new IntakeHardware();
@@ -88,26 +65,18 @@ public class HardwareAdapter {
 			return instance;
 		}
 
-		public final WPI_VictorSPX masterTalon;
-		public final WPI_VictorSPX slaveTalon;
-		public final DoubleSolenoid inOutSolenoid;
+		public final WPI_VictorSPX spinVictor;
+		public final WPI_TalonSRX masterTalon;
+		public final WPI_TalonSRX slaveTalon;
 		public final Ultrasonic ultrasonic1;
 		public final Ultrasonic ultrasonic2;
-		public final Spark LED;
 
 		protected IntakeHardware() {
-			masterTalon = new WPI_VictorSPX(Constants.kForsetiIntakeMasterDeviceID);
-			slaveTalon = new WPI_VictorSPX(Constants.kForsetiIntakeSlaveDeviceID);
-			if (Constants.kRobotName == Constants.RobotName.FORSETI) {
-				inOutSolenoid = new DoubleSolenoid(0,Constants.kInOutSolenoidA, Constants.kInOutSolenoidB);
-			}
-			else {
-				inOutSolenoid = null;
-			}
+			spinVictor = new WPI_VictorSPX(Constants.kIntakeVictorID);
+			masterTalon = new WPI_TalonSRX(Constants.kIntakeMasterDeviceID);
+			slaveTalon = new WPI_TalonSRX(Constants.kIntakeSlaveDeviceID);
 			ultrasonic1 = new Ultrasonic(Constants.kLeftUltrasonicPing,Constants.kLeftUltrasonicEcho);
 			ultrasonic2 = new Ultrasonic(Constants.kRightUltrasonicPing,Constants.kRightUltrasonicEcho);
-
-			LED = new Spark(0);
 		}
 	}
 
@@ -158,10 +127,6 @@ public class HardwareAdapter {
 	//Wrappers to access hardware groups
 	public DrivetrainHardware getDrivetrain() {
 		return DrivetrainHardware.getInstance();
-	}
-
-	public ArmHardware getArm(){
-		return ArmHardware.getInstance(); 
 	}
 
 	public IntakeHardware getIntake() {

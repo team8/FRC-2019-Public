@@ -2,7 +2,6 @@ package com.palyrobotics.frc2019.config;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.util.DriveSignal;
 import com.palyrobotics.frc2019.util.logger.Logger;
@@ -34,10 +33,9 @@ public class Commands {
 
 	//Store WantedStates for each subsystem state machine
 	public Drive.DriveState wantedDriveState = Drive.DriveState.NEUTRAL;
-	public Arm.ArmState wantedArmState = Arm.ArmState.IDLE;
 	public Intake.WheelState wantedIntakingState = Intake.WheelState.IDLE;
-	public Intake.OpenCloseState wantedIntakeOpenCloseState = Intake.OpenCloseState.CLOSED;
-	public boolean disableArmScaling = true;
+	public Intake.UpDownState wantedIntakeUpDownState = Intake.UpDownState.UP;
+	public boolean disableIntakeScaling = true;
 	public boolean customIntakeSpeed = false;
 
 	public void addWantedRoutine(Routine wantedRoutine) {
@@ -61,14 +59,14 @@ public class Commands {
 	 */
 	public static class Setpoints {
 		public Optional<DriveSignal> drivePowerSetpoint = Optional.empty();
-		public Optional<Double> armPositionSetpoint = Optional.empty();
+		public Optional<Double> intakePositionSetpoint = Optional.empty();
 
 		/**
 		 * Resets all the setpoints
 		 */
 		public void reset() {
 			drivePowerSetpoint = Optional.empty();
-			armPositionSetpoint = Optional.empty();
+			intakePositionSetpoint = Optional.empty();
 		}
 	}
 
@@ -84,11 +82,10 @@ public class Commands {
 	public Commands copy() {
 		Commands copy = new Commands();
 		copy.wantedDriveState = this.wantedDriveState;
-		copy.wantedArmState = this.wantedArmState;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.wantedIntakingState = this.wantedIntakingState;
-		copy.wantedIntakeOpenCloseState = this.wantedIntakeOpenCloseState;
-		copy.disableArmScaling = this.disableArmScaling;
+		copy.wantedIntakeUpDownState = this.wantedIntakeUpDownState;
+		copy.disableIntakeScaling = this.disableIntakeScaling;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.customIntakeSpeed = this.customIntakeSpeed;
 
@@ -100,8 +97,8 @@ public class Commands {
 		copy.robotSetpoints = new Setpoints();
 		//Copy optionals that are present
 		robotSetpoints.drivePowerSetpoint.ifPresent((DriveSignal signal) -> copy.robotSetpoints.drivePowerSetpoint = Optional.of(signal));
-		robotSetpoints.armPositionSetpoint
-				.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.armPositionSetpoint = Optional.of(elevatorPositionSetpoint));
+		robotSetpoints.intakePositionSetpoint
+				.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.intakePositionSetpoint = Optional.of(elevatorPositionSetpoint));
 		return copy;
 	}
 

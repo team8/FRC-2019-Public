@@ -43,12 +43,14 @@ public class RobotState {
 	public double rightSetpoint = 0;
 
 	//Intake
-	public boolean hasCube = false;
-	public double cubeDistance = 0;
+	public boolean hasCargo = false;
+	public double cargoDistance = 0;
+	public double intakeAngle = 0; //ticks
+	public double intakePosition = 0;  // Angle in degrees
+	public double intakeVelocity = 0;
+	public boolean hasIntakeStickyFaults = false;
 	public ArrayList<Double> mLeftReadings = new ArrayList<>();
-	public ArrayList<Double> mLeftSorted = new ArrayList<>();
 	public ArrayList<Double> mRightReadings = new ArrayList<>();
-	public ArrayList<Double> mRightSorted = new ArrayList<>();
 
 
 	//Tracks total current from kPDP
@@ -59,15 +61,6 @@ public class RobotState {
 
 	//Pose stores drivetrain sensor data
 	public Pose drivePose = new Pose(0, 0, 0, 0, 0, 0, 0, 0);
-
-	//Arm sensor data
-	public double armPotentiometer = 0; // ticks
-	public double armPosition = 0;  // Angle in degrees
-	public double armVelocity = 0;  // rad/s
-	public double armAccel = 0;  // rad/s^2
-	public double armAngle = 0; //
-	public boolean hasArmStickyFaults = false; 
-	
 
 	//Robot position
 	public final int kObservationBufferSize = 100;

@@ -3,12 +3,15 @@ package com.palyrobotics.frc2019.subsystems;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.TalonSRXOutput;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.logger.LeveledString;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+
+import java.util.Optional;
 
 /**
  * @author Justin and Jason and Prashanti
@@ -23,126 +26,103 @@ public class Intake extends Subsystem {
 	public static void resetInstance() { instance = new Intake(); }
 	
 	private TalonSRXOutput mTalonOutput = new TalonSRXOutput();
-	private boolean inOut = false;
-	private DoubleSolenoid.Value mUpDownOutput = DoubleSolenoid.Value.kForward;
+	private double mVictorOutput;
 
+	private Optional<Double> mIntakeWantedPosition = Optional.empty();
 	public enum WheelState {
-		INTAKING, IDLE, EXPELLING, VAULT_EXPELLING, AUTO1, AUTO2
+		INTAKING, IDLE, SLOW_EXPELLING, FAST_EXPELLING
 	}
 
-
-	public enum OpenCloseState {
-		OPEN, CLOSED, NEUTRAL
+	public enum UpDownState {
+		HOLD, UP, DOWN, MANUAL_POSITIONING, CUSTOM_POSITIONING
 	}
 
 	private WheelState mWheelState = WheelState.IDLE;
-	private OpenCloseState mOpenCloseState = OpenCloseState.CLOSED;
-
-	private CSVWriter mWriter = CSVWriter.getInstance();
-
+	private UpDownState mUpDownState = UpDownState.UP;
 
 	protected Intake() {
 		super("Intake");
+		mWheelState = WheelState.IDLE;
+		mUpDownState = UpDownState.UP;
 	}
 
 	@Override
 	public void start() {
 		mWheelState = WheelState.IDLE;
-		mOpenCloseState = OpenCloseState.OPEN;
+		mUpDownState = UpDownState.UP;
 	}
 
 	@Override
 	public void stop() {
 		mWheelState = WheelState.IDLE;
-		mOpenCloseState = OpenCloseState.CLOSED;
+		mUpDownState = UpDownState.UP;
 	}
 
 	@Override
 	public void update(Commands commands, RobotState robotState) {
 		mWheelState = commands.wantedIntakingState;
-		mOpenCloseState = commands.wantedIntakeOpenCloseState;
-
+		mUpDownState = commands.wantedIntakeUpDownState;
 
 		switch(mWheelState) {
 			case INTAKING:
 				if(commands.customIntakeSpeed) {
-					mTalonOutput.setPercentOutput(robotState.operatorXboxControllerInput.leftTrigger);
+					mVictorOutput = robotState.operatorXboxControllerInput.leftTrigger;
 				} else {
-					mTalonOutput.setPercentOutput(Constants.kIntakingMotorVelocity);
+					mVictorOutput = Constants.kIntakingMotorVelocity;
 				}
 				break;
 			case IDLE:
-				mTalonOutput.setPercentOutput(0);
+				mVictorOutput = 0;
 				break;
-			case EXPELLING:
-				if(commands.customIntakeSpeed) {
-					mTalonOutput.setPercentOutput(-robotState.operatorXboxControllerInput.rightTrigger);
-				} else {
-					mTalonOutput.setPercentOutput(Constants.kExpellingMotorVelocity);
-				}
+			case SLOW_EXPELLING:
+				mVictorOutput = Constants.kIntakeSlowExpellingVelocity;
 				break;
-			case VAULT_EXPELLING:
-				mTalonOutput.setPercentOutput(Constants.kVaultExpellingMotorVelocity);
-				break;
-			case AUTO1:
-				mTalonOutput.setPercentOutput(Constants.kAuto1MotorVelocity);
-				break;
-			case AUTO2:
-				mTalonOutput.setPercentOutput(Constants.kAuto2MotorVelocity);
+			case FAST_EXPELLING:
+				mVictorOutput = Constants.kIntakeFastExpellingVelocity;
 				break;
 		}
 
-
-		switch(mOpenCloseState) {
-			case OPEN:
-				inOut = true;
+		switch(mUpDownState) {
+			case HOLD:
+				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeHold);
 				break;
-			case CLOSED:
-				inOut = false;
+			case UP:
+				double arbitrary_feed_forward = Constants.kIntakeArbitraryFeedForward * robotState.intakePosition;
+				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeUp, arbitrary_feed_forward);
+				break;
+			case DOWN:
+				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeDown);
+				break;
+			case MANUAL_POSITIONING:
+				mTalonOutput.setPercentOutput(0); //TODO: Fix this based on what control wanted
+				break;
+			case CUSTOM_POSITIONING:
+				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakePosition);
 				break;
 		}
 
-
-		if (robotState.hasCube) {
-			LEDColor.setColor(LEDColor.Color.GREEN);
-		}
-		else if (robotState.hasCube == false && mWheelState == WheelState.INTAKING) {
-			LEDColor.setColor(LEDColor.Color.ORANGE);
-		}
-		else if (!robotState.hasCube /*&& intake is down*/) {
-			LEDColor.setColor(LEDColor.Color.BLUE);
-		} else {
-			LEDColor.setColor(LEDColor.Color.ORANGE);
-		}
-
-//		mWriter.addData("intakeSetpoint", mTalonOutput.getSetpoint());
-//		mWriter.addData("intakeCurrentDraw", HardwareAdapter.getInstance().getIntake().masterTalon.getOutputCurrent()
-//				+ HardwareAdapter.getInstance().getIntake().slaveTalon.getOutputCurrent());
 	}
 
 	public WheelState getWheelState() {
 		return mWheelState;
 	}
 
-	public OpenCloseState getOpenCloseState() {
-		return mOpenCloseState;
+	public UpDownState getUpDownState() {
+		return mUpDownState;
 	}
+
+	public Optional<Double> getIntakeWantedPosition() { return mIntakeWantedPosition; }
 
 	public TalonSRXOutput getTalonOutput() {
 		return mTalonOutput;
 	}
 
-	public boolean getOpenCloseOutput() {
-		return inOut;
-	}
+	public double getVictorOutput() { return mVictorOutput; }
 
-	public DoubleSolenoid.Value getUpDownOutput() {
-		return mUpDownOutput;
-	}
 
 	@Override
 	public String getStatus() {
-		return "Intake State: " + mWheelState + "\nOutput Control Mode: " + mTalonOutput.getControlMode() + "\nTalon Output: " + mTalonOutput.getSetpoint()
-				+ "\n" + "\nOpen Close Output: " + inOut + "\n" + "\nUp Down Output: " + mUpDownOutput + "\n";
+		return "Intake State: " + mWheelState + "\nOutput Control Mode: " + mTalonOutput.getControlMode() + "\nTalon Output: "
+				+ mTalonOutput.getSetpoint() + "\nUp Down Output: " + mUpDownState;
 	}
 }

@@ -6,7 +6,6 @@ import com.palyrobotics.frc2019.behavior.routines.intake.*;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.util.ChezyMath;
 import com.palyrobotics.frc2019.util.JoystickInput;
@@ -32,7 +31,6 @@ public class OperatorInterface {
 
 	private JoystickInput mDriveStick = Robot.getRobotState().leftStickInput;
 	private JoystickInput mTurnStick = Robot.getRobotState().rightStickInput;
-	private JoystickInput mClimberStick = Robot.getRobotState().climberStickInput;
 	private JoystickInput mOperatorJoystick = null;
 	private XboxInput mOperatorXboxController = null;
 
@@ -89,19 +87,6 @@ public class OperatorInterface {
 
 		if(Constants.operatorXBoxController) {
 			/**
-			 * Arm controls
-			 */
-			if(Math.abs(ChezyMath.handleDeadband(mOperatorXboxController.getRightY(), 0.05)) > 0.0) {
-				newCommands.wantedArmState = Arm.ArmState.MANUAL_POSITIONING;
-			} else {
-				newCommands.wantedArmState = Arm.ArmState.HOLD;
-			}
-			// Start button
-			if(mOperatorXboxController.getButtonPressed(8)) {
-				newCommands.disableArmScaling = true;
-			}
-
-			/**
 			 * Intake controls
 			 */
 
@@ -109,7 +94,7 @@ public class OperatorInterface {
 
 			//Intake wheel logic block
 			if(mOperatorXboxController.getRightTrigger() > 0.0) {
-				newCommands.wantedIntakingState = Intake.WheelState.EXPELLING;
+				newCommands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
 				newCommands.customIntakeSpeed = true;
 				newCommands.cancelCurrentRoutines = true;
 			} else if(mOperatorXboxController.getLeftBumper()) {
@@ -121,7 +106,7 @@ public class OperatorInterface {
 				}
 				operatorButtonTwoPressable = false;
 			} else if(mOperatorXboxController.getButtonA()) {
-				newCommands.wantedIntakingState = Intake.WheelState.VAULT_EXPELLING;
+				newCommands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
 				newCommands.cancelCurrentRoutines = true;
 			} else if(mOperatorXboxController.getLeftTrigger() > 0.0) {
 				newCommands.wantedIntakingState = Intake.WheelState.INTAKING;
@@ -135,49 +120,23 @@ public class OperatorInterface {
 
 		} else {
 
-			if (Math.abs(ChezyMath.handleDeadband(mOperatorJoystick.getY(), 0.02)) > 0.0) {
-				newCommands.wantedArmState = Arm.ArmState.MANUAL_POSITIONING;
-			} else {
-				newCommands.wantedArmState = Arm.ArmState.HOLD;
-			}
-			if (mOperatorJoystick.getButtonPressed(11)) {
-				newCommands.disableArmScaling = true;
-			}
-
 			/**
 			 * Intake controls
 			 */
-
-			//Operator intake control
-			//Up/Down block
-
-			//Close/Open block, cannot be executed along with up/down
-			if (mOperatorJoystick.getButtonPressed(3)) {
-				newCommands.cancelCurrentRoutines = true;
-			} else if (mOperatorJoystick.getButtonPressed(5)) {
-				newCommands.addWantedRoutine(new IntakeCloseRoutine());
-				newCommands.cancelCurrentRoutines = true;
-			} else if (mOperatorJoystick.getButtonPressed(6)) {
-				newCommands.addWantedRoutine(new IntakeOpenRoutine());
-				newCommands.cancelCurrentRoutines = true;
-			} else {
-				operatorButtonFourPressable = true;
-			}
-
 			//Intake wheel logic block
 			if (mOperatorJoystick.getTriggerPressed()) {
-				newCommands.wantedIntakingState = Intake.WheelState.EXPELLING;
+				newCommands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
 				newCommands.cancelCurrentRoutines = true;
 			} else if (mOperatorJoystick.getButtonPressed(2)) {
 				if (operatorButtonTwoPressable) {
 					ArrayList<Routine> intakeThenUp = new ArrayList<>();
-                    intakeThenUp.add(new IntakeCubeRoutine(3000));
+                    intakeThenUp.add(new IntakeCargoRoutine(3000));
 					newCommands.cancelCurrentRoutines = true;
 					newCommands.addWantedRoutine(new SequentialRoutine(intakeThenUp));
 				}
 				operatorButtonTwoPressable = false;
 			} else if (mOperatorJoystick.getButtonPressed(10)) {
-				newCommands.wantedIntakingState = Intake.WheelState.VAULT_EXPELLING;
+				newCommands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
 				newCommands.cancelCurrentRoutines = true;
 			} else if (mOperatorJoystick.getButtonPressed(9)) {
 				newCommands.wantedIntakingState = Intake.WheelState.INTAKING;
@@ -188,45 +147,6 @@ public class OperatorInterface {
 			}
 		}
 
-		/**
-		 * Climber controls
-		 */
-		if(Constants.operatorXBoxController) {
-			//Driver intake control
-			//Override above intake wheel logic block
-			//Default idle state is in above logic block
-			if (mTurnStick.getButtonPressed(3)) {
-				newCommands.wantedIntakingState = Intake.WheelState.INTAKING;
-				newCommands.cancelCurrentRoutines = true;
-			} else if (mTurnStick.getButtonPressed(4)) {
-				newCommands.wantedIntakingState = Intake.WheelState.VAULT_EXPELLING;
-				newCommands.cancelCurrentRoutines = true;
-			}
-
-			if(mOperatorXboxController.getdPadLeft()) {
-				newCommands.addWantedRoutine(new IntakeCloseRoutine());
-				newCommands.cancelCurrentRoutines = true;
-			} else if(mOperatorXboxController.getdPadRight()) {
-				newCommands.addWantedRoutine(new IntakeOpenRoutine());
-				newCommands.cancelCurrentRoutines = true;
-			}
-            else if (mOperatorXboxController.getdPadUp()) {
-                newCommands.addWantedRoutine(new IntakeCubeRoutine(30000));
-                newCommands.cancelCurrentRoutines = true;
-            }
-		} else {
-
-			//Driver intake control
-			//Override above intake wheel logic block
-			//Default idle state is in above logic block
-			if (mTurnStick.getButtonPressed(3)) {
-				newCommands.wantedIntakingState = Intake.WheelState.INTAKING;
-				newCommands.cancelCurrentRoutines = true;
-			} else if (mTurnStick.getButtonPressed(4)) {
-				newCommands.wantedIntakingState = Intake.WheelState.VAULT_EXPELLING;
-				newCommands.cancelCurrentRoutines = true;
-			}
-		}
 
 		return newCommands;
 	}

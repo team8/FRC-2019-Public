@@ -8,13 +8,13 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.logger.Logger;
 
 import java.util.logging.Level;
-public class IntakeCubeRoutine extends Routine{
+public class IntakeCargoRoutine extends Routine{
 
 
     private double mTimeout;
     private long mStartTime;
 
-    public IntakeCubeRoutine(double timeout){
+    public IntakeCargoRoutine(double timeout){
         mTimeout = timeout;
     }
 
@@ -25,14 +25,12 @@ public class IntakeCubeRoutine extends Routine{
 
     @Override
     public Commands update(Commands commands) {
-        commands.wantedIntakeOpenCloseState = Intake.OpenCloseState.OPEN;
-        commands.wantedIntakingState = Intake.WheelState.AUTO1;
+        commands.wantedIntakingState = Intake.WheelState.SLOW_EXPELLING;
 
-        if(robotState.hasCube){
+        if(robotState.hasCargo){
             commands.wantedIntakingState = Intake.WheelState.IDLE;
-        } else if (commands.wantedIntakingState == Intake.WheelState.AUTO1 && robotState.cubeDistance < Constants.kIntakeCloseRoutineCloseNow) {
-            commands.wantedIntakingState = Intake.WheelState.AUTO2;
-            commands.wantedIntakeOpenCloseState = Intake.OpenCloseState.CLOSED;
+        } else if (commands.wantedIntakingState == Intake.WheelState.SLOW_EXPELLING && robotState.cargoDistance < Constants.kIntakeCloseRoutineCloseNow) {
+            commands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
         }
 
         return commands;
@@ -45,11 +43,11 @@ public class IntakeCubeRoutine extends Routine{
 
     @Override
     public boolean finished() {
-        if(robotState.hasCube) {
-            Logger.getInstance().logRobotThread(Level.INFO, "IntakeCubeRoutine finishing intake with cube");
+        if(robotState.hasCargo) {
+            Logger.getInstance().logRobotThread(Level.INFO, "IntakeCargoRoutine finishing intake with cargo");
             return true;
         } else if(System.currentTimeMillis() - mStartTime > mTimeout * 1000) {
-            Logger.getInstance().logRobotThread(Level.INFO, "IntakeCubeRoutine timeout", System.currentTimeMillis() - mStartTime);
+            Logger.getInstance().logRobotThread(Level.INFO, "IntakeCargoRoutine timeout", System.currentTimeMillis() - mStartTime);
             return true;
         }
         return false;
@@ -62,7 +60,7 @@ public class IntakeCubeRoutine extends Routine{
 
     @Override
     public String getName() {
-        return "IntakeCubeRoutine";
+        return "IntakeCargoRoutine";
     }
 
 }

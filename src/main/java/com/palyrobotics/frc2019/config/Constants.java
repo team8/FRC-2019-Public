@@ -72,24 +72,6 @@ public class Constants {
     public static double kCargoLineGap = 21.5;
 
 	/**
-	 * Arm Constants
-	 */
-	public static final double kArmCubeInTransitPositionInches = 8.0;
-	public static final double kArmBottomPositionInches = 0;
-	public static final double kArmHoldVoltage = 0.11;
-	public static final double kArmFrontPosition = 0.0;
-	public static final double kArmBackPosition = 0.0;
-	public static final double kArmTopPosition = 0.0;
-
-	public static double kArmTopScalingConstant;
-	public static double kArmBottomScalingConstant;
-	public static double kArmCalibratedManualPower;
-	public static double kArmScaledManualPower;
-	public static double kArmUncalibratedManualPower = .62;
-	public static double kArmClosedLoopManualControlPositionSensitivity = 500;//250;
-	public static double kArmConstantDownPower;
-
-	/**
 	 * Ultrasonics
 	 */
 	public static final int kLeftUltrasonicPing = 0;
@@ -103,7 +85,7 @@ public class Constants {
 	/*
 	 * Control loop constants for both robots
 	 */
-	public static final double kTurnInPlacePower = .5; //for bang bang
+	public static final double kTurnInPlacePower = .5; //for bang b3ang
 	public static final double kCalibratePower = -0.28;
 	public static final double kDriveMaxClosedLoopOutput = 1.0;
 	public static final double kArmMaxClosedLoopOutput = 0.666;
@@ -112,7 +94,7 @@ public class Constants {
 	 * Unit conversions for Talons
 	 */
 	public static final double kDriveTicksPerInch = 4096 / (6.25 * Math.PI);
-	public static final double kArmTicksPerInch = 0;
+	public static final double kIntakeTicksPerInch = 4096 / (6.25 * Math.PI); //TODO: CHANGE THIS
 	public static final double kDriveInchesPerDegree = 0.99 * 21.5 / 90;
 	public static final double kDriveSpeedUnitConversion = 4096 / (6.25 * Math.PI * 10);
 
@@ -141,6 +123,13 @@ public class Constants {
 
 	//Intake
 	public static final double kIntakingMotorVelocity = .4;
+	public static final double kIntakeSlowExpellingVelocity = 0;
+	public static final double kIntakeFastExpellingVelocity = 0;
+	public static final int kIntakeVictorID = 0;
+	public static final int kIntakeMasterDeviceID = 0;
+	public static final int kIntakeSlaveDeviceID = 0;
+	public static final double kIntakeArbitraryFeedForward = 0;
+
 	public static final double kAuto1MotorVelocity = 0.5;
 	public static final double kAuto2MotorVelocity = 0.9;
 	public static final double kExpellingMotorVelocity = -0.225;
@@ -199,12 +188,6 @@ public class Constants {
 	public static final int kForsetiRightDriveMasterDeviceID = 15;
 	public static final int kForsetiRightDriveSlave1DeviceID = 14;
 	public static final int kForsetiRightDriveSlave2DeviceID = 13;
-
-	//ARM
-	public static final int kForsetiArmMasterTalonID = 12;
-	public static final int kArmSlaveTalonID = 0; //new uwu
-	public static final int kForsetiArmMasterVictorID = 11;
-	public static final int kForsetiArmPotID = 0;
 
 	//INTAKE
 	public static final int kForsetiIntakeMasterDeviceID = 3;

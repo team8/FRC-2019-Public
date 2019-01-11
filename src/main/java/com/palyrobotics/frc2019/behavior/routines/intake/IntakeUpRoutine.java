@@ -5,11 +5,7 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
-/**
- * @author Justin
- */
-public class IntakeOpenRoutine extends Routine {
-
+public class IntakeUpRoutine extends Routine {
     private boolean alreadyRan;
 
     @Override
@@ -19,8 +15,7 @@ public class IntakeOpenRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-        commands.wantedIntakeOpenCloseState = Intake.OpenCloseState.OPEN;
-
+        commands.wantedIntakeUpDownState = Intake.UpDownState.UP;
         alreadyRan = true;
         return commands;
     }
@@ -42,6 +37,6 @@ public class IntakeOpenRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "IntakeOpenRoutine";
+        return "IntakeUpRoutine";
     }
 }

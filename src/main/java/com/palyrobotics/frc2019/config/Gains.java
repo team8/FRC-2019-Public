@@ -82,33 +82,43 @@ public class Gains {
 	public static final double kForsetiCascadingTurnkD = 5;
 	public static final double kForsetiCascadingTurnIzone = 7.0;
 
-	//Arm Constants 
-	public static final double kForsetiArmDownPositionkP = 0.3;
-	public static final double kForsetiArmDownPositionkI = 0.0;
-	public static final double kForsetiArmDownPositionkD = 50;
-	public static final double kForsetiArmDownPositionkF = 0.0;
-	public static final int kForsetiArmDownPositionkIzone = 0;
-	public static final double kForsetiArmDownPositionkRampRate = 0.0;
-	public static final Gains armDownwardsPosition = new Gains(kForsetiArmDownPositionkP, kForsetiArmDownPositionkI, kForsetiArmDownPositionkD,
-			kForsetiArmDownPositionkF, kForsetiArmDownPositionkIzone, kForsetiArmDownPositionkRampRate);
+	//Intake Constants
+	public static final double kIntakeUpkP = 0.0;
+	public static final double kIntakeUpkI = 0.0;
+	public static final double kIntakeUpkD = 0.0;
+	public static final double kIntakeUpkF = 0.0;
+	public static final int kIntakeUpkIzone = 0;
+	public static final double kIntakeUpkRampRate = 0.0;
+	public static final Gains intakeUp = new Gains(kIntakeUpkP, kIntakeUpkI, kIntakeUpkD, kIntakeUpkF,
+			kIntakeUpkIzone, kIntakeUpkRampRate);
 
-	public static final double kForsetiArmPositionkP = 2.0;
-	public static final double kForsetiArmPositionkI = 0.0;
-	public static final double kForsetiArmPositionkD = 70.0;
-	public static final double kForsetiArmPositionkF = 0.0;
-	public static final int kForsetiArmPositionkIzone = 0;
-	public static final double kForsetiArmPositionkRampRate = 0.0;
-	public static final Gains armPosition = new Gains(kForsetiArmPositionkP, kForsetiArmPositionkI, kForsetiArmPositionkD,
-			kForsetiArmPositionkF, kForsetiArmPositionkIzone, kForsetiArmPositionkRampRate);
+	public static final double kIntakeDownkP = 0.0;
+	public static final double kIntakeDownkI = 0.0;
+	public static final double kIntakeDownkD = 0.0;
+	public static final double kIntakeDownkF = 0.0;
+	public static final int kIntakeDownkIzone = 0;
+	public static final double kIntakeDownkRampRate = 0.0;
+	public static final Gains intakeDown = new Gains(kIntakeDownkP, kIntakeDownkI, kIntakeDownkD, kIntakeDownkF,
+			kIntakeDownkIzone, kIntakeDownkRampRate);
 
-	public static final double kForsetiArmHoldkP = 2.0;//0.1;
-	public static final double kForsetiArmHoldkI = 0;//0.002 / 2;
-	public static final double kForsetiArmHoldkD = 30.0;//85 / 2;
-	public static final double kForsetiArmHoldkF = 0;//2.624 / 2;
-	public static final int kForsetiArmHoldkIzone = 0;//800 / 2;
-	public static final double kForsetiArmHoldkRampRate = 0.0;
-	public static final Gains armHold = new Gains(kForsetiArmHoldkP, kForsetiArmHoldkI, kForsetiArmHoldkD, kForsetiArmHoldkF,
-			kForsetiArmHoldkIzone, kForsetiArmHoldkRampRate);
+	public static final double kIntakeHoldkP = 0.0;
+	public static final double kIntakeHoldkI = 0.0;
+	public static final double kIntakeHoldkD = 0.0;
+	public static final double kIntakeHoldkF = 0.0;
+	public static final int kIntakeHoldkIzone = 0;
+	public static final double kIntakeHoldkRampRate = 0.0;
+	public static final Gains intakeHold = new Gains(kIntakeHoldkP, kIntakeHoldkI, kIntakeHoldkD, kIntakeHoldkF,
+			kIntakeHoldkIzone, kIntakeHoldkRampRate);
+
+	public static final double kIntakePositionkP = 0.0;
+	public static final double kIntakePositionkI = 0.0;
+	public static final double kIntakePositionkD = 0.0;
+	public static final double kIntakePositionkF = 0.0;
+	public static final int kIntakePositionkIzone = 0;
+	public static final double kIntakePositionkRampRate = 0.0;
+	public static final Gains intakePosition = new Gains(kIntakePositionkP, kIntakePositionkI, kIntakePositionkD, kIntakePositionkF,
+			kIntakePositionkIzone, kIntakePositionkRampRate);
+
 
 	public static class TrajectoryGains {
 		public final double P, D, V, A, turnP, turnD;

@@ -10,7 +10,6 @@ import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
-import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.util.LEDColor;
@@ -43,9 +42,8 @@ public class Robot extends TimedRobot {
 	//Subsystem controllers
 	private Drive mDrive = Drive.getInstance();
 	private Intake mIntake = Intake.getInstance();
-	private Arm mArm = Arm.getInstance();
 	//Hardware Updater
-	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mArm, mIntake);
+	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mIntake);
 
 	// Started boolean for if auto has been started.
 	private boolean mAutoStarted = false;
@@ -213,7 +211,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		HardwareAdapter.getInstance().getIntake().LED.set(LEDColor.getValue(LEDColor.Color.GREEN_DARK));
 //		if (DriverStation.getInstance().isDSAttached()) {
 //			HardwareAdapter.getInstance().getIntake().LED.set(LEDColor.getValue(LEDColor.Color.GREEN));
 //		} else {
@@ -246,19 +243,16 @@ public class Robot extends TimedRobot {
 
 	private void startSubsystems() {
 		mDrive.start();
-		mArm.start();
 		mIntake.start();
 	}
 
 	private void updateSubsystems() {
 		mDrive.update(commands, robotState);
-		mArm.update(commands, robotState);
 		mIntake.update(commands, robotState);
 	}
 
 	private void stopSubsystems() {
 		mDrive.stop();
-		mArm.stop();
 		mIntake.stop();
 	}
 }

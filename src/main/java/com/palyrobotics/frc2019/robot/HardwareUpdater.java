@@ -6,18 +6,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Intake;
-import com.palyrobotics.frc2019.util.ClimberSignal;
-import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.TalonSRXOutput;
 import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.Kinematics;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.util.trajectory.Rotation2d;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -31,7 +26,6 @@ class HardwareUpdater {
 
 	//Subsystem references
 	private Drive mDrive;
-	private Arm mArm;
 	private Intake mIntake;
 
 	private double lastVelocity = 0;
@@ -41,9 +35,8 @@ class HardwareUpdater {
 	/**
 	 * Hardware Updater for Forseti
 	 */
-	protected HardwareUpdater(Drive drive, Arm arm, Intake intake) {
+	protected HardwareUpdater(Drive drive, Intake intake) {
 		this.mDrive = drive;
-		this.mArm = arm;
 		this.mIntake = intake;
 	}
 
@@ -67,19 +60,14 @@ class HardwareUpdater {
 		HardwareAdapter.getInstance().getDrivetrain().rightSlave1Victor.set(ControlMode.Disabled, 0);
 		HardwareAdapter.getInstance().getDrivetrain().rightSlave2Victor.set(ControlMode.Disabled, 0);
 
-		//Disable arm talons 
-		HardwareAdapter.getInstance().getArm().armMasterTalon.set(ControlMode.Disabled, 0);
-		HardwareAdapter.getInstance().getArm().armSlaveTalon.set(ControlMode.Disabled, 0);
-		HardwareAdapter.getInstance().getArm().armMasterVictor.set(ControlMode.Disabled, 0);
-
 		//Disable intake talons
 		HardwareAdapter.getInstance().getIntake().masterTalon.set(ControlMode.Disabled, 0);
 		HardwareAdapter.getInstance().getIntake().slaveTalon.set(ControlMode.Disabled, 0);
+		HardwareAdapter.getInstance().getIntake().spinVictor.set(ControlMode.Disabled, 0);
 	}
 
 	void configureHardware() {
 		configureDriveHardware();
-		configureArmHardware();
 		configureIntakeHardware();
 	}
 
@@ -185,38 +173,55 @@ class HardwareUpdater {
         rightSlave2Victor.follow(rightMasterTalon);
     }
 
-	void configureArmHardware() {
-		WPI_TalonSRX masterTalon = HardwareAdapter.getInstance().getArm().armMasterTalon;
-		WPI_TalonSRX slaveTalon = HardwareAdapter.getInstance().getArm().armSlaveTalon;
-		WPI_VictorSPX masterVictor = HardwareAdapter.getInstance().getArm().armMasterVictor;
+	void configureIntakeHardware() {
+
+		WPI_TalonSRX masterTalon = HardwareAdapter.getInstance().getIntake().masterTalon;
+		WPI_TalonSRX slaveTalon = HardwareAdapter.getInstance().getIntake().slaveTalon;
+		WPI_VictorSPX spinVictor = HardwareAdapter.getInstance().getIntake().spinVictor;
+
+		Ultrasonic ultrasonic1 = HardwareAdapter.getInstance().getIntake().ultrasonic1;
+		Ultrasonic ultrasonic2 = HardwareAdapter.getInstance().getIntake().ultrasonic2;
 
 		masterTalon.setInverted(true);
 		slaveTalon.setInverted(true);
-		masterVictor.setInverted(false);
+		spinVictor.setInverted(true);
 
-		slaveTalon.follow(masterTalon);
+		masterTalon.setNeutralMode(NeutralMode.Brake);
+		slaveTalon.setNeutralMode(NeutralMode.Brake);
+		spinVictor.setNeutralMode(NeutralMode.Brake);
+
+		masterTalon.configOpenloopRamp(0.09, 0);
+		slaveTalon.configOpenloopRamp(0.09, 0);
 
 		masterTalon.enableVoltageCompensation(true);
 		slaveTalon.enableVoltageCompensation(true);
-		masterVictor.enableVoltageCompensation(true);
+		spinVictor.enableVoltageCompensation(true);
 
 		masterTalon.configVoltageCompSaturation(14, 0);
 		slaveTalon.configVoltageCompSaturation(14, 0);
-		masterVictor.configVoltageCompSaturation(14, 0);
+		spinVictor.configVoltageCompSaturation(14, 0);
+
+		//Disables forwards and reverse soft limits
+		masterTalon.configForwardSoftLimitEnable(false, 0);
+		masterTalon.configReverseSoftLimitEnable(false, 0);
+		slaveTalon.configForwardSoftLimitEnable(false, 0);
+		slaveTalon.configReverseSoftLimitEnable(false, 0);
+		spinVictor.configForwardSoftLimitEnable(false, 0);
+		spinVictor.configReverseSoftLimitEnable(false, 0);
 
 		masterTalon.configReverseLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
 //		masterTalon.configForwardLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
 
 		masterTalon.overrideLimitSwitchesEnable(true);
 		slaveTalon.overrideLimitSwitchesEnable(true);
-		masterVictor.overrideLimitSwitchesEnable(true);
+		spinVictor.overrideLimitSwitchesEnable(true);
 
 		masterTalon.configPeakOutputForward(1, 0);
 		masterTalon.configPeakOutputReverse(-1, 0);
 		slaveTalon.configPeakOutputForward(1, 0);
 		slaveTalon.configPeakOutputReverse(-1, 0);
-		masterVictor.configPeakOutputForward(1, 0);
-		masterVictor.configPeakOutputReverse(-1, 0);
+		spinVictor.configPeakOutputForward(1, 0);
+		spinVictor.configPeakOutputReverse(-1, 0);
 
 		masterTalon.configClosedloopRamp(0.4, 0);
 		masterTalon.configOpenloopRamp(0.4, 0);
@@ -226,42 +231,6 @@ class HardwareUpdater {
 
 		//Zero encoders
 		masterTalon.setSelectedSensorPosition(0, 0, 0);
-	}
-
-	void configureIntakeHardware() {
-
-		WPI_VictorSPX masterTalon = HardwareAdapter.getInstance().getIntake().masterTalon;
-		WPI_VictorSPX slaveTalon = HardwareAdapter.getInstance().getIntake().slaveTalon;
-
-		Ultrasonic ultrasonic1 = HardwareAdapter.getInstance().getIntake().ultrasonic1;
-		Ultrasonic ultrasonic2 = HardwareAdapter.getInstance().getIntake().ultrasonic2;
-
-		masterTalon.setNeutralMode(NeutralMode.Brake);
-		slaveTalon.setNeutralMode(NeutralMode.Brake);
-
-		masterTalon.configOpenloopRamp(0.09, 0);
-		slaveTalon.configOpenloopRamp(0.09, 0);
-
-		masterTalon.enableVoltageCompensation(true);
-		slaveTalon.enableVoltageCompensation(true);
-
-		masterTalon.configVoltageCompSaturation(14, 0);
-		slaveTalon.configVoltageCompSaturation(14, 0);
-
-		//Disables forwards and reverse soft limits
-		masterTalon.configForwardSoftLimitEnable(false, 0);
-		masterTalon.configReverseSoftLimitEnable(false, 0);
-		slaveTalon.configForwardSoftLimitEnable(false, 0);
-		slaveTalon.configReverseSoftLimitEnable(false, 0);
-
-		//Reverse right side
-		if (Constants.kRobotName == Constants.RobotName.FORSETI) {
-			masterTalon.setInverted(true);
-		}
-		else {
-			masterTalon.setInverted(false);
-		}
-		slaveTalon.setInverted(false);
 
 		//Set slave talons to follower mode
         slaveTalon.follow(masterTalon);
@@ -370,6 +339,11 @@ class HardwareUpdater {
 		// left side
 		Ultrasonic mUltrasonicLeft = HardwareAdapter.getInstance().getIntake().ultrasonic1;
 		robotState.mLeftReadings.add(mUltrasonicLeft.getRangeInches());
+
+		if(mUltrasonicLeft.getRangeInches() == 0) {
+			System.out.println("LEFT ULTRASONIC 0");
+		}
+
 //		System.out.println(mUltrasonicLeft.getRangeInches());
 		if(robotState.mLeftReadings.size() > 10) {
 			robotState.mLeftReadings.remove(0);
@@ -385,6 +359,11 @@ class HardwareUpdater {
 		// right side
 		Ultrasonic mUltrasonicRight = HardwareAdapter.getInstance().getIntake().ultrasonic2;
 		robotState.mRightReadings.add(mUltrasonicRight.getRangeInches());
+
+		if(mUltrasonicRight.getRangeInches() == 0) {
+			System.out.println("RIGHT ULTRASONIC 0");
+		}
+
 //		System.out.println(mUltrasonicRight.getRangeInches());
 		if(robotState.mRightReadings.size() > 10) {
 			robotState.mRightReadings.remove(0);
@@ -398,18 +377,13 @@ class HardwareUpdater {
 		}
 
 		if (leftTotal > Constants.kRequiredUltrasonicCount && rightTotal > Constants.kRequiredUltrasonicCount) {
-			robotState.hasCube = true;
+			robotState.hasCargo = true;
 		}
 		else {
-			robotState.hasCube = false;
+			robotState.hasCargo= false;
 		}
 
-        robotState.cubeDistance = (mUltrasonicRight.getRangeInches() + mUltrasonicLeft.getRangeInches())/2;
-
-//		System.out.println("Left: " + mUltrasonicLeft.getRangeInches());
-//		System.out.println("Right: " + mUltrasonicRight.getRangeInches());
-//		System.out.println(robotState.hasCube);
-
+        robotState.cargoDistance = (mUltrasonicRight.getRangeInches() + mUltrasonicLeft.getRangeInches())/2;
 
 		robotState.drivePose.leftError = Optional.of(leftMasterTalon.getClosedLoopError(0));
 		robotState.drivePose.rightError = Optional.of(rightMasterTalon.getClosedLoopError(0));
@@ -429,13 +403,6 @@ class HardwareUpdater {
 
 		robotState.addObservations(time, odometry, velocity);
 
-//		System.out.println(odometry.getTranslation());
-		//System.out.println("Odometry = " + odometry.getTranslation().getX());
-//		System.out.println("Velocity = " + velocity.dx);
-//		System.out.println("Gyro angle = " + robotState.drivePose.heading);
-//		System.out.println("Latest field to vehicle = " + robotState.getLatestFieldToVehicle().toString());
-//		System.out.println("Encoder estimate = " + left_distance);
-
 		double cv = (robotState.drivePose.leftEncVelocity + robotState.drivePose.rightEncVelocity)/2 * 1/Constants.kDriveSpeedUnitConversion;
 
 
@@ -447,14 +414,14 @@ class HardwareUpdater {
 //        PowerDistributionPanel pdp = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp;
 //        robotState.totalCurrentDraw = pdp.getTotalCurrent() - pdp.getCurrent(Constants.kForsetiCompressorDeviceID); //TODO: Implement this!
 
-		//Update arm sensors
-		robotState.armPosition = HardwareAdapter.getInstance().getArm().armMasterTalon.getSelectedSensorPosition(0);
-		robotState.armVelocity = HardwareAdapter.getInstance().getArm().armMasterTalon.getSelectedSensorVelocity(0);
-		robotState.armAngle = HardwareAdapter.getInstance().getArm().armPot.get(); 
-		StickyFaults armStickyFaults = new StickyFaults();
-		HardwareAdapter.getInstance().getArm().armMasterTalon.clearStickyFaults(0);
-		HardwareAdapter.getInstance().getArm().armMasterTalon.getStickyFaults(armStickyFaults);
-		robotState.hasArmStickyFaults = false;
+		//Update intake sensors
+		robotState.intakeAngle = HardwareAdapter.getInstance().getIntake().masterTalon.getSelectedSensorPosition(0);
+		robotState.intakePosition = robotState.intakeAngle * Constants.kIntakeTicksPerInch;
+		robotState.intakeVelocity = HardwareAdapter.getInstance().getIntake().masterTalon.getSelectedSensorVelocity(0);
+		StickyFaults intakeStickyFaults = new StickyFaults();
+		HardwareAdapter.getInstance().getIntake().masterTalon.clearStickyFaults(0);
+		HardwareAdapter.getInstance().getIntake().masterTalon.getStickyFaults(intakeStickyFaults);
+		robotState.hasIntakeStickyFaults = false;
 	}
 
 	/**
@@ -462,7 +429,6 @@ class HardwareUpdater {
 	 */
 	void updateHardware() {
 		updateDrivetrain();
-		updateArm();
 		updateIntake();
 		updateMiscellaneousHardware();
 	}
@@ -498,30 +464,13 @@ class HardwareUpdater {
     	return !(RobotState.getInstance().gamePeriod == RobotState.GamePeriod.AUTO);
     }
 
-	/**
-	 * Updates the arm
-	 */
-	private void updateArm() {
-
-		if(mArm.getIsAtTop()) {
-			TalonSRXOutput armHoldOutput = new TalonSRXOutput();
-			armHoldOutput.setPercentOutput(Constants.kArmHoldVoltage);
-			updateTalonSRX(HardwareAdapter.getInstance().getArm().armMasterTalon, armHoldOutput);
-		} else {
-			updateTalonSRX(HardwareAdapter.getInstance().getArm().armMasterTalon, mArm.getOutput());
-		}
-
-	}
-
 
 	/**
 	 * Updates the intake
 	 */
 	private void updateIntake() {
-		HardwareAdapter.getInstance().getIntake().masterTalon.set(mIntake.getTalonOutput().getSetpoint());
-		HardwareAdapter.getInstance().getIntake().slaveTalon.set(mIntake.getTalonOutput().getSetpoint());
-		HardwareAdapter.getInstance().getIntake().inOutSolenoid.set(mIntake.getOpenCloseOutput() ? Value.kReverse : Value.kForward);
-		HardwareAdapter.getInstance().getIntake().LED.set(LEDColor.getValue(LEDColor.getColor()));
+		updateTalonSRX(HardwareAdapter.getInstance().getIntake().masterTalon, mIntake.getTalonOutput());
+		HardwareAdapter.getInstance().getIntake().spinVictor.set(mIntake.getVictorOutput());
 	}
 
 	void enableBrakeMode() {

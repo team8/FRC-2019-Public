@@ -3,7 +3,6 @@ package com.palyrobotics.frc2019.behavior;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
@@ -22,11 +21,10 @@ public abstract class Routine {
 	 */
 	protected final Drive drive = Drive.getInstance();
 	protected final Intake intake = Intake.getInstance();
-	protected final Arm arm = Arm.getInstance();
 	protected final RobotState robotState = RobotState.getInstance();
 
 	//Called to start a routine
-	public abstract 								void start();
+	public abstract void start();
 
 	//Update method, returns modified commands
 	public abstract Commands update(Commands commands);

@@ -12,13 +12,13 @@ import java.util.logging.Level;
  * @author Jason
  */
 public class IntakeSensorStopRoutine extends Routine {
-	
+
     private Intake.WheelState wantedWheelState;
 
     //How long the wheels spin for (seconds)
-  	private double mTimeout;
-  	
-  	private long mStartTime;
+    private double mTimeout;
+
+    private long mStartTime;
 
     public IntakeSensorStopRoutine(Intake.WheelState wantedWheelState, double timeout) {
         this.wantedWheelState = wantedWheelState;
@@ -32,40 +32,34 @@ public class IntakeSensorStopRoutine extends Routine {
 
     @Override
     /**
-     * Will only intake until cube is within robot, or expel until cube is fully out. 
+     * Will only intake until cube is within robot, or expel until cube is fully out.
      * Requires tuning to determine thresholds, relationship to max values.
      */
     public Commands update(Commands commands) {
-        if(wantedWheelState == Intake.WheelState.INTAKING) {
-            commands.wantedIntakeOpenCloseState = Intake.OpenCloseState.NEUTRAL;
-        }
         commands.wantedIntakingState = wantedWheelState;
         return commands;
     }
 
     @Override
     public Commands cancel(Commands commands) {
-    	commands.wantedIntakingState = Intake.WheelState.IDLE;
-    	if(wantedWheelState == Intake.WheelState.INTAKING) {
-    	    commands.wantedIntakeOpenCloseState = Intake.OpenCloseState.CLOSED;
-        }
+        commands.wantedIntakingState = Intake.WheelState.IDLE;
         return commands;
     }
 
     @Override
     public boolean finished() {
-    	if(wantedWheelState == Intake.WheelState.INTAKING && robotState.hasCube) {
-    		Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine finishing intake with cube");
-    		return true;
-    	} else if(wantedWheelState == Intake.WheelState.EXPELLING && !robotState.hasCube) {
-    		Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine finishing expel with cube");
-    		return true;
-    	} else if(System.currentTimeMillis() - mStartTime > mTimeout * 1000) {
-    		Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine timeout", System.currentTimeMillis() - mStartTime);
-    		return true;
-    	} else {
+        if(wantedWheelState == Intake.WheelState.INTAKING && robotState.hasCargo) {
+            Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine finishing intake with cube");
+            return true;
+        } else if(wantedWheelState == Intake.WheelState.FAST_EXPELLING && !robotState.hasCargo) {
+            Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine finishing expel with cube");
+            return true;
+        } else if(System.currentTimeMillis() - mStartTime > mTimeout * 1000) {
+            Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine timeout", System.currentTimeMillis() - mStartTime);
+            return true;
+        } else {
             return false;
-    	}
+        }
     }
 
     @Override
@@ -74,8 +68,8 @@ public class IntakeSensorStopRoutine extends Routine {
     }
 
     @Override
-	public String getName() {
+    public String getName() {
         return "IntakeSensorStopRoutine";
-	}
-	
+    }
+
 }
