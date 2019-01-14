@@ -100,7 +100,7 @@ public class OperatorInterface {
 			} else if(mOperatorXboxController.getLeftBumper()) {
 				if (operatorButtonTwoPressable) {
 					ArrayList<Routine> intakeThenUp = new ArrayList<>();
-					intakeThenUp.add(new IntakeSensorStopRoutine(Intake.WheelState.INTAKING, 115.0));
+					intakeThenUp.add(new IntakeSensorStopRoutine(Intake.WheelState.SLOW_INTAKING, 115.0));
 					newCommands.cancelCurrentRoutines = true;
 					newCommands.addWantedRoutine(new SequentialRoutine(intakeThenUp));
 				}
@@ -109,7 +109,7 @@ public class OperatorInterface {
 				newCommands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
 				newCommands.cancelCurrentRoutines = true;
 			} else if(mOperatorXboxController.getLeftTrigger() > 0.0) {
-				newCommands.wantedIntakingState = Intake.WheelState.INTAKING;
+				newCommands.wantedIntakingState = Intake.WheelState.SLOW_INTAKING;
 				newCommands.customIntakeSpeed = true;
 				newCommands.cancelCurrentRoutines = true;
 			} else {
@@ -139,7 +139,7 @@ public class OperatorInterface {
 				newCommands.wantedIntakingState = Intake.WheelState.FAST_EXPELLING;
 				newCommands.cancelCurrentRoutines = true;
 			} else if (mOperatorJoystick.getButtonPressed(9)) {
-				newCommands.wantedIntakingState = Intake.WheelState.INTAKING;
+				newCommands.wantedIntakingState = Intake.WheelState.SLOW_INTAKING;
 				newCommands.cancelCurrentRoutines = true;
 			} else {
 				operatorButtonTwoPressable = true;

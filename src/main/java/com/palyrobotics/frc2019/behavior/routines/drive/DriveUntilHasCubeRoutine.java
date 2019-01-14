@@ -18,15 +18,15 @@ public class DriveUntilHasCubeRoutine extends Routine {
 
     public DriveUntilHasCubeRoutine(DrivePathRoutine drivePathRoutine, double timeout) {
         this.drivePathRoutine = drivePathRoutine;
-        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.INTAKING, 3.0);
-        this.test = new IntakeWheelRoutine(Intake.WheelState.INTAKING, 3.0);
+        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
+        this.test = new IntakeWheelRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
         mTimeout = timeout;
     }
 
     public DriveUntilHasCubeRoutine(DrivePathRoutine drivePathRoutine) {
         this.drivePathRoutine = drivePathRoutine;
-        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.INTAKING, 3.0);
-        this.test = new IntakeWheelRoutine(Intake.WheelState.INTAKING, 3.0);
+        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
+        this.test = new IntakeWheelRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
         mTimeout = 100;
     }
 

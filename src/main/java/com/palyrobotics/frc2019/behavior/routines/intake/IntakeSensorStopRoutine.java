@@ -48,7 +48,7 @@ public class IntakeSensorStopRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        if(wantedWheelState == Intake.WheelState.INTAKING && robotState.hasCargo) {
+        if(wantedWheelState == Intake.WheelState.FAST_INTAKING && robotState.hasCargo) {
             Logger.getInstance().logRobotThread(Level.INFO, "IntakeSensorStopRoutine finishing intake with cube");
             return true;
         } else if(wantedWheelState == Intake.WheelState.FAST_EXPELLING && !robotState.hasCargo) {

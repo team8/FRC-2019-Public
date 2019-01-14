@@ -30,7 +30,7 @@ public class Intake extends Subsystem {
 
 	private Optional<Double> mIntakeWantedPosition = Optional.empty();
 	public enum WheelState {
-		INTAKING, IDLE, SLOW_EXPELLING, FAST_EXPELLING
+		SLOW_INTAKING, FAST_INTAKING, IDLE, SLOW_EXPELLING, FAST_EXPELLING
 	}
 
 	public enum UpDownState {
@@ -64,7 +64,7 @@ public class Intake extends Subsystem {
 		mUpDownState = commands.wantedIntakeUpDownState;
 
 		switch(mWheelState) {
-			case INTAKING:
+			case FAST_INTAKING:
 				if(commands.customIntakeSpeed) {
 					mVictorOutput = robotState.operatorXboxControllerInput.leftTrigger;
 				} else {
