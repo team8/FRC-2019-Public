@@ -1,7 +1,6 @@
 package com.palyrobotics.frc2019.auto.modes.Good;
 
 import com.palyrobotics.frc2019.auto.AutoModeBase;
-import com.palyrobotics.frc2019.auto.modes.RightStartRightFrontCargoShip;
 import com.palyrobotics.frc2019.behavior.ParallelRoutine;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
