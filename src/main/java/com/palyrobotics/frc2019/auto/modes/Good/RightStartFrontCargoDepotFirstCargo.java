@@ -1,4 +1,4 @@
-package com.palyrobotics.frc2019.auto.modes;
+package com.palyrobotics.frc2019.auto.modes.Good;
 
 import com.palyrobotics.frc2019.auto.AutoModeBase;
 import com.palyrobotics.frc2019.auto.modes.RightStartRightFrontCargoShip;
