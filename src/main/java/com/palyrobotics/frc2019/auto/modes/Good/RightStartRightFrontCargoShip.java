@@ -14,12 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RightStartRightFrontCargoShip extends AutoModeBase { //starts at center (lvl 3) - robot will probably start on lvl 2
-//    public static int SPEED = 100;
-//    public static double kCSX = 220.25;
-//    public static double kRightCSY = -21.75;
-//    public static double kLSX = 0;
-//    public static double kLSY = -135; //not completely accurate
-//    public static double kHabLineX = 95.28;
 
     public static int SPEED = 60;
     public static double kOffsetY = Constants.kLevel3Width * .5 + Constants.kLevel2Width * .5;
