@@ -125,6 +125,8 @@ public class Constants {
 	public static final double kIntakingMotorVelocity = .4;
 	public static final double kIntakeSlowExpellingVelocity = 0;
 	public static final double kIntakeFastExpellingVelocity = 0;
+	public static final double kIntakeSlowIntakingVelocity = 0;
+	public static final double kIntakeFastIntakingVelocity = 0;
 	public static final int kIntakeVictorID = 0;
 	public static final int kIntakeMasterDeviceID = 0;
 	public static final int kIntakeSlaveDeviceID = 0;

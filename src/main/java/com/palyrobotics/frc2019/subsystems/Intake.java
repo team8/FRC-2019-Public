@@ -28,13 +28,25 @@ public class Intake extends Subsystem {
 	private TalonSRXOutput mTalonOutput = new TalonSRXOutput();
 	private double mVictorOutput;
 
+	private boolean movingDown = false;
+	private double arb_ff = 0;
+
 	private Optional<Double> mIntakeWantedPosition = Optional.empty();
 	public enum WheelState {
-		SLOW_INTAKING, FAST_INTAKING, IDLE, SLOW_EXPELLING, FAST_EXPELLING
+		SLOW_INTAKING,
+		FAST_INTAKING,
+		IDLE,
+		SLOW_EXPELLING,
+		FAST_EXPELLING
 	}
 
 	public enum UpDownState {
-		HOLD, UP, DOWN, MANUAL_POSITIONING, CUSTOM_POSITIONING
+		HOLD, //Keeping arm position fixed
+		UP,
+		CLIMBING,
+		MANUAL_POSITIONING, //Moving elevator with joystick
+		CUSTOM_POSITIONING, //Moving elevator with a control loop
+		IDLE
 	}
 
 	private WheelState mWheelState = WheelState.IDLE;
@@ -62,13 +74,20 @@ public class Intake extends Subsystem {
 	public void update(Commands commands, RobotState robotState) {
 		mWheelState = commands.wantedIntakingState;
 		mUpDownState = commands.wantedIntakeUpDownState;
+		arb_ff = Constants.kIntakeArbitraryFeedForward * Math.cos(robotState.intakePosition);
 
 		switch(mWheelState) {
+			case SLOW_INTAKING:
+				if(commands.customIntakeSpeed) {
+					mVictorOutput = robotState.operatorXboxControllerInput.leftTrigger;
+				} else {
+					mVictorOutput = Constants.kIntakeSlowIntakingVelocity;
+				}
 			case FAST_INTAKING:
 				if(commands.customIntakeSpeed) {
 					mVictorOutput = robotState.operatorXboxControllerInput.leftTrigger;
 				} else {
-					mVictorOutput = Constants.kIntakingMotorVelocity;
+					mVictorOutput = Constants.kIntakeFastIntakingVelocity;
 				}
 				break;
 			case IDLE:
@@ -87,21 +106,41 @@ public class Intake extends Subsystem {
 				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeHold);
 				break;
 			case UP:
-				double arbitrary_feed_forward = Constants.kIntakeArbitraryFeedForward * robotState.intakePosition;
-				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeUp, arbitrary_feed_forward);
+				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeUp, -arb_ff);
 				break;
-			case DOWN:
-				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeDown);
+			case CLIMBING:
+				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeClimbing, arb_ff);
+				//subtract component of gravity
 				break;
 			case MANUAL_POSITIONING:
 				mTalonOutput.setPercentOutput(0); //TODO: Fix this based on what control wanted
 				break;
 			case CUSTOM_POSITIONING:
-				mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakePosition);
+				if(!mIntakeWantedPosition.equals(Optional.of(commands.robotSetpoints.intakePositionSetpoint.get() * Constants.kIntakeTicksPerInch))) {
+					mIntakeWantedPosition = Optional.of(commands.robotSetpoints.intakePositionSetpoint.get() * Constants.kIntakeTicksPerInch);
+					if(mIntakeWantedPosition.get() >= robotState.intakePosition) {
+						movingDown = false;
+					} else {
+						movingDown = true;
+					}
+				}
+
+				if (movingDown) {
+					mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakeDownwards, arb_ff);
+				} else {
+					mTalonOutput.setPosition(mIntakeWantedPosition.get(), Gains.intakePosition, -arb_ff);
+				}
+				break;
+			case IDLE:
+				if(mIntakeWantedPosition.isPresent()) {
+					mIntakeWantedPosition = Optional.empty();
+				}
+				mTalonOutput.setPercentOutput(0.0);
 				break;
 		}
 
 	}
+
 
 	public WheelState getWheelState() {
 		return mWheelState;

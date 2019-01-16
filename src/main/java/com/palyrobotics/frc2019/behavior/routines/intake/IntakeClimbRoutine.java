@@ -15,7 +15,7 @@ public class IntakeClimbRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-        commands.wantedIntakeUpDownState = Intake.UpDownState.DOWN;
+        commands.wantedIntakeUpDownState = Intake.UpDownState.CLIMBING;
         alreadyRan = true;
         return commands;
     }

@@ -92,14 +92,23 @@ public class Gains {
 	public static final Gains intakeUp = new Gains(kIntakeUpkP, kIntakeUpkI, kIntakeUpkD, kIntakeUpkF,
 			kIntakeUpkIzone, kIntakeUpkRampRate);
 
-	public static final double kIntakeDownkP = 0.0;
-	public static final double kIntakeDownkI = 0.0;
-	public static final double kIntakeDownkD = 0.0;
-	public static final double kIntakeDownkF = 0.0;
-	public static final int kIntakeDownkIzone = 0;
-	public static final double kIntakeDownkRampRate = 0.0;
-	public static final Gains intakeDown = new Gains(kIntakeDownkP, kIntakeDownkI, kIntakeDownkD, kIntakeDownkF,
-			kIntakeDownkIzone, kIntakeDownkRampRate);
+	public static final double kIntakeDownwardskP = 0.0;
+	public static final double kIntakeDownwardskI = 0.0;
+	public static final double kIntakeDownwardskD = 0.0;
+	public static final double kIntakeDownwardskF = 0.0;
+	public static final int kIntakeDownwardskIzone = 0;
+	public static final double kIntakeDownwardskRampRate = 0.0;
+	public static final Gains intakeDownwards = new Gains(kIntakeDownwardskP, kIntakeDownwardskI, kIntakeDownwardskD, kIntakeDownwardskF,
+			kIntakeDownwardskIzone, kIntakeDownwardskRampRate);
+
+	public static final double kIntakeClimbingkP = 0.0;
+	public static final double kIntakeClimbingkI = 0.0;
+	public static final double kIntakeClimbingkD = 0.0;
+	public static final double kIntakeClimbingkF = 0.0;
+	public static final int kIntakeClimbingkIzone = 0;
+	public static final double kIntakeClimbingkRampRate = 0.0;
+	public static final Gains intakeClimbing = new Gains(kIntakeClimbingkP, kIntakeClimbingkI, kIntakeClimbingkD, kIntakeClimbingkF,
+			kIntakeClimbingkIzone, kIntakeClimbingkRampRate);
 
 	public static final double kIntakeHoldkP = 0.0;
 	public static final double kIntakeHoldkI = 0.0;

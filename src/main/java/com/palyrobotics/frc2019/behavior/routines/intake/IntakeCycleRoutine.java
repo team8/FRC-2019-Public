@@ -22,7 +22,7 @@ public class IntakeCycleRoutine extends Routine {
         if(robotState.hasCargo) {
             commands.wantedIntakeUpDownState = Intake.UpDownState.UP;
         }
-        if(commands.wantedIntakeUpDownState == Intake.UpDownState.UP) {
+        if(intake.getUpDownState() == Intake.UpDownState.UP) {
             commands.wantedIntakingState = Intake.WheelState.SLOW_INTAKING;
             alreadyRan = true;
         }
@@ -46,6 +46,6 @@ public class IntakeCycleRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "IntakeUpRoutine";
+        return "IntakeCycleRoutine";
     }
 }

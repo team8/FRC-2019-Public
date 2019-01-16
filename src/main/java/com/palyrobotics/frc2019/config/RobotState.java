@@ -47,7 +47,7 @@ public class RobotState {
 	public double cargoDistance = 0;
 	public double intakeAngle = 0; //ticks
 	public double intakePosition = 0;  // Angle in degrees
-	public double intakeVelocity = 0;
+	public double intakeVelocity = 0; //rpm
 	public boolean hasIntakeStickyFaults = false;
 	public ArrayList<Double> mLeftReadings = new ArrayList<>();
 	public ArrayList<Double> mRightReadings = new ArrayList<>();
