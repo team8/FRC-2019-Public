@@ -7,7 +7,7 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
-public class DriveUntilHasCubeRoutine extends Routine {
+public class DriveUntilHasCargoRoutine extends Routine {
 
     private DrivePathRoutine drivePathRoutine;
     private IntakeSensorStopRoutine intakeRoutine;
@@ -16,17 +16,17 @@ public class DriveUntilHasCubeRoutine extends Routine {
 
     private long mStartTime = -1;
 
-    public DriveUntilHasCubeRoutine(DrivePathRoutine drivePathRoutine, double timeout) {
+    public DriveUntilHasCargoRoutine(DrivePathRoutine drivePathRoutine, double timeout) {
         this.drivePathRoutine = drivePathRoutine;
-        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
-        this.test = new IntakeWheelRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
+        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.INTAKING, 3.0);
+        this.test = new IntakeWheelRoutine(Intake.WheelState.INTAKING, 3.0);
         mTimeout = timeout;
     }
 
-    public DriveUntilHasCubeRoutine(DrivePathRoutine drivePathRoutine) {
+    public DriveUntilHasCargoRoutine(DrivePathRoutine drivePathRoutine) {
         this.drivePathRoutine = drivePathRoutine;
-        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
-        this.test = new IntakeWheelRoutine(Intake.WheelState.SLOW_INTAKING, 3.0);
+        this.intakeRoutine = new IntakeSensorStopRoutine(Intake.WheelState.INTAKING, 3.0);
+        this.test = new IntakeWheelRoutine(Intake.WheelState.INTAKING, 3.0);
         mTimeout = 100;
     }
 

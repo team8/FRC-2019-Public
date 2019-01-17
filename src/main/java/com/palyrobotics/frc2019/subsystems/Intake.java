@@ -33,8 +33,7 @@ public class Intake extends Subsystem {
 
 	private Optional<Double> mIntakeWantedPosition = Optional.empty();
 	public enum WheelState {
-		SLOW_INTAKING,
-		FAST_INTAKING,
+		INTAKING,
 		IDLE,
 		SLOW_EXPELLING,
 		FAST_EXPELLING
@@ -77,19 +76,12 @@ public class Intake extends Subsystem {
 		arb_ff = Constants.kIntakeArbitraryFeedForward * Math.cos(robotState.intakePosition);
 
 		switch(mWheelState) {
-			case SLOW_INTAKING:
+			case INTAKING:
 				if(commands.customIntakeSpeed) {
 					mVictorOutput = robotState.operatorXboxControllerInput.leftTrigger;
 				} else {
 					mVictorOutput = Constants.kIntakeSlowIntakingVelocity;
 				}
-			case FAST_INTAKING:
-				if(commands.customIntakeSpeed) {
-					mVictorOutput = robotState.operatorXboxControllerInput.leftTrigger;
-				} else {
-					mVictorOutput = Constants.kIntakeFastIntakingVelocity;
-				}
-				break;
 			case IDLE:
 				mVictorOutput = 0;
 				break;
@@ -113,7 +105,7 @@ public class Intake extends Subsystem {
 				//subtract component of gravity
 				break;
 			case MANUAL_POSITIONING:
-				mTalonOutput.setPercentOutput(0); //TODO: Fix this based on what control wanted
+				mTalonOutput.setPercentOutput(0); //TODO: Fix this based on what control method wanted
 				break;
 			case CUSTOM_POSITIONING:
 				if(!mIntakeWantedPosition.equals(Optional.of(commands.robotSetpoints.intakePositionSetpoint.get() * Constants.kIntakeTicksPerInch))) {

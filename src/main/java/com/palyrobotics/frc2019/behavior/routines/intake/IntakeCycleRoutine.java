@@ -17,13 +17,13 @@ public class IntakeCycleRoutine extends Routine {
     public Commands update(Commands commands) {
         if (!robotState.hasCargo) {
             commands.wantedIntakeUpDownState = Intake.UpDownState.HOLD;
-            commands.wantedIntakingState = Intake.WheelState.SLOW_INTAKING;
-        }
-        if(robotState.hasCargo) {
+            commands.wantedIntakingState = Intake.WheelState.INTAKING;
+        } else {
             commands.wantedIntakeUpDownState = Intake.UpDownState.UP;
         }
+
         if(intake.getUpDownState() == Intake.UpDownState.UP) {
-            commands.wantedIntakingState = Intake.WheelState.SLOW_INTAKING;
+            commands.wantedIntakingState = Intake.WheelState.INTAKING;
             alreadyRan = true;
         }
         return commands;

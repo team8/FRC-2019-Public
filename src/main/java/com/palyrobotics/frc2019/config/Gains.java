@@ -83,6 +83,7 @@ public class Gains {
 	public static final double kForsetiCascadingTurnIzone = 7.0;
 
 	//Intake Constants
+	//TODO: Find and tune gains
 	public static final double kIntakeUpkP = 0.0;
 	public static final double kIntakeUpkI = 0.0;
 	public static final double kIntakeUpkD = 0.0;
