@@ -114,6 +114,7 @@ public class Constants {
 	 */
 	public static final double kDriveTicksPerInch = 4096 / (6.25 * Math.PI);
     public static final double kElevatorTicksPerInch = 0;
+    public static final double kClimberTicksPerInch = 0;
 	public static final double kDriveInchesPerDegree = 0.99 * 21.5 / 90;
 	public static final double kDriveSpeedUnitConversion = 4096 / (6.25 * Math.PI * 10);
 
@@ -138,6 +139,9 @@ public class Constants {
 
     public static final double kElevatorAcceptablePositionError = 40;
     public static final double kElevatorAcceptableVelocityError = 0.01;
+
+    public static final double kClimberAcceptablePositionError = 0;
+    public static final double kClimberAcceptableVelocityError = 0;
 
 	public static final double kArmAcceptableVelocityError = 0;
 	public static final double kArmAcceptableEncoderError = 0;
@@ -215,12 +219,12 @@ public class Constants {
 	public static final int kVidarRightDriveSlave2DeviceID = 13;
 
 	//ELEVATOR
-    public static final int kForsetiElevatorMasterTalonID = 0;
-    public static final int kForsetiElevatorSlaveTalonID = 0;
-    public static final int kForsetiElevatorHFXID = 0;
+    public static final int kVidarElevatorMasterTalonID = 0;
+    public static final int kVidarElevatorSlaveTalonID = 0;
+    public static final int kVidarElevatorDoubleSolenoidForwardsID = 0;
+    public static final int kVidarElevatorDoubleSolenoidReverseID = 0;
 
-
-	//ARM
+    //ARM
 	public static final int kForesetiArmMasterTalonID = 12;
 	public static final int kVidarArmSlaveVictorID = 11;
 	public static final int kVidarArmPotID = 0;
