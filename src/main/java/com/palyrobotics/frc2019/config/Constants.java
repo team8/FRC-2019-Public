@@ -208,8 +208,8 @@ public class Constants {
 	public static final int kVidarIntakeSlaveDeviceID = 4;
 
 	//SHOOTER
-	public static final int kShooterMasterDeviceID = 0;
-	public static final int kShooterSlaveDeviceID = 1;
+	public static final int kVidarShooterMasterVictorDeviceID = 0;
+	public static final int kVidarShooterSlaveVictorDeviceID = 1;
 
 	//PCM 0
 	public static final int kVidarIntakeUpDownSolenoidForwardID = 2;
