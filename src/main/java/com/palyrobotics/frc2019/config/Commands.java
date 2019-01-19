@@ -89,6 +89,7 @@ public class Commands {
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.wantedIntakingState = this.wantedIntakingState;
 		copy.wantedIntakeOpenCloseState = this.wantedIntakeOpenCloseState;
+		copy.wantedFingersState = this.wantedFingersState;
 		copy.disableArmScaling = this.disableArmScaling;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.customShooterSpeed = this.customShooterSpeed;

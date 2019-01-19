@@ -2,6 +2,7 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Fingers extends Subsystem {
     public static Fingers instance = new Fingers();
@@ -10,7 +11,8 @@ public class Fingers extends Subsystem {
 
     public static void resetInstance() {instance = new Fingers(); }
 
-    private boolean inOut = false;
+    private DoubleSolenoid.Value mOpenCloseValue = DoubleSolenoid.Value.kForward;
+    private DoubleSolenoid.Value mExpelValue = DoubleSolenoid.Value.kReverse;
 
 
     /**
@@ -20,32 +22,56 @@ public class Fingers extends Subsystem {
         OPEN, CLOSE
     }
 
-    private FingersState mState = FingersState.CLOSE;
+    private FingersState mOpenCloseState = FingersState.CLOSE;
+    private FingersState mExpelState = FingersState.CLOSE;
 
     protected Fingers() { super("Fingers"); }
 
     @Override
-    public void start() { mState = FingersState.CLOSE; }
+    public void start() {
+        mOpenCloseState = FingersState.CLOSE;
+        mExpelState = FingersState.CLOSE;
+    }
 
     @Override
-    public void stop() { mState = FingersState.CLOSE; }
+    public void stop() {
+        mOpenCloseState = FingersState.CLOSE;
+        mExpelState = FingersState.CLOSE;
+    }
 
     @Override
     public void update(Commands commands, RobotState robotState) {
-        mState = commands.wantedFingersState;
+        mOpenCloseState = commands.wantedFingersState;
 
-        switch(mState) {
+        switch(mOpenCloseState) {
             case OPEN:
-                inOut = true;
+                mOpenCloseValue = DoubleSolenoid.Value.kForward;
                 break;
             case CLOSE:
-                inOut = false;
+                mOpenCloseValue = DoubleSolenoid.Value.kReverse;
+                break;
+        }
+
+        switch(mExpelState) {
+            case OPEN:
+                mExpelValue = DoubleSolenoid.Value.kForward;
+                break;
+            case CLOSE:
+                mExpelValue = DoubleSolenoid.Value.kReverse;
                 break;
         }
     }
 
-    public boolean getOpenCloseOutput() { return inOut; }
+    public DoubleSolenoid.Value getOpenCloseOutput() {
+        return mOpenCloseValue;
+    }
+
+    public DoubleSolenoid.Value getExpelOutput() {
+        return mExpelValue;
+    }
 
     @Override
-    public String getStatus() { return "Fingers State: " + mState; }
+    public String getStatus() {
+        return "Fingers State: " + mOpenCloseState + "\nExpel State: " + mExpelState;
+    }
 }

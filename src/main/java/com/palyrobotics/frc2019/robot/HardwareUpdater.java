@@ -89,7 +89,6 @@ class HardwareUpdater {
 		configureArmHardware();
 		configureIntakeHardware();
 		configureShooterHardware();
-		configureFingerHardware();
 	}
 
 	void configureDriveHardware() {
@@ -300,9 +299,6 @@ class HardwareUpdater {
 		masterTalon.configReverseSoftLimitEnable(false, 0);
 		slaveTalon.configForwardSoftLimitEnable(false, 0);
 		slaveTalon.configReverseSoftLimitEnable(false, 0);
-	}
-
-	void configureFingerHardware() { // only has doublesolenoid
 	}
 
 	/**
@@ -562,8 +558,14 @@ class HardwareUpdater {
 		HardwareAdapter.getInstance().getIntake().LED.set(LEDColor.getValue(LEDColor.getColor()));
 	}
 
+	/**
+	 * Updates fingers
+	 */
 	private void updateFingers() {
-		HardwareAdapter.getInstance().getFingers().openCloseSolenoid.set(mFingers.getOpenCloseOutput() ? Value.kForward : Value.kReverse);
+		HardwareAdapter.getInstance().getFingers().openCloseSolenoid.set(mFingers.getOpenCloseOutput());
+		HardwareAdapter.getInstance().getFingers().expelSolenoid1.set(mFingers.getExpelOutput());
+		HardwareAdapter.getInstance().getFingers().expelSolenoid2.set(mFingers.getExpelOutput());
+		HardwareAdapter.getInstance().getFingers().expelSolenoid3.set(mFingers.getExpelOutput());
 	}
 
 	void enableBrakeMode() {

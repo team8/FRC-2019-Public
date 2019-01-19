@@ -129,9 +129,15 @@ public class HardwareAdapter {
 		public static FingersHardware getInstance() { return instance; }
 
 		public final DoubleSolenoid openCloseSolenoid;
+		public final DoubleSolenoid expelSolenoid1;
+		public final DoubleSolenoid expelSolenoid2;
+		public final DoubleSolenoid expelSolenoid3;
 
 		protected FingersHardware() {
-			openCloseSolenoid = new DoubleSolenoid(0,0,0);
+			openCloseSolenoid = new DoubleSolenoid(Constants.kVidarOpenCloseSolenoidForwardID, Constants.kVidarOpenCloseSolenoidReverseID);
+			expelSolenoid1 = new DoubleSolenoid(Constants.kVidarExpelSolenoid1ForwardID, Constants.kVidarExpelSolenoid1ReverseID);
+			expelSolenoid2 = new DoubleSolenoid(Constants.kVidarExpelSolenoid2ForwardID, Constants.kVidarExpelSolenoid2ReverseID);
+			expelSolenoid3 = new DoubleSolenoid(Constants.kVidarExpelSolenoid3ForwardID, Constants.kVidarExpelSolenoid3ReverseID);
 		}
 	}
 
