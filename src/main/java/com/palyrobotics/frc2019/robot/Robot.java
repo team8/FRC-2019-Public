@@ -51,6 +51,12 @@ public class Robot extends TimedRobot {
 	// Started boolean for if auto has been started.
 	private boolean mAutoStarted = false;
 
+	//Boolean for if started teleop in auto
+	private boolean mAutoCancel = false;
+
+	//Boolean to check if teleop init ran in auto
+	private boolean mAutoTeleopInit = false;
+
 	private CSVWriter mWriter = CSVWriter.getInstance();
 
 	private int disabledCycles;
@@ -120,7 +126,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		//if(!this.mAutoStarted) {
-		if(AutoFMS.isFMSDataAvailable() && !this.mAutoStarted) {
+		if(AutoFMS.isFMSDataAvailable() && !this.mAutoStarted && !this.mAutoCancel) {
 			//Get the selected auto mode
 			AutoModeBase mode = AutoModeSelector.getInstance().getAutoMode();
 
@@ -130,7 +136,7 @@ public class Robot extends TimedRobot {
 
 			this.mAutoStarted = true;
 		}
-		if(this.mAutoStarted) {
+		if(this.mAutoStarted && !this.mAutoCancel) {
 			commands = mRoutineManager.update(commands);
 			mHardwareUpdater.updateState(robotState);
 			updateSubsystems();
@@ -139,28 +145,43 @@ public class Robot extends TimedRobot {
 //		System.out.println(mRoutineManager.getCurrentRoutines().contains(new DriveSensorResetRoutine(1.0)));
 //		System.out.println("Position: " + Robot.getRobotState().getLatestFieldToVehicle().getValue());
 		logPeriodic();
+
+		if(robotState.operatorJoystickInput.getButtonPressed(1)) {
+			this.mAutoCancel = true;
+		}
+		if(mAutoCancel) {
+			this.mAutoTeleopInit = true;
+			if (mAutoTeleopInit) {
+				teleopInit();
+				this.mAutoTeleopInit = false;
+			}
+			teleopPeriodic();
+		}
+
 	}
 
 	@Override
 	public void teleopInit() {
-		Logger.getInstance().start();
-		Logger.getInstance().logRobotThread(Level.INFO, "Start teleopInit()");
-		robotState.gamePeriod = RobotState.GamePeriod.TELEOP;
-		robotState.reset(0.0, new RigidTransform2d());
-		mHardwareUpdater.updateState(robotState);
-		mHardwareUpdater.updateHardware();
-		mRoutineManager.reset(commands);
-		DashboardManager.getInstance().toggleCANTable(true);
-		commands.wantedDriveState = Drive.DriveState.CHEZY; //switch to chezy after auto ends
-		commands = operatorInterface.updateCommands(commands);
-		mWriter.cleanFile();
-//		commands.wantedIntakeUpDownState = Intake.UpDownState.DOWN;
-		startSubsystems();
-		mHardwareUpdater.enableBrakeMode();
-		robotState.reset(0, new RigidTransform2d());
-		robotState.matchStartTime = System.currentTimeMillis();
+		if(!this.mAutoTeleopInit) {
+			Logger.getInstance().start();
+			Logger.getInstance().logRobotThread(Level.INFO, "Start teleopInit()");
+			robotState.gamePeriod = RobotState.GamePeriod.TELEOP;
+			robotState.reset(0.0, new RigidTransform2d());
+			mHardwareUpdater.updateState(robotState);
+			mHardwareUpdater.updateHardware();
+			mRoutineManager.reset(commands);
+			DashboardManager.getInstance().toggleCANTable(true);
+			commands.wantedDriveState = Drive.DriveState.CHEZY; //switch to chezy after auto ends
+			commands = operatorInterface.updateCommands(commands);
+			mWriter.cleanFile();
+			//		commands.wantedIntakeUpDownState = Intake.UpDownState.DOWN;
+			startSubsystems();
+			mHardwareUpdater.enableBrakeMode();
+			robotState.reset(0, new RigidTransform2d());
+			robotState.matchStartTime = System.currentTimeMillis();
 
-		Logger.getInstance().logRobotThread(Level.INFO, "End teleopInit()");
+			Logger.getInstance().logRobotThread(Level.INFO, "End teleopInit()");
+		}
 	}
 
 	@Override
