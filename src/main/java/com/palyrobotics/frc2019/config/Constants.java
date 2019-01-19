@@ -211,6 +211,10 @@ public class Constants {
 	public static final int kShooterMasterDeviceID = 0;
 	public static final int kShooterSlaveDeviceID = 1;
 
+	//FINGERS
+	public static final int kOpenCloseSolenoidA = 0;
+	public static final int kOpenCloseSolenoidB = 1;
+
 	//PCM 0
 	public static final int kVidarIntakeUpDownSolenoidForwardID = 2;
 	public static final int kVidarIntakeUpDownSolenoidReverseID = 5;

@@ -123,6 +123,18 @@ public class HardwareAdapter {
 		}
 	}
 
+	public static class FingersHardware{
+		private static FingersHardware instance = new FingersHardware();
+
+		public static FingersHardware getInstance() { return instance; }
+
+		public final DoubleSolenoid openCloseSolenoid;
+
+		protected FingersHardware() {
+			openCloseSolenoid = new DoubleSolenoid(0,0,0);
+		}
+	}
+
 	//Joysticks for operator interface
 	public static class Joysticks {
 		private static Joysticks instance = new Joysticks();
@@ -181,6 +193,8 @@ public class HardwareAdapter {
 	}
 
 	public ShooterHardware getShooter() { return ShooterHardware.getInstance(); }
+
+	public FingersHardware getFingers() { return FingersHardware.getInstance(); }
 
 	public Joysticks getJoysticks() {
 		return Joysticks.getInstance();
