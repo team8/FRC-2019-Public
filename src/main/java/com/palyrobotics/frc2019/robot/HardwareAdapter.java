@@ -1,6 +1,5 @@
 package com.palyrobotics.frc2019.robot;
 
-import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -123,6 +122,20 @@ public class HardwareAdapter {
 		}
 	}
 
+	public static class FingersHardware{
+		private static FingersHardware instance = new FingersHardware();
+
+		public static FingersHardware getInstance() { return instance; }
+
+		public final DoubleSolenoid openCloseSolenoid;
+		public final DoubleSolenoid expelSolenoid;
+
+		protected FingersHardware() {
+			openCloseSolenoid = new DoubleSolenoid(Constants.kVidarOpenCloseSolenoidForwardID, Constants.kVidarOpenCloseSolenoidReverseID);
+			expelSolenoid = new DoubleSolenoid(Constants.kVidarExpelSolenoidForwardID, Constants.kVidarExpelSolenoidReverseID);
+		}
+	}
+
 	//Joysticks for operator interface
 	public static class Joysticks {
 		private static Joysticks instance = new Joysticks();
@@ -181,6 +194,8 @@ public class HardwareAdapter {
 	}
 
 	public ShooterHardware getShooter() { return ShooterHardware.getInstance(); }
+
+	public FingersHardware getFingers() { return FingersHardware.getInstance(); }
 
 	public Joysticks getJoysticks() {
 		return Joysticks.getInstance();

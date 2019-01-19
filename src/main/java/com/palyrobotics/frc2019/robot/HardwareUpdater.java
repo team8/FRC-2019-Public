@@ -6,11 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.subsystems.Arm;
-import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.Intake;
-import com.palyrobotics.frc2019.subsystems.Shooter;
-import com.palyrobotics.frc2019.util.ClimberSignal;
+import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.TalonSRXOutput;
 import com.palyrobotics.frc2019.util.logger.Logger;
@@ -18,12 +14,11 @@ import com.palyrobotics.frc2019.util.trajectory.Kinematics;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.util.trajectory.Rotation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
-import java.util.*;
+import java.util.Optional;
 import java.util.logging.Level;
 
 /**
@@ -37,6 +32,7 @@ class HardwareUpdater {
 	private Arm mArm;
 	private Intake mIntake;
 	private Shooter mShooter;
+	private Fingers mFingers;
 
 	private double lastVelocity = 0;
 	private double maxA = 0;
@@ -45,11 +41,12 @@ class HardwareUpdater {
 	/**
 	 * Hardware Updater for Vidar
 	 */
-	protected HardwareUpdater(Drive drive, Arm arm, Intake intake, Shooter shooter) {
+	protected HardwareUpdater(Drive drive, Arm arm, Intake intake, Shooter shooter, Fingers fingers) {
 		this.mDrive = drive;
 		this.mArm = arm;
 		this.mIntake = intake;
 		this.mShooter = shooter;
+		this.mFingers = fingers;
 	}
 
 	/**
@@ -210,7 +207,6 @@ class HardwareUpdater {
 		slaveVictor.configVoltageCompSaturation(14, 0);
 
 		masterTalon.configReverseLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
-//		masterTalon.configForwardLimitSwitchSource(RemoteLimitSwitchSource.RemoteTalonSRX, LimitSwitchNormal.NormallyOpen, HardwareAdapter.getInstance().getDrivetrain().rightMasterTalon.getDeviceID(), 0);
 
 		masterTalon.overrideLimitSwitchesEnable(true);
 		slaveVictor.overrideLimitSwitchesEnable(true);
@@ -458,20 +454,7 @@ class HardwareUpdater {
 
 		robotState.addObservations(time, odometry, velocity);
 
-//		System.out.println(odometry.getTranslation());
-		//System.out.println("Odometry = " + odometry.getTranslation().getX());
-//		System.out.println("Velocity = " + velocity.dx);
-//		System.out.println("Gyro angle = " + robotState.drivePose.heading);
-//		System.out.println("Latest field to vehicle = " + robotState.getLatestFieldToVehicle().toString());
-//		System.out.println("Encoder estimate = " + left_distance);
-
 		double cv = (robotState.drivePose.leftEncVelocity + robotState.drivePose.rightEncVelocity)/2 * 1/Constants.kDriveSpeedUnitConversion;
-
-
-
-//        //Update compressor pressure
-//        robotState.compressorPressure = HardwareAdapter.getInstance().getMiscellaneousHardware().compressorSensor.getVoltage() * Constants.kVidarCompressorVoltageToPSI; //TODO: Implement the constant!
-//
 
         PowerDistributionPanel pdp = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp;
         robotState.shovelCurrentDraw = pdp.getTotalCurrent() - pdp.getCurrent(Constants.kShovelID);
@@ -498,6 +481,7 @@ class HardwareUpdater {
 		updateDrivetrain();
 		updateArm();
 		updateIntake();
+		updateFingers();
 		updateMiscellaneousHardware();
 	}
 
@@ -556,6 +540,14 @@ class HardwareUpdater {
 		HardwareAdapter.getInstance().getIntake().slaveTalon.set(mIntake.getTalonOutput().getSetpoint());
 		HardwareAdapter.getInstance().getIntake().inOutSolenoid.set(mIntake.getOpenCloseOutput() ? Value.kReverse : Value.kForward);
 		HardwareAdapter.getInstance().getIntake().LED.set(LEDColor.getValue(LEDColor.getColor()));
+	}
+
+	/**
+	 * Updates fingers
+	 */
+	private void updateFingers() {
+		HardwareAdapter.getInstance().getFingers().openCloseSolenoid.set(mFingers.getOpenCloseOutput());
+		HardwareAdapter.getInstance().getFingers().expelSolenoid.set(mFingers.getExpelOutput());
 	}
 
 	void enableBrakeMode() {
