@@ -13,7 +13,6 @@ import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
 import com.palyrobotics.frc2019.subsystems.Arm;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Elevator;
-import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -44,11 +43,10 @@ public class Robot extends TimedRobot {
 	//Subsystem controllers
 	private Drive mDrive = Drive.getInstance();
 	private Elevator mElevator = Elevator.getInstance();
-	private Intake mIntake = Intake.getInstance();
 	private Arm mArm = Arm.getInstance();
 	private Shooter mShooter = Shooter.getInstance();
 	//Hardware Updater
-	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mArm, mIntake, mElevator, mShooter);
+	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mArm, mElevator, mShooter);
 
 	// Started boolean for if auto has been started.
 	private boolean mAutoStarted = false;
@@ -250,7 +248,6 @@ public class Robot extends TimedRobot {
 		mElevator.start();
 		mArm.start();
 		mShooter.start();
-		mIntake.start();
 	}
 
 	private void updateSubsystems() {
@@ -258,7 +255,6 @@ public class Robot extends TimedRobot {
 		mElevator.update(commands, robotState);
 		mArm.update(commands, robotState);
 		mShooter.update(commands, robotState);
-		mIntake.update(commands, robotState);
 	}
 
 	private void stopSubsystems() {
@@ -266,6 +262,5 @@ public class Robot extends TimedRobot {
 		mElevator.stop();
 		mArm.stop();
 		mShooter.stop();
-		mIntake.stop();
 	}
 }
