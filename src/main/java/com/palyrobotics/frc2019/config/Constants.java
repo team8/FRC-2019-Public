@@ -219,8 +219,8 @@ public class Constants {
 	public static final int kVidarRightDriveSlave2DeviceID = 13;
 
 	//ELEVATOR
-    public static final int kVidarElevatorMasterTalonID = 0;
-    public static final int kVidarElevatorSlaveTalonID = 0;
+    public static final int kVidarElevatorMasterSparkID = 0;
+    public static final int kVidarElevatorSlaveSparkID = 0;
     public static final int kVidarElevatorDoubleSolenoidForwardsID = 0;
     public static final int kVidarElevatorDoubleSolenoidReverseID = 0;
 
