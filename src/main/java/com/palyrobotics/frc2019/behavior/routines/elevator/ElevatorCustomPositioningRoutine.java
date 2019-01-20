@@ -38,7 +38,7 @@ public class ElevatorCustomPositioningRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-        if(!mPath.isPresent() || mRoutineStartWayPoint.isPresent() && mPath.get().getMarkersCrossed().contains(mRoutineStartWayPoint.get())) {
+        if(!mPath.isPresent() || (mRoutineStartWayPoint.isPresent() && mPath.get().getMarkersCrossed().contains(mRoutineStartWayPoint.get()))) {
             if(mStartTime == -1) mStartTime = System.currentTimeMillis();
             commands.wantedGearboxState = Elevator.GearboxState.ELEVATOR;
             commands.wantedElevatorState = Elevator.ElevatorState.CUSTOM_POSITIONING;
