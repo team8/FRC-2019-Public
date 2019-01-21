@@ -35,6 +35,7 @@ public class Commands {
 
 	//Store WantedStates for each subsystem state machine
 	public Drive.DriveState wantedDriveState = Drive.DriveState.NEUTRAL;
+	public boolean holdHeading = false;
 	public Arm.ArmState wantedArmState = Arm.ArmState.IDLE;
 	public Shooter.ShooterState wantedShooterState = Shooter.ShooterState.IDLE;
 	public boolean disableArmScaling = true;
@@ -92,6 +93,7 @@ public class Commands {
 	public Commands copy() {
 		Commands copy = new Commands();
 		copy.wantedDriveState = this.wantedDriveState;
+		copy.holdHeading = this.holdHeading;
 		copy.wantedArmState = this.wantedArmState;
 		copy.wantedShooterState = this.wantedShooterState;
 		copy.wantedElevatorState = this.wantedElevatorState;
