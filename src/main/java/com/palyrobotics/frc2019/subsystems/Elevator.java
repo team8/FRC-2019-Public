@@ -1,6 +1,7 @@
 package com.palyrobotics.frc2019.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.Gains;
@@ -114,6 +115,10 @@ public class Elevator extends Subsystem {
 
             handleElevatorState(commands);
             checkTopBottom(mRobotState);
+
+            if(robotState.isTipping) {
+                commands.addWantedRoutine(new ElevatorCustomPositioningRoutine(Constants.kElevatorBottomPositionInches, 5));
+            }
 
             //Execute update loop based on the current state
             //Does not switch between states, only performs actions

@@ -68,6 +68,9 @@ public class Constants {
     public static final double kElevatorBottomPositionInches = 0;
     public static final double kElevatorHoldVoltage = 0.11;
 
+    public static final double kTipPitchThreshold = 25.0;
+    public static final double kTipPitchVelocityThreshold = 40.0;
+
     public static double kElevatorUncalibratedManualPower;
     public static double kElevatorClosedLoopManualControlPositionSensitivity = 500;//250;
     public static double kElevatorConstantDownPower;

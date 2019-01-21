@@ -75,6 +75,8 @@ public class RobotState {
     public double elevatorPosition = 0;
     public double elevatorVelocity = 0;
     public boolean elevatorHFX = false;
+
+    public boolean isTipping = false;
 	
 
 	//Robot position

@@ -386,10 +386,23 @@ class HardwareUpdater {
 			robotState.drivePose.heading = gyro.getFusedHeading();
 			robotState.drivePose.headingVelocity = (robotState.drivePose.heading - robotState.drivePose.lastHeading) / Constants.kNormalLoopsDt;
 			robotState.drivePose.lastHeading = gyro.getFusedHeading();
+
+			double[] ypr = new double[3];
+			gyro.getYawPitchRoll(ypr);
+			robotState.drivePose.pitch = ypr[1];
+			robotState.drivePose.pitchVelocity = (robotState.drivePose.pitch - robotState.drivePose.lastPitch) / Constants.kNormalLoopsDt;
+			robotState.drivePose.lastHeading = ypr[1];
 		} else {
 			robotState.drivePose.heading = -0;
 			robotState.drivePose.headingVelocity = -0;
 		}
+
+        if(robotState.drivePose.pitch >= Constants.kTipPitchThreshold &&
+                robotState.drivePose.pitchVelocity >= Constants.kTipPitchVelocityThreshold) {
+            robotState.isTipping = true;
+        } else {
+            robotState.isTipping = false;
+        }
 
 		robotState.drivePose.lastLeftEnc = robotState.drivePose.leftEnc;
 		robotState.drivePose.leftEnc = leftMasterTalon.getSelectedSensorPosition(0);

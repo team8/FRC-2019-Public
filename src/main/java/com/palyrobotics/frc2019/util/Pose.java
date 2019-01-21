@@ -12,6 +12,10 @@ public class Pose {
 	public double lastHeading;
 	public double headingVelocity;
 
+	public double pitch;
+	public double lastPitch;
+	public double pitchVelocity;
+
 	public double leftEnc;
 	public double lastLeftEnc;
 	public double leftEncVelocity;
