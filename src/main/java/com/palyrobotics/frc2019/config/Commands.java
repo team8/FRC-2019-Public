@@ -36,7 +36,9 @@ public class Commands {
 	public Shooter.ShooterState wantedShooterState = Shooter.ShooterState.IDLE;
 	public Intake.WheelState wantedIntakingState = Intake.WheelState.IDLE;
 	public Intake.OpenCloseState wantedIntakeOpenCloseState = Intake.OpenCloseState.CLOSED;
-	public Fingers.FingersState wantedFingersState = Fingers.FingersState.CLOSE;
+	public Fingers.FingersState wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
+	public Fingers.FingersState wantedFingersExpelState = Fingers.FingersState.CLOSE;
+	public Fingers.PusherState wantedPusherState = Fingers.PusherState.IN;
 	public boolean disableArmScaling = true;
 	public boolean customShooterSpeed = false;
 	public boolean customIntakeSpeed = false;
@@ -89,7 +91,9 @@ public class Commands {
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.wantedIntakingState = this.wantedIntakingState;
 		copy.wantedIntakeOpenCloseState = this.wantedIntakeOpenCloseState;
-		copy.wantedFingersState = this.wantedFingersState;
+		copy.wantedFingersOpenCloseState = this.wantedFingersOpenCloseState;
+		copy.wantedFingersExpelState = this.wantedFingersExpelState;
+		copy.wantedPusherState = this.wantedPusherState;
 		copy.disableArmScaling = this.disableArmScaling;
 		copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
 		copy.customShooterSpeed = this.customShooterSpeed;

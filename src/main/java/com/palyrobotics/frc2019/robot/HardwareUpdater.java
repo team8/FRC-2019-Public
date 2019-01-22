@@ -7,7 +7,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.*;
-import com.palyrobotics.frc2019.util.ClimberSignal;
 import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.TalonSRXOutput;
 import com.palyrobotics.frc2019.util.logger.Logger;
@@ -15,12 +14,11 @@ import com.palyrobotics.frc2019.util.trajectory.Kinematics;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.util.trajectory.Rotation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
-import java.util.*;
+import java.util.Optional;
 import java.util.logging.Level;
 
 /**
@@ -82,6 +80,10 @@ class HardwareUpdater {
 		//Disable shooter talons
 		HardwareAdapter.getInstance().getShooter().masterTalon.set(ControlMode.Disabled, 0);
 		HardwareAdapter.getInstance().getShooter().slaveTalon.set(ControlMode.Disabled, 0);
+
+		//Disable pusher talons
+		HardwareAdapter.getInstance().getFingers().pusherVictor.set(ControlMode.Disabled, 0);
+
 	}
 
 	void configureHardware() {
@@ -89,6 +91,7 @@ class HardwareUpdater {
 		configureArmHardware();
 		configureIntakeHardware();
 		configureShooterHardware();
+		configureFingersHardware();
 	}
 
 	void configureDriveHardware() {
@@ -301,6 +304,25 @@ class HardwareUpdater {
 		slaveTalon.configReverseSoftLimitEnable(false, 0);
 	}
 
+	void configureFingersHardware() {
+		WPI_VictorSPX pusherVictor = HardwareAdapter.getInstance().getFingers().pusherVictor;
+
+		pusherVictor.setInverted(false);
+		pusherVictor.setNeutralMode(NeutralMode.Brake);
+		pusherVictor.configOpenloopRamp(0.09, 0);
+		pusherVictor.enableVoltageCompensation(true);
+		pusherVictor.configVoltageCompSaturation(14, 0);
+		pusherVictor.configForwardSoftLimitEnable(false, 0);
+
+		Ultrasonic ultrasonic1 = HardwareAdapter.getInstance().getFingers().pusherUltrasonic1;
+		Ultrasonic ultrasonic2 = HardwareAdapter.getInstance().getFingers().pusherUltrasonic2;
+
+		ultrasonic1.setAutomaticMode(true);
+		ultrasonic1.setEnabled(true);
+		ultrasonic2.setAutomaticMode(true);
+		ultrasonic2.setEnabled(true);
+	}
+
 	/**
 	 * Updates all the sensor data taken from the hardware
 	 */
@@ -437,6 +459,44 @@ class HardwareUpdater {
 //		System.out.println("Left: " + mUltrasonicLeft.getRangeInches());
 //		System.out.println("Right: " + mUltrasonicRight.getRangeInches());
 //		System.out.println(robotState.hasCube);
+
+		//Left Side Cargo Distance from Pusher
+		Ultrasonic mPusherUltrasonicLeft = HardwareAdapter.getInstance().getFingers().pusherUltrasonic1;
+		robotState.mLeftPusherReadings.add(mPusherUltrasonicLeft.getRangeInches());
+		if(robotState.mLeftPusherReadings.size() > 10) {
+			robotState.mLeftPusherReadings.remove(0);
+		}
+
+		int pusherLeftTotal = 0;
+		for (int i = 0; i < robotState.mLeftPusherReadings.size(); i++) {
+			if (robotState.mLeftPusherReadings.get(i) < Constants.kVidarPusherCargoTolerance) {
+				pusherLeftTotal += 1;
+			}
+		}
+
+		//Right Side Cargo Distance from Pusher
+		Ultrasonic mPusherUltrasonicRight = HardwareAdapter.getInstance().getFingers().pusherUltrasonic2;
+		robotState.mRightPusherReadings.add(mPusherUltrasonicRight.getRangeInches());
+		if(robotState.mRightPusherReadings.size() > 10) {
+			robotState.mRightPusherReadings.remove(0);
+		}
+
+		int pusherRightTotal = 0;
+		for (int i = 0; i < robotState.mRightPusherReadings.size(); i++) {
+			if (robotState.mRightPusherReadings.get(i) < Constants.kVidarPusherCargoTolerance) {
+				pusherRightTotal += 1;
+			}
+		}
+
+		if (pusherLeftTotal > Constants.kVidarPusherRequiredUltrasonicCount && pusherRightTotal > Constants.kVidarPusherRequiredUltrasonicCount) {
+			robotState.hasPusherCargo = false;
+		}
+		else {
+			robotState.hasPusherCargo = true;
+		}
+
+		robotState.cargoPusherDistance = (mPusherUltrasonicLeft.getRangeInches() +
+				mPusherUltrasonicRight.getRangeInches())/2;
 
 
 		robotState.drivePose.leftError = Optional.of(leftMasterTalon.getClosedLoopError(0));

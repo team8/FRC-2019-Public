@@ -1,6 +1,5 @@
 package com.palyrobotics.frc2019.robot;
 
-import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -133,11 +132,21 @@ public class HardwareAdapter {
 		public final DoubleSolenoid expelSolenoid2;
 		public final DoubleSolenoid expelSolenoid3;
 
+		public final WPI_VictorSPX pusherVictor;
+		public final Ultrasonic pusherUltrasonic1;
+		public final Ultrasonic pusherUltrasonic2;
+		public final AnalogPotentiometer pusherPotentiometer;
+
 		protected FingersHardware() {
 			openCloseSolenoid = new DoubleSolenoid(Constants.kVidarOpenCloseSolenoidForwardID, Constants.kVidarOpenCloseSolenoidReverseID);
 			expelSolenoid1 = new DoubleSolenoid(Constants.kVidarExpelSolenoid1ForwardID, Constants.kVidarExpelSolenoid1ReverseID);
 			expelSolenoid2 = new DoubleSolenoid(Constants.kVidarExpelSolenoid2ForwardID, Constants.kVidarExpelSolenoid2ReverseID);
 			expelSolenoid3 = new DoubleSolenoid(Constants.kVidarExpelSolenoid3ForwardID, Constants.kVidarExpelSolenoid3ReverseID);
+
+			pusherVictor = new WPI_VictorSPX(Constants.kVidarPusherVictorID);
+			pusherUltrasonic1 = new Ultrasonic(Constants.kVidarPusherRightUltrasonicPing, Constants.kVidarPusherRightUltrasonicEcho);
+			pusherUltrasonic2 = new Ultrasonic(Constants.kVidarPusherLeftUltrasonicPing, Constants.kVidarPusherLeftUltrasonicEcho);
+			pusherPotentiometer = new AnalogPotentiometer(Constants.kVidarPusherPotID, 360, 0);
 		}
 	}
 

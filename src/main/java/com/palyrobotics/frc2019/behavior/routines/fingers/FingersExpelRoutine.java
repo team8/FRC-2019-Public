@@ -1,29 +1,19 @@
-package com.palyrobotics.frc2019.behavior.routines.shooter;
+package com.palyrobotics.frc2019.behavior.routines.fingers;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.subsystems.Shooter;
+import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
-/**
- * @author Jason
- */
-public class ShooterExpelRoutine extends Routine {
+public class FingersExpelRoutine extends Routine {
 
-    private Shooter.ShooterState wantedShooterState;
+    private Fingers.FingersState wantedFingersOpenCloseState;
 
-    //How long the wheels spin for (seconds)
     private double mTimeout;
 
     private long mStartTime;
 
-    /**
-     *
-     * @param wantedShooterState the desired state
-     * @param timeout how long (seconds) to run for
-     */
-    public ShooterExpelRoutine(Shooter.ShooterState wantedShooterState, double timeout) {
-        this.wantedShooterState = wantedShooterState;
+    public FingersExpelRoutine(double timeout) {
         mTimeout = timeout;
     }
 
@@ -34,15 +24,13 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-
-        commands.wantedShooterState = wantedShooterState;
-
+        commands.wantedFingersExpelState = Fingers.FingersState.OPEN;
         return commands;
     }
 
     @Override
     public Commands cancel(Commands commands) {
-        commands.wantedShooterState = Shooter.ShooterState.IDLE;
+        commands.wantedFingersExpelState = Fingers.FingersState.CLOSE;
         return commands;
     }
 
@@ -53,11 +41,11 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { shooter };
+        return new Subsystem[] { fingers };
     }
 
     @Override
     public String getName() {
-        return "IntakeWheelRoutine";
+        return "FingersExpelRoutine";
     }
 }

@@ -1,13 +1,13 @@
 package com.palyrobotics.frc2019.config;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.util.JoystickInput;
 import com.palyrobotics.frc2019.util.Pose;
 import com.palyrobotics.frc2019.util.XboxInput;
 import com.palyrobotics.frc2019.util.trajectory.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Holds all hardware input, such as sensors. <br />
@@ -50,6 +50,12 @@ public class RobotState {
 	public ArrayList<Double> mRightReadings = new ArrayList<>();
 	public ArrayList<Double> mRightSorted = new ArrayList<>();
 
+	//Pusher
+	public boolean hasPusherCargo = false;
+	public double cargoPusherDistance = 0;
+	public ArrayList<Double> mLeftPusherReadings = new ArrayList<>();
+	public ArrayList<Double> mRightPusherReadings = new ArrayList<>();
+
 	//Hatch Intake
 	public boolean hasHatch = false;
 
@@ -69,8 +75,13 @@ public class RobotState {
 	public double armVelocity = 0;  // rad/s
 	public double armAccel = 0;  // rad/s^2
 	public double armAngle = 0; //
-	public boolean hasArmStickyFaults = false; 
-	
+	public boolean hasArmStickyFaults = false;
+
+	//Pusher sensor data
+	public double pusherCachePosition = 0;
+	public double pusherPosition = 0;
+	public double pusherVelocity = 0;
+	public boolean hasPusherStickyFaults = false;
 
 	//Robot position
 	public final int kObservationBufferSize = 100;

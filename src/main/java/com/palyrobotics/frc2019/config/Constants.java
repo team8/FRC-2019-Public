@@ -87,6 +87,10 @@ public class Constants {
 	public static final double kIntakeCubeInchTolerance = 3;
     public static final double kIntakeCloseRoutineCloseNow = 5.8;
     public static final int kRequiredUltrasonicCount = 6;
+	public static final int kVidarPusherRightUltrasonicPing = 0;
+	public static final int kVidarPusherRightUltrasonicEcho = 0;
+	public static final int kVidarPusherLeftUltrasonicPing = 0;
+	public static final int kVidarPusherLeftUltrasonicEcho = 0;
 
 	/*
 	 * Control loop constants for both robots
@@ -101,6 +105,7 @@ public class Constants {
 	 */
 	public static final double kDriveTicksPerInch = 4096 / (6.25 * Math.PI);
 	public static final double kArmTicksPerInch = 0;
+	public static final double kPusherTicksPerInch = 0;
 	public static final double kDriveInchesPerDegree = 0.99 * 21.5 / 90;
 	public static final double kDriveSpeedUnitConversion = 4096 / (6.25 * Math.PI * 10);
 
@@ -126,6 +131,8 @@ public class Constants {
 	public static final double kArmAcceptableVelocityError = 0;
 	public static final double kArmAcceptableEncoderError = 0;
 	public static final double kArmAcceptablePotentiometerError = 0;
+
+	public static final double kAcceptablePusherPositionError = 0;
 
 	//Intake
 	public static final double kIntakingMotorVelocity = .4;
@@ -163,6 +170,21 @@ public class Constants {
 	public static final int kShovelExpellingMotorVelocity = 0;
 	public static final int kShovelSmallExpelMotorVelocity = 0;
 	public static final int kMaxShovelCurrentDraw = 0;
+
+	/**
+	 * Fingers/pusher
+	 */
+	//TODO: Add values
+	public static final int kVidarPusherRequiredUltrasonicCount = 0;
+	public static final double kVidarPusherDistanceIn = 0;
+	public static final double kVidarPusherDistanceMiddle = 0;
+	public static final double kVidarPusherDistanceOut = 0;
+	public static final double kVidarPusherCargoTolerance = 0;
+
+	public static final double kVidarPusherPositionkP = 0;
+	public static final double kVidarPusherPositionkI = 0;
+	public static final double kVidarPusherPositionkD = 0;
+
 
 	public static boolean operatorXBoxController = true;
 
@@ -220,6 +242,10 @@ public class Constants {
 	public static final int kVidarExpelSolenoid2ReverseID = 5;
 	public static final int kVidarExpelSolenoid3ForwardID = 6;
 	public static final int kVidarExpelSolenoid3ReverseID = 7;
+
+	//PUSHER
+	public static final int kVidarPusherVictorID = 0;
+	public static final int kVidarPusherPotID = 0;
 
 	//PCM 0
 	public static final int kVidarIntakeUpDownSolenoidForwardID = 2;
