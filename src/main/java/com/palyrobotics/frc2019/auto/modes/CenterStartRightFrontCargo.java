@@ -16,10 +16,16 @@ import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CenterStartRightFrontCargo extends AutoModeBase { //starts at center (lvl 3) - robot will probably start on lvl 2
+@SuppressWarnings("Duplicates")
 
-    public static int SPEED = 50;
+public class CenterStartRightFrontCargo extends AutoModeBase {
+
+    public static int SPEED = 50; //speed can be faster
     public static double kOffsetX = -Constants.kLowerPlatformLength;
+    public static double kOffsetY = 0; //starts at center so the offset is 0
+    public static double kCargoShipRightFrontX = mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength;
+    public static double kCargoShipRightFrontY = -(mDistances.kFieldWidth * .5 - (mDistances.kCargoRightY + mDistances.kCargoOffsetY));
+    public static double kHabLineX = Constants.kUpperPlatformLength + Constants.kLowerPlatformLength;
 
     @Override
     public String toString() {
@@ -39,14 +45,17 @@ public class CenterStartRightFrontCargo extends AutoModeBase { //starts at cente
     public Routine placeHatch() {
         ArrayList<Routine> routines = new ArrayList<>();
 
+//        TODO: make super accurate
+
         List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(Constants.kUpperPlatformLength + Constants.kLowerPlatformLength + Constants.kRobotLengthInches + kOffsetX), 0), SPEED));
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength - Constants.kRobotLengthInches * 2 + kOffsetX) * .75, mDistances.kFieldWidth * .5 - (mDistances.kCargoLeftY + mDistances.kCargoOffsetY)), SPEED));
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength - Constants.kRobotLengthInches * .6 + kOffsetX), mDistances.kFieldWidth * .5 - (mDistances.kCargoLeftY + mDistances.kCargoOffsetY)), 0));
+        StartToCargoShip.add(new Waypoint(new Translation2d(-(kHabLineX + Constants.kRobotLengthInches + kOffsetX), 0), SPEED)); //go straight so the robot doesn't get messed up going down a level
+        StartToCargoShip.add(new Waypoint(new Translation2d(-(kCargoShipRightFrontX * .6 + kOffsetX), -(kCargoShipRightFrontY + kOffsetY)), SPEED)); //lines up with cargo ship
+        StartToCargoShip.add(new Waypoint(new Translation2d(-(kCargoShipRightFrontX - Constants.kRobotLengthInches * .6 + kOffsetX), -(kCargoShipRightFrontY + kOffsetY)), 0));
         routines.add(new DrivePathRoutine(new Path(StartToCargoShip), true));
 
-        //routines.add(new ReleaseHatchRoutine()); //routine not made yet
-        routines.add(new TimeoutRoutine(1));
+//        TODO: implement ReleaseHatchRoutine when created
+//        routines.add(new ReleaseHatchRoutine()); //routine not made yet
+        routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
     }

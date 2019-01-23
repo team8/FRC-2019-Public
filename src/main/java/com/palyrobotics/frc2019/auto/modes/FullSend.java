@@ -22,10 +22,10 @@ import java.util.List;
 public class FullSend extends AutoModeBase { //center or right start > cargo ship front > loading station > rocket ship far > depot > close rocket ship
 
     public static int SPEED = 120;
-    public static double kOffsetX = -Constants.kLowerPlatformLength - Constants.kRobotLengthInches;
-    //    public static double kOffsetX = 0;
+//    public static double kOffsetX = -Constants.kLowerPlatformLength - Constants.kRobotLengthInches; //center start
+    public static double kOffsetX = 0; //right start
 //    public static double kOffsetY = 0; //0 at the moment because the auto starts at the center - change if start on right or left
-    public static double kOffsetY = Constants.kLevel3Width * .5 + Constants.kLevel2Width * .5;
+    public static double kOffsetY = Constants.kLevel3Width * .5 + Constants.kLevel2Width * .5; //right start
     public static double kCargoShipRightFrontX = mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength;
     public static double kCargoShipRightFrontY = -(mDistances.kFieldWidth * .5 - (mDistances.kCargoRightY + mDistances.kCargoOffsetY));
     public static double kHabLineX = Constants.kUpperPlatformLength + Constants.kLowerPlatformLength;
@@ -58,48 +58,7 @@ public class FullSend extends AutoModeBase { //center or right start > cargo shi
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new DriveSensorResetRoutine(0.2), Rezero(), placeHatch1(), takeHatch(), placeHatch2(), takeCargo(), placeCargoClose());
-    }
-
-    public Routine Rezero() {
-        SequentialRoutine sequence;
-        ArrayList<Routine> routines = new ArrayList<>();
-
-        // Drive off the level 2 platform
-        ArrayList<Waypoint> waypoints = new ArrayList<>();
-        waypoints.add(new Waypoint(new Translation2d(-30, 0), 35));
-        waypoints.add(new Waypoint(new Translation2d(-40, 0), 0));
-        routines.add(new DrivePathRoutine(new Path(waypoints), true));
-
-        // Back up against the platform
-        TalonSRXOutput left = new TalonSRXOutput();
-        TalonSRXOutput right = new TalonSRXOutput();
-        left.setPercentOutput(0.2);
-        right.setPercentOutput(0.2);
-        DriveSignal backUp = new DriveSignal(left, right);
-        routines.add(new DriveTimeRoutine(0.7, backUp));
-
-        // Zero robot state
-        routines.add(new DriveSensorResetRoutine(0.2));
-
-        sequence = new SequentialRoutine(routines);
-        return sequence;
-    }
-
-
-    public Routine placeHatch1() { //start to cargo ship front
-        ArrayList<Routine> routines = new ArrayList<>();
-
-        List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(kHabLineX + Constants.kRobotLengthInches + kOffsetX), 0), 150)); //goes straight at the start so the robot doesn't get messed up over the ramp
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(kCargoShipRightFrontX - Constants.kRobotWidthInches + kOffsetX), -(kCargoShipRightFrontY - Constants.kRobotLengthInches * .2 + kOffsetY)), 100)); //lines up in front of cargo ship front
-        StartToCargoShip.add(new Waypoint(kCargoShipRightFront, 0));
-        routines.add(new DrivePathRoutine(new Path(StartToCargoShip), true));
-
-//        TODO: add ReleaseHatchRoutine (not made yet)
-//        routines.add(new TimeoutRoutine(1));
-
-        return new SequentialRoutine(routines);
+        return new SequentialRoutine(new DriveSensorResetRoutine(0.2), new RightStartRightFrontCargo().getRoutine(), takeHatch(), placeHatch2(), takeCargo(), placeCargoClose());
     }
 
     public Routine takeHatch() { //cargo ship front to loading station
@@ -112,8 +71,9 @@ public class FullSend extends AutoModeBase { //center or right start > cargo shi
         CargoShipToLoadingStation.add(new Waypoint(kRightLoadingStation, 0));
         routines.add(new DrivePathRoutine(new Path(CargoShipToLoadingStation), false));
 
-//        TODO: add IntakeHatchRoutine (not made yet)
-//        routines.add(new TimeoutRoutine(1)); //placeholder
+//        TODO: implement TakeHatchRoutine when created
+//        routines.add(new TakeHatchRoutine(CargoShipLevel)); //routine not made yet
+        routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
     }
@@ -136,8 +96,9 @@ public class FullSend extends AutoModeBase { //center or right start > cargo shi
         forwardLoadingStationToRocketShip.add(new Waypoint(kRightRocketShipFar, 0)); //ends in front of the rocket ship far
         routines.add(new DrivePathRoutine(new Path(forwardLoadingStationToRocketShip), false));
 
-//        TODO: add ReleaseHatchRoutine (not made yet)
-//        routines.add(new TimeoutRoutine(1)); //placeholder
+//        TODO: implement ReleaseHatchRoutine when created
+//        routines.add(new ReleaseHatchRoutine(RocketLevel1)); //routine not made yet
+        routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
     }
@@ -155,8 +116,9 @@ public class FullSend extends AutoModeBase { //center or right start > cargo shi
         RocketShipToDepot.add(new Waypoint(kRightDepot, 0));
         routines.add(new DrivePathRoutine(new Path(RocketShipToDepot), true));
 
-//        TODO: add IntakeCargoRoutine (not made yet)
-//        routines.add(new TimeoutRoutine(1)); //placeholder
+//        TODO: implement IntakeCargoRoutine when created
+//        routines.add(new IntakeCargoRoutine()); //routine not made yet
+        routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
     }
@@ -173,8 +135,9 @@ public class FullSend extends AutoModeBase { //center or right start > cargo shi
         DepotToRocketShip.add(new Waypoint(kRightRocketShipClose, 0));
         routines.add(new DrivePathRoutine(new Path(DepotToRocketShip), false));
 
-//        TODO: add ReleaseCargoRoutine (not made yet)
-//        routines.add(new TimeoutRoutine(1)); //placeholder
+//        TODO: implement ShootCargoRoutine when created
+//        routines.add(new ShootCargoRoutine(Far)); //routine not made yet
+        routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
     }

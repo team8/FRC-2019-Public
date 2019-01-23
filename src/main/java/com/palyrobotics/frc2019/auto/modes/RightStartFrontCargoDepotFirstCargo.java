@@ -16,22 +16,18 @@ import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RightStartFrontCargoDepotFirstCargo extends AutoModeBase { //starts at center (lvl 3) - robot will probably start on lvl 2
+public class RightStartFrontCargoDepotFirstCargo extends AutoModeBase {
 
-    public static int SPEED = 70; //start from level 1
+    //TODO: replace with Triplekill because Triplekill is faster and does more
+
+    public static int SPEED = 70; //can be faster
     public static double kOffsetX = -Constants.kLowerPlatformLength - Constants.kRobotLengthInches;
     public static double kOffsetY = Constants.kLevel3Width * .5 + Constants.kLevel2Width * .5;
     public static double kCargoShipRightFrontX = mDistances.kLevel1CargoX + Constants.kLowerPlatformLength + Constants.kUpperPlatformLength;
     public static double kCargoShipRightFrontY = -(mDistances.kFieldWidth * .5 - (mDistances.kCargoRightY + mDistances.kCargoOffsetY));
     public static double kHabLineX = Constants.kUpperPlatformLength + Constants.kLowerPlatformLength;
-    public static double kRightLoadingStationX = 0;
-    public static double kRightLoadingStationY = -(mDistances.kFieldWidth * .5 - mDistances.kRightLoadingY);
     public static double kRightDepotX = Constants.kUpperPlatformLength;
     public static double kRightDepotY = -(mDistances.kFieldWidth * .5 - mDistances.kDepotFromRightY);
-    public static double kRightRocketShipCloseX = mDistances.kHabRightRocketCloseX + kHabLineX;
-    public static double kRightRocketShipCloseY = -(mDistances.kFieldWidth * .5 - mDistances.kRightRocketCloseY);
-    public static double kRightRocketShipFarX = mDistances.kFieldWidth - mDistances.kMidlineRightRocketFarX;
-    public static double kRightRocketShipFarY = -(mDistances.kFieldWidth - mDistances.kRightRocketFarY);
     public static double kRightFirstCargoShipX = kCargoShipRightFrontX + mDistances.kCargoOffsetY;
     public static double kRightFirstCargoShipY = -(mDistances.kFieldWidth * .5 - mDistances.kCargoRightY);
 
@@ -47,25 +43,10 @@ public class RightStartFrontCargoDepotFirstCargo extends AutoModeBase { //starts
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new ParallelRoutine(new DriveSensorResetRoutine(2)), placeHatch1(), takeCargo(), placeCargo());
+        return new SequentialRoutine(new DriveSensorResetRoutine(0.2), new RightStartRightFrontCargo().getRoutine(), takeCargo(), placeCargo());
     }
 
-    public Routine placeHatch1() {
-        ArrayList<Routine> routines = new ArrayList<>();
-
-        List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(Constants.kUpperPlatformLength + Constants.kLowerPlatformLength + Constants.kRobotLengthInches * .5 + kOffsetX), 0), SPEED));
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(kCargoShipRightFrontX - Constants.kRobotWidthInches + kOffsetX), -(kCargoShipRightFrontY + kOffsetY)), SPEED));
-        StartToCargoShip.add(new Waypoint(new Translation2d(-(kCargoShipRightFrontX - Constants.kRobotWidthInches * .1 + kOffsetX), -(kCargoShipRightFrontY + kOffsetY)), 0));
-        routines.add(new DrivePathRoutine(new Path(StartToCargoShip), true));
-
-        //routines.add(new ReleaseHatchRoutine()); //routine not made yet
-        routines.add(new TimeoutRoutine(1));
-
-        return new SequentialRoutine(routines);
-    }
-
-    public Routine takeCargo() { //could be more accurate - test later
+    public Routine takeCargo() {
         ArrayList<Routine> routines = new ArrayList<>();
 
         List<Path.Waypoint> forwardRocketShipToDepot = new ArrayList<>();
@@ -80,7 +61,8 @@ public class RightStartFrontCargoDepotFirstCargo extends AutoModeBase { //starts
         backRocketShipToDepot.add(new Waypoint(new Translation2d(-(kRightDepotX + Constants.kRobotLengthInches + kOffsetX), -(kRightDepotY + kOffsetY)), 0));
         routines.add(new DrivePathRoutine(new Path(backRocketShipToDepot), true));
 
-        //routines.add(new TakeCargoRoutine); //not made yet
+//        TODO: implement IntakeCargoRoutine when created
+//        routines.add(new IntakeCargoRoutine()); //routine not made yet
         routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
@@ -95,7 +77,8 @@ public class RightStartFrontCargoDepotFirstCargo extends AutoModeBase { //starts
         DepotToCargoShip.add(new Waypoint(new Translation2d(-(kRightFirstCargoShipX + Constants.kRobotLengthInches + kOffsetX), -(kRightFirstCargoShipY - Constants.kRobotLengthInches * .6 + kOffsetY)), 0));
         routines.add(new DrivePathRoutine(new Path(DepotToCargoShip), false));
 
-        //routines.add(new ReleaseCargoRoutine(short)); //routine not made yet
+//        TODO: implement ReleaseCargoRoutine when created
+//        routines.add(new ReleaseCargoRoutine()); //routine not made yet
         routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
