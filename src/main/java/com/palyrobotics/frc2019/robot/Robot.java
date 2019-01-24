@@ -10,11 +10,7 @@ import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
-import com.palyrobotics.frc2019.subsystems.Arm;
-import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.Elevator;
-import com.palyrobotics.frc2019.subsystems.Shooter;
-import com.palyrobotics.frc2019.subsystems.Shovel;
+import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.logger.Logger;
@@ -47,8 +43,9 @@ public class Robot extends TimedRobot {
 	private Shovel mShovel = Shovel.getInstance();
 	private Arm mArm = Arm.getInstance();
 	private Shooter mShooter = Shooter.getInstance();
+	private AutoPlacer mAutoPlacer = AutoPlacer.getInstance();
 	//Hardware Updater
-	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mShovel);
+	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mShovel, mAutoPlacer);
 
 	// Started boolean for if auto has been started.
 	private boolean mAutoStarted = false;
@@ -250,6 +247,7 @@ public class Robot extends TimedRobot {
 		mElevator.start();
 		mArm.start();
 		mShooter.start();
+		mAutoPlacer.start();
 	}
 
 	private void updateSubsystems() {
@@ -257,6 +255,7 @@ public class Robot extends TimedRobot {
 		mElevator.update(commands, robotState);
 		mArm.update(commands, robotState);
 		mShooter.update(commands, robotState);
+		mAutoPlacer.update(commands, robotState);
 	}
 
 	private void stopSubsystems() {
@@ -264,5 +263,6 @@ public class Robot extends TimedRobot {
 		mElevator.stop();
 		mArm.stop();
 		mShooter.stop();
+		mAutoPlacer.stop();
 	}
 }

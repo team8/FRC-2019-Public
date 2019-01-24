@@ -6,11 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.subsystems.Arm;
-import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.Elevator;
-import com.palyrobotics.frc2019.subsystems.Shooter;
-import com.palyrobotics.frc2019.subsystems.Shovel;
+import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.ClimberSignal;
 import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
@@ -43,6 +39,7 @@ class HardwareUpdater {
 	private Shooter mShooter;
 
 	private Shovel mShovel;
+	private AutoPlacer mAutoPlacer;
 
 	private double lastVelocity = 0;
 	private double maxA = 0;
@@ -51,11 +48,12 @@ class HardwareUpdater {
 	/**
 	 * Hardware Updater for Vidar
 	 */
-	protected HardwareUpdater(Drive drive, Elevator elevator, Shooter shooter, Shovel shovel) {
+	protected HardwareUpdater(Drive drive, Elevator elevator, Shooter shooter, Shovel shovel, AutoPlacer autoplacer) {
 		this.mDrive = drive;
 		this.mElevator = elevator;
 		this.mShooter = shooter;
 		this.mShovel = shovel;
+		this.mAutoPlacer = autoplacer;
 	}
 
 	/**
@@ -532,6 +530,7 @@ class HardwareUpdater {
 		updateArm();
 		updateShooter();
 		updateShovel();
+		updateAutoPlacer();
 		updateMiscellaneousHardware();
 	}
 
@@ -570,6 +569,13 @@ class HardwareUpdater {
      */
     private void updateShooter() {
         HardwareAdapter.getInstance().getShooter().shooterMasterVictor.set(mShooter.getOutput());
+    }
+
+    /**
+     * Updates the auto placer
+     */
+    private void updateAutoPlacer() {
+        HardwareAdapter.getInstance().getAutoPlacer().solenoid.set(mAutoPlacer.getOutput());
     }
 
 

@@ -50,6 +50,7 @@ public class Commands {
 	public Elevator.ClimberState wantedClimberState = Elevator.ClimberState.INACTIVE;
 	public Elevator.GearboxState wantedGearboxState = Elevator.GearboxState.ELEVATOR;
 	public boolean customShovelSpeed = false;
+	public boolean autoPlacerOutput = false;
 
 	public void addWantedRoutine(Routine wantedRoutine) {
 		for(Routine routine : wantedRoutines) {
@@ -113,6 +114,7 @@ public class Commands {
 		copy.customShooterSpeed = this.customShooterSpeed;
 		copy.customIntakeSpeed = this.customIntakeSpeed;
 		copy.customShovelSpeed = this.customShovelSpeed;
+		copy.autoPlacerOutput = this.autoPlacerOutput;
 
 		for(Routine r : this.wantedRoutines) {
 			copy.wantedRoutines.add(r);
