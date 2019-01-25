@@ -218,6 +218,9 @@ public class Path {
 				waypoints.set(i, new Waypoint(current, maxVel));
 			}
 		}
+		// Set last waypoint speed to 0
+		Translation2d endPt = waypoints.get(waypoints.size() - 1).position;
+		waypoints.set(waypoints.size() - 1, new Waypoint(endPt, 0));
 	}
 
 	/*
