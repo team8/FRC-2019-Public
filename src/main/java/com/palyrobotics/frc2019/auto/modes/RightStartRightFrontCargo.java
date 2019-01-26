@@ -20,6 +20,8 @@ import java.util.List;
 
 public class RightStartRightFrontCargo extends AutoModeBase {
 
+//        TODO: make super accurate (can only be at most 2 inches off) and tune to be faster
+
     public static int SPEED = 50; //speed can be faster
     public static double kOffsetX = 0;
     public static double kOffsetY = Constants.kLevel3Width * .5 + Constants.kLevel2Width * .5;
@@ -44,8 +46,6 @@ public class RightStartRightFrontCargo extends AutoModeBase {
 
     public Routine placeHatch() {
         ArrayList<Routine> routines = new ArrayList<>();
-
-//        TODO: make super accurate
 
         List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
         StartToCargoShip.add(new Waypoint(new Translation2d(-(kHabLineX + Constants.kRobotLengthInches + kOffsetX), 0), SPEED)); //go straight so the robot doesn't get messed up going down a level

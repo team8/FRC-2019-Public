@@ -19,7 +19,9 @@ import com.palyrobotics.frc2019.behavior.routines.drive.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FullSend extends AutoModeBase { //right start > cargo ship front > loading station > rocket ship far > depot > close rocket ship
+public class Level1Rocket extends AutoModeBase { //right start > rocket ship close > loading station > rocket ship far > depot > rocket ship mid
+
+    //TODO: tune the code - I haven't tested yet
 
     public static int SPEED = 120;
     public static double kOffsetX = -Constants.kLowerPlatformLength - Constants.kRobotLengthInches;
@@ -56,15 +58,30 @@ public class FullSend extends AutoModeBase { //right start > cargo ship front > 
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new RightStartRightFrontCargo().getRoutine(), takeHatch(), placeHatch2(), takeCargo(), placeCargoClose());
+        return new SequentialRoutine(new DriveSensorResetRoutine(0.2), new Rezero().getRoutine(), placeHatchClose(), takeHatch(), placeHatchFar(), takeCargo(), placeCargoMid());
     }
 
-    public Routine takeHatch() { //cargo ship front to loading station
+    public Routine placeHatchClose() { //start to rocket ship close
+        ArrayList<Routine> routines = new ArrayList<>();
+
+//        TODO: make super accurate (can only be at most 2 inches off)
+
+        List<Path.Waypoint> DepotToRocketShip = new ArrayList<>();
+        DepotToRocketShip.add(new Waypoint(new Translation2d(-(kHabLineX + Constants.kRobotLengthInches + kOffsetX), 0), 100)); //goes straight at the start so the robot doesn't get messed up over the ramp
+        DepotToRocketShip.add(new Waypoint(new Translation2d(-(kRightRocketShipCloseX * .8 + kOffsetX), -(findLineClose(kRightRocketShipCloseX * .8) + kOffsetY)), 180));
+        DepotToRocketShip.add(new Waypoint(kRightRocketShipClose, 0));
+        routines.add(new DrivePathRoutine(new Path(DepotToRocketShip), true));
+
+//        TODO: add ReleaseHatchRoutine (not made yet)
+//        routines.add(new TimeoutRoutine(1)); //placeholder
+
+        return new SequentialRoutine(routines);
+    }
+
+    public Routine takeHatch() { //rocket ship close to loading station
         ArrayList<Routine> routines = new ArrayList<>();
 
         List<Path.Waypoint> CargoShipToLoadingStation = new ArrayList<>();
-        CargoShipToLoadingStation.add(new Waypoint(new Translation2d(-(kCargoShipRightFrontX - Constants.kRobotLengthInches + kOffsetX), -(kCargoShipRightFrontY + kOffsetY)), SPEED)); //backs out of the cargo ship
-        CargoShipToLoadingStation.add(new Waypoint(new Translation2d(-((kCargoShipRightFrontX + kOffsetX) * .5), -(kRightLoadingStationY * .5 + kOffsetY)), SPEED));
         CargoShipToLoadingStation.add(new Waypoint(new Translation2d(-(kHabLineX - Constants.kRobotLengthInches * .5 + kOffsetX), -(kRightLoadingStationY + Constants.kRobotWidthInches * .4 + kOffsetY)), SPEED)); //lines up with loading station
         CargoShipToLoadingStation.add(new Waypoint(kRightLoadingStation, 0));
         routines.add(new DrivePathRoutine(new Path(CargoShipToLoadingStation), false));
@@ -75,11 +92,11 @@ public class FullSend extends AutoModeBase { //right start > cargo ship front > 
         return new SequentialRoutine(routines);
     }
 
-    public Routine placeHatch2() { //loading station to rocket ship close
+    public Routine placeHatchFar() { //loading station to rocket ship close
         ArrayList<Routine> routines = new ArrayList<>();
 
         /*
-        The robot starts backwards at the loading station after loading a hatch. It then goes around the rocket ship over and shoots it a bit. Then, it lines up with the rocket ship far and places the hatch.
+        The robot starts backwards at the loading station after loading a hatch. It then goes around the rocket ship and over shoots it a bit. Then, it lines up with the rocket ship far and places the hatch.
          */
 
         List<Path.Waypoint> backLoadingStationToRocketShip = new ArrayList<>(); //robot starts going backwards
@@ -120,17 +137,15 @@ public class FullSend extends AutoModeBase { //right start > cargo ship front > 
         return new SequentialRoutine(routines);
     }
 
-    public Routine placeCargoClose() { //depot to close rocket ship - shoot cargo into the far rocket ship
+    public Routine placeCargoMid() {
         ArrayList<Routine> routines = new ArrayList<>();
 
-        /*
-        The robot starts at the depot after loading a cargo. It then goes to rocket ship close and shoots a cargo into rocket ship far.
-         */
-
-        List<Path.Waypoint> DepotToRocketShip = new ArrayList<>();
-        DepotToRocketShip.add(new Waypoint(new Translation2d(-(kRightRocketShipCloseX * .8 + kOffsetX), -(findLineClose(kRightRocketShipCloseX * .8) + kOffsetY)), 180));
-        DepotToRocketShip.add(new Waypoint(kRightRocketShipClose, 0));
-        routines.add(new DrivePathRoutine(new Path(DepotToRocketShip), false));
+        List<Path.Waypoint> DepotToRocketShipMid = new ArrayList<>();
+        DepotToRocketShipMid.add(new Waypoint(new Translation2d(-(kRightDepotX + Constants.kRobotLengthInches * 2 + kOffsetX), -(kRightDepotY + kOffsetY)), SPEED));
+        DepotToRocketShipMid.add(new Waypoint(new Translation2d(-(kRightRocketShipMidX - Constants.kRobotLengthInches * .3), -(kRightDepotY + kOffsetY)), SPEED));
+        DepotToRocketShipMid.add(new Waypoint(new Translation2d(-(kRightRocketShipMidX), -(kRightRocketShipMidY + Constants.kRobotLengthInches * .8)), SPEED));
+        DepotToRocketShipMid.add(new Waypoint(new Translation2d(-(kRightRocketShipMidX), -(kRightRocketShipMidY)), 0));
+        routines.add(new DrivePathRoutine(new Path(DepotToRocketShipMid), false));
 
 //        TODO: add ReleaseCargoRoutine (not made yet)
 //        routines.add(new TimeoutRoutine(1)); //placeholder

@@ -20,6 +20,8 @@ import java.util.List;
 
 public class CenterStartLeftFrontCargo extends AutoModeBase {
 
+//        TODO: make super accurate (can only be at most 2 inches off) and tune to be faster
+
     public static int SPEED = 50; //speed can be faster
     public static double kOffsetX = -Constants.kLowerPlatformLength;
     public static double kOffsetY = 0; //starts at center so the offset is 0

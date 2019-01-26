@@ -21,6 +21,8 @@ import java.util.List;
 
 public class Rezero extends AutoModeBase {
 
+//TODO adjust speed and other constants to optimize auto
+
     @Override
     public String toString() {
         return mAlliance + this.getClass().toString();
@@ -37,8 +39,6 @@ public class Rezero extends AutoModeBase {
     }
 
     public Routine Rezero() {
-
-        //TODO adjust speed and other constants to optimize auto
 
         ArrayList<Routine> routines = new ArrayList<>();
 

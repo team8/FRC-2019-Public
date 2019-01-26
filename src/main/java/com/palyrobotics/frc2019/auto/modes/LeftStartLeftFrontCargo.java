@@ -16,7 +16,9 @@ import java.util.List;
 
 @SuppressWarnings("Duplicates")
 
-public class LeftStartLeftFrontCargo extends AutoModeBase { //starts at center (lvl 3) - robot will probably start on lvl 2
+public class LeftStartLeftFrontCargo extends AutoModeBase {
+
+//        TODO: make super accurate (can only be at most 2 inches off) and tune to be faster
 
     public static int SPEED = 60; //can be faster
     public static double kOffsetX = Constants.kLowerPlatformLength;
@@ -51,6 +53,7 @@ public class LeftStartLeftFrontCargo extends AutoModeBase { //starts at center (
 
 //        TODO: implement ReleaseHatchRoutine when created
 //        routines.add(new ReleaseHatchRoutine()); //routine not made yet
+
         routines.add(new TimeoutRoutine(1)); //placeholder
 
         return new SequentialRoutine(routines);
