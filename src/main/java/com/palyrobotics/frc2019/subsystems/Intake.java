@@ -24,6 +24,7 @@ public class Intake extends Subsystem {
     private boolean movingDown = false;
 
     private Optional<Double> mIntakeWantedPosition = Optional.empty();
+
     private RobotState mRobotState;
 
     private boolean cachedCargoState;

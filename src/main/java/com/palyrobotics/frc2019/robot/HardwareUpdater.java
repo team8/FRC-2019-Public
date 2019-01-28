@@ -347,7 +347,6 @@ class HardwareUpdater {
 		updateUltrasonicSensors(robotState);
 	}
 
-
 	void startIntakeArm() {
 		Robot.getRobotState().intakeStartAngle = IntakeConstants.kMaxAngle -
 				1/IntakeConstants.kArmPotentiometerTicksPerDegree * (IntakeConstants.kMaxAngleTicks -
