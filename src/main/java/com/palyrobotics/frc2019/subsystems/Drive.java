@@ -238,6 +238,11 @@ public class Drive extends Subsystem {
 		newController = true;
 	}
 
+	public void setVisionAngleSetpoint() {
+		mController = new VisionTurnAngleController(mCachedPose);
+		newController = true;
+	}
+
 	public void setTurnAngleEncoderSetpoint(double angle) {
 		Logger.getInstance().logSubsystemThread(Level.FINE, "Encoder angle", angle);
 		mController = new EncoderTurnAngleController(mCachedPose, angle);
