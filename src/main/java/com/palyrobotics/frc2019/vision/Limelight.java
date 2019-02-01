@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.logging.Level;
 
@@ -346,13 +345,6 @@ public class Limelight {
         double tx = this.getYawToTarget();
         //Logger.getInstance().logRobotThread(Level.INFO, "a1: " + a1 + " a2: " + a2 + " h1: " + h1 + " h2: " + h2);
         return ((h2 - h1) / Math.tan(Math.toRadians(a1 + a2))) / Math.cos(Math.toRadians(tx)) - 10; // 10 = limelight's offset from front of robot
-    }
-
-    /**
-     * NOT IMPLEMENTED: Estimate angle to the target (angle between line from limelight to target and line normal to the vision target)
-     */
-    public double getEstimatedTargetAngle() {
-        throw new NotImplementedException();
     }
 
     /**
