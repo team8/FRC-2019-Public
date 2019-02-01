@@ -24,7 +24,6 @@ public class Intake extends Subsystem {
     private boolean movingDown = false;
 
     private Optional<Double> mIntakeWantedPosition = Optional.empty();
-
     private RobotState mRobotState;
 
     private boolean cachedCargoState;
@@ -233,7 +232,6 @@ public class Intake extends Subsystem {
         if(mMacroState != IntakeMacroState.LIFTING) {
             return false;
         }
-
         return (Math.abs(mIntakeWantedPosition.get() - mRobotState.intakeAngle) < IntakeConstants.kAcceptableAngularError)
                 && (Math.abs(mRobotState.elevatorVelocity) < IntakeConstants.kAngularVelocityError);
     }
