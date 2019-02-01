@@ -149,21 +149,6 @@ public class Constants {
 	public static final double kTargetHeight = 6.0;
 	public static final double kTargetWidth = 14.5;
 
-	/**
-	 * Vision constants
-	 */
-	// Physical constants of the limelight mount
-	public static final double kLimelightElevationAngleDegrees = 30.00;
-	public static final double kLimelightHeightInches = 11.00;
-	// Height of the centers of vision targets
-	public static final double kRocketHatchTargetHeight = 31.5 - (2.0 * Math.sin(Math.toRadians(14.5)) - 5.5 * Math.cos(Math.toRadians(14.5))) / 2;
-	public static final double kCargoHatchTargetHeight = kRocketHatchTargetHeight;
-	public static final double kLoadingHatchTargetHeight = kRocketHatchTargetHeight;
-	public static final double kRocketPortTargetHeight = 39.375 - (2.0 * Math.sin(Math.toRadians(14.5)) - 5.5 * Math.cos(Math.toRadians(14.5))) / 2;
-	// Dimensions of vision target
-	public static final double kTargetHeight = 6.0;
-	public static final double kTargetWidth = 14.5;
-
 	//Intake
 	public static final double kIntakingMotorVelocity = .4;
 	public static final double kIntakeSlowExpellingVelocity = 0;
