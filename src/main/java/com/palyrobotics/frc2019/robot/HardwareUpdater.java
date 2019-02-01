@@ -451,12 +451,12 @@ class HardwareUpdater {
 	void updateIntakeState(RobotState robotState) {
 		//Update intake sensors
 
-		robotState.intakeVelocity = HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getVelocity() / Constants.kArmTicksPerDegree;
+		robotState.intakeVelocity = HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getVelocity() / Constants.kArmEncoderTicksPerDegree;
 	}
 
 	void startIntakeArm() {
 		Robot.getRobotState().intakeAngle = Constants.kIntakeMaxAngle -
-				1/Constants.kArmTicksPerDegree * (Constants.kIntakeMaxAngleTicks - HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition());
+				1/Constants.kArmEncoderTicksPerDegree * (Constants.kIntakeMaxAngleTicks - HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition());
 
 	}
 

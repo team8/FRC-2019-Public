@@ -24,17 +24,17 @@ public class Intake extends Subsystem {
     private double mVictorOutput;
 
     private boolean movingDown = false;
-    private double arb_ff = 0;
 
     private Optional<Double> mIntakeWantedPosition = Optional.empty();
+    private RobotState mRobotState;
 
-    public enum WheelState {
+    private enum WheelState {
         INTAKING,
         IDLE,
         DROPPING
     }
 
-    public enum UpDownState {
+    private enum UpDownState {
         HOLD, //Keeping arm position fixed
         UP,
         CLIMBING,
@@ -54,6 +54,12 @@ public class Intake extends Subsystem {
     private WheelState mWheelState = WheelState.IDLE;
     private UpDownState mUpDownState = UpDownState.UP;
     private IntakeMacroState mMacroState = IntakeMacroState.STOWED;
+
+    private double lastIntakeQueueTime = 0;
+    private final double requiredMSCancel = 200;
+
+    private double lastDropQueueTme = 0;
+    private final double requiredMSDrop = 100;
 
     protected Intake() {
         super("Intake");
@@ -75,12 +81,35 @@ public class Intake extends Subsystem {
 
     @Override
     public void update(Commands commands, RobotState robotState) {
-        mMacroState = commands.wantedIntakeState;
+        mRobotState = robotState;
+
+        if (commands.wantedIntakeState == IntakeMacroState.GROUND_INTAKING && this.mMacroState == IntakeMacroState.GROUND_INTAKING
+        && this.lastIntakeQueueTime + this.requiredMSCancel < System.currentTimeMillis()) {
+            this.mMacroState = IntakeMacroState.HOLDING_MID;
+        }
+
+        if (commands.wantedIntakeState == IntakeMacroState.GROUND_INTAKING && commands.wantedIntakeState == IntakeMacroState.HOLDING_MID) {
+            this.mMacroState = IntakeMacroState.GROUND_INTAKING;
+            this.lastIntakeQueueTime = System.currentTimeMillis();
+        }
+
+        if (commands.wantedIntakeState == IntakeMacroState.GROUND_INTAKING && robotState.hasCargo) {
+            this.mMacroState = IntakeMacroState.LIFTING;
+        }
+
+        if (commands.wantedIntakeState == IntakeMacroState.LIFTING && intakeOnTarget()) {
+            this.mMacroState = IntakeMacroState.DROPPING;
+            lastDropQueueTme = System.currentTimeMillis();
+        }
+
+        if (commands.wantedIntakeState == IntakeMacroState.DROPPING && System.currentTimeMillis() > (this.lastDropQueueTme + this.requiredMSDrop)) {
+            this.mMacroState = IntakeMacroState.HOLDING_MID;
+        }
+
         commands.hasCargo = robotState.hasCargo;
 
-        arb_ff = Constants.kIntakeGravityFF * Math.cos(robotState.intakeAngle)
+        double arb_ff = Constants.kIntakeGravityFF * Math.cos(robotState.intakeAngle)
                 + Constants.kIntakeAccelComp * robotState.robotAccel * Math.sin(robotState.intakeAngle);
-
 
         switch (mMacroState) {
             case STOWED:
@@ -104,6 +133,7 @@ public class Intake extends Subsystem {
                 mUpDownState = UpDownState.CUSTOM_POSITIONING;
                 mIntakeWantedPosition = Optional.of(Constants.kIntakeHoldingPosition);
         }
+
 
         switch(mWheelState) {
             case INTAKING:
@@ -131,7 +161,7 @@ public class Intake extends Subsystem {
                 break;
             case CLIMBING:
                 mSparkOutput.setGains(Gains.intakeClimbing);
-                mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), arb_ff);
+                mSparkOutput.setTargetPosition(mIntakeWantedPosition.get());
                 //subtract component of gravity
                 break;
             case MANUAL_POSITIONING:
@@ -165,7 +195,6 @@ public class Intake extends Subsystem {
 
     }
 
-
     public WheelState getWheelState() {
         return mWheelState;
     }
@@ -182,6 +211,14 @@ public class Intake extends Subsystem {
 
     public double getVictorOutput() { return mVictorOutput; }
 
+    public boolean intakeOnTarget() {
+        if(mMacroState != IntakeMacroState.LIFTING) {
+            return false;
+        }
+
+        return (Math.abs(mIntakeWantedPosition.get() - mRobotState.intakeAngle) < Constants.kIntakeAcceptableAngularError)
+                && (Math.abs(mRobotState.elevatorVelocity) < Constants.kIntakeAngularVelocityError);
+    }
 
     @Override
     public String getStatus() {

@@ -108,7 +108,7 @@ public class Constants {
 	public static final double kArmEncoderTicksPerDegree = 42 / (360) * 68/14 * 38/18 * 36/14 * 54/12;
 
 	public static final double kPusherTicksPerInch = 42 / (1 * Math.PI); // todo: change the 1 to the actual sprocket size
-    public static final double kElevatorTicksPerInch = 0;
+    public static final double kElevatorTicksPerInch = 42 / (2.00 * Math.PI) * (50/12)*(52/26)*(28/44);
     public static final double kClimberTicksPerInch = 0;
 	public static final double kIntakeTicksPerInch = 4096 / (6.25 * Math.PI); //TODO: CHANGE THIS
 	public static final double kDriveInchesPerDegree = 0.99 * 21.5 / 90;
@@ -142,7 +142,11 @@ public class Constants {
     public static final double kElevatorAcceptablePositionError = 40;
     public static final double kElevatorAcceptableVelocityError = 0.01;
 
-    public static final double kClimberAcceptablePositionError = 0;
+
+	public static final double kIntakeAcceptableAngularError = 3;
+	public static final double kIntakeAngularVelocityError = .05;
+
+	public static final double kClimberAcceptablePositionError = 0;
     public static final double kClimberAcceptableVelocityError = 0;
 
 	//Intake
@@ -161,7 +165,8 @@ public class Constants {
 	public static final double kIntakeAccelComp = 0;
 
 
-
+// shooter
+	public static final double kExpellingMotorVelocity = 0;
 
 
 	/**
