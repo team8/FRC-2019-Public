@@ -296,6 +296,18 @@ public class Limelight {
         return s;
     }
 
+    public double[] getCornerX(){
+        NetworkTableEntry cornerXRaw = m_table.getEntry("tcornx");
+        double[] cornerX = cornerXRaw.getDoubleArray(new double[0]);
+        return cornerX;
+    }
+
+    public double[] getCornerY(){
+        NetworkTableEntry cornerXRaw = m_table.getEntry("tcorny");
+        double[] cornerY = cornerXRaw.getDoubleArray(new double[0]);
+        return cornerY;
+    }
+
     //Raw Crosshairs:
     //If you are using raw targeting data, you can still utilize your calibrated crosshairs:
 

@@ -87,7 +87,16 @@ public class OperatorInterface {
 			newCommands.wantedDriveState = Drive.DriveState.CHEZY;
 		}
 
+		if(mTurnStick.getButtonPressed(3)){
+			newCommands.wantedDriveState = Drive.DriveState.VISION_ASSIST;
+		}
+
 		if(Constants.operatorXBoxController) {
+
+			if(mOperatorXboxController.getButtonX()){
+				newCommands.wantedDriveState = Drive.DriveState.VISION_ASSIST;
+			}
+
 			/**
 			 * Intake controls
 			 */
