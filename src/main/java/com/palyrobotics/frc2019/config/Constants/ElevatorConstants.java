@@ -16,6 +16,14 @@ public class ElevatorConstants {
 
     public static final double kCalibratePower = -0.28;
 
+    public static final double kElevatorCargoHeight3Inches = 83.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
+    public static final double kElevatorCargoHeight2Inches = 55.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
+    public static final double kElevatorCargoHeight1Inches = 27.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
+
+    public static final double kElevatorHatchHeight3Inches = 75 - OtherConstants.kCarriageToHatchCenterInches - OtherConstants.kGroundToCarriageInches;
+    public static final double kElevatorHatchHeight2Inches = 47 - OtherConstants.kCarriageToHatchCenterInches - OtherConstants.kGroundToCarriageInches;
+    public static final double kElevatorHatchHeight1Inches = 19 - OtherConstants.kCarriageToHatchCenterInches - OtherConstants.kGroundToCarriageInches;
+
     /**
      * Tolerances
      */
