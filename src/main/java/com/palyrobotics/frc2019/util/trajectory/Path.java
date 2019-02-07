@@ -1,6 +1,7 @@
 package com.palyrobotics.frc2019.util.trajectory;
 
 import java.util.*;
+import com.palyrobotics.frc2019.config.Constants.*;
 
 /**
  * A Path is a recording of the path that the robot takes. Path objects consist of a List of Waypoints that the robot passes by. Using multiple Waypoints in a

@@ -7,6 +7,7 @@ import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import com.palyrobotics.frc2019.config.Constants.*;
 
 import java.util.Optional;
 
