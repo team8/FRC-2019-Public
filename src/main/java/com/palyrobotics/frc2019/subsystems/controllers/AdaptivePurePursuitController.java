@@ -1,25 +1,17 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.util.DriveSignal;
-import com.palyrobotics.frc2019.util.Pose;
-import com.palyrobotics.frc2019.util.TalonSRXOutput;
-import com.palyrobotics.frc2019.util.logger.Logger;
+import com.palyrobotics.frc2019.util.*;
 import com.palyrobotics.frc2019.util.trajectory.*;
-import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.Timer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * Implements an adaptive pure pursuit controller. See: https://www.ri.cmu.edu/pub_files/pub1/kelly_alonzo_1994_4/kelly_alonzo_1994_4 .pdf
@@ -196,7 +188,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
 	 * @return the left and right drive voltage outputs needed to move in the calculated Delta
 	 */
 	@Override
-	public DriveSignal update(RobotState state) {
+	public SparkSignal update(RobotState state) {
 		RigidTransform2d robot_pose = Robot.getRobotState().getLatestFieldToVehicle().getValue();
 		//Logger.getInstance().logSubsystemThread(Level.FINEST, robot_pose);
 		RigidTransform2d.Delta command = this.update(robot_pose, Timer.getFPGATimestamp());
@@ -209,16 +201,16 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
 		max_vel = Math.max(max_vel, Math.abs(setpoint.left));
 		max_vel = Math.max(max_vel, Math.abs(setpoint.right));
 		//Logger.getInstance().logSubsystemThread(Level.INFO, "APP", "max_vel = " + max_vel);
-		if(max_vel > Constants.kPathFollowingMaxVel) {
+		if(max_vel > DrivetrainConstants.kPathFollowingMaxVel) {
 			//System.out.println("This thing is too damn fast");
-			double scaling = Constants.kPathFollowingMaxVel / max_vel;
+			double scaling = DrivetrainConstants.kPathFollowingMaxVel / max_vel;
 			setpoint = new Kinematics.DriveVelocity(setpoint.left * scaling, setpoint.right * scaling);
 		}
 
-		final TalonSRXOutput left = new TalonSRXOutput(ControlMode.Velocity, Gains.vidarVelocity, setpoint.left * Constants.kDriveSpeedUnitConversion),
-				right = new TalonSRXOutput(ControlMode.Velocity, Gains.vidarVelocity, setpoint.right * Constants.kDriveSpeedUnitConversion);
+		final SparkMaxOutput left = new SparkMaxOutput(Gains.vidarVelocity, ControlType.kVelocity, setpoint.left * DrivetrainConstants.kDriveSpeedUnitConversion);
+		final SparkMaxOutput right = new SparkMaxOutput(Gains.vidarVelocity, ControlType.kVelocity, setpoint.right * DrivetrainConstants.kDriveSpeedUnitConversion);
 //		System.out.println("Left output = " + left + " " + "Right output = " + right);
-		return new DriveSignal(left, right);
+		return new SparkSignal(left, right);
 	}
 
 

@@ -2,14 +2,11 @@ package com.palyrobotics.frc2019.subsystems.controllers;
 
 import java.util.logging.Level;
 
-import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.subsystems.Drive.DriveController;
-import com.palyrobotics.frc2019.util.DriveSignal;
-import com.palyrobotics.frc2019.util.Pose;
-import com.palyrobotics.frc2019.util.TalonSRXOutput;
+import com.palyrobotics.frc2019.util.*;
 import com.palyrobotics.frc2019.util.logger.Logger;
 
 public class CascadingGyroEncoderTurnAngleController implements DriveController {
@@ -20,8 +17,8 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
     private double mTarget;
     private double mLastTarget;
 
-    private TalonSRXOutput mLeftOutput;
-    private TalonSRXOutput mRightOutput;
+    private SparkMaxOutput mLeftOutput;
+    private SparkMaxOutput mRightOutput;
     
     //Error measurements for angle-to-velocity PID
     private double mErrorIntegral;
@@ -34,8 +31,8 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
 
         mLastTarget = 0;
 
-        mLeftOutput = new TalonSRXOutput();
-        mRightOutput = new TalonSRXOutput();
+        mLeftOutput = new SparkMaxOutput();
+        mRightOutput = new SparkMaxOutput();
         
         mErrorIntegral = 0;
 
@@ -43,13 +40,13 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
     }
 
     @Override
-    public DriveSignal update(RobotState state) {
+    public SparkSignal update(RobotState state) {
 
         mCachedPose = state.drivePose;
         
         if (mCachedPose == null) {
         	Logger.getInstance().logSubsystemThread(Level.WARNING, "CascadingGyroEncoderTurnAngle", "Cached pose is null!");
-        	return DriveSignal.getNeutralSignal();
+        	return SparkSignal.getNeutralSignal();
         } else {
             double currentHeading = mCachedPose.heading;
             double error = mTargetHeading - currentHeading;
@@ -60,15 +57,15 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
                 mErrorIntegral = 0.0;
             }
 
-            mErrorDerivative = (error - mLastError) / Constants.kNormalLoopsDt;
+            mErrorDerivative = (error - mLastError) / DrivetrainConstants.kNormalLoopsDt;
 
 //            Manually calculate PID output for velocity loop
             mTarget = (Gains.kVidarCascadingTurnkP * error + Gains.kVidarCascadingTurnkI * mErrorIntegral + Gains.kVidarCascadingTurnkD * mErrorDerivative);
 
-            if((Math.abs(mTarget) - Math.abs(mLastTarget))/Constants.kNormalLoopsDt > (Constants.kPathFollowingMaxAccel+25) * Constants.kDriveSpeedUnitConversion) {
-                System.out.println((Math.abs(mTarget) - Math.abs(mLastTarget))/Constants.kNormalLoopsDt);
-                System.out.println(Constants.kPathFollowingMaxAccel * Constants.kDriveSpeedUnitConversion);
-                mTarget = mLastTarget + Math.signum(mTarget) * ((Constants.kPathFollowingMaxAccel+25) * Constants.kDriveSpeedUnitConversion * Constants.kNormalLoopsDt);
+            if((Math.abs(mTarget) - Math.abs(mLastTarget))/DrivetrainConstants.kNormalLoopsDt > (DrivetrainConstants.kPathFollowingMaxAccel+25) * DrivetrainConstants.kDriveSpeedUnitConversion) {
+                System.out.println((Math.abs(mTarget) - Math.abs(mLastTarget))/DrivetrainConstants.kNormalLoopsDt);
+                System.out.println(DrivetrainConstants.kPathFollowingMaxAccel * DrivetrainConstants.kDriveSpeedUnitConversion);
+                mTarget = mLastTarget + Math.signum(mTarget) * ((DrivetrainConstants.kPathFollowingMaxAccel+25) * DrivetrainConstants.kDriveSpeedUnitConversion * DrivetrainConstants.kNormalLoopsDt);
             }
 
             mLastTarget = mTarget;
@@ -80,12 +77,12 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
 
             DashboardManager.getInstance().updateCANTable("angle", Double.toString(mTarget));
 
-            mLeftOutput.setVelocity(-mTarget, Gains.vidarVelocity);
-            mRightOutput.setVelocity(mTarget, Gains.vidarVelocity);
+            mLeftOutput.setTargetVelocity(-mTarget, Gains.vidarVelocity);
+            mRightOutput.setTargetVelocity(mTarget, Gains.vidarVelocity);
              
             mLastError = error;
 
-            return new DriveSignal(mLeftOutput, mRightOutput);
+            return new SparkSignal(mLeftOutput, mRightOutput);
         }
     }
 
@@ -100,9 +97,9 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
         	Logger.getInstance().logSubsystemThread(Level.WARNING, "CascadingGyroEncoderTurnAngle", "Cached pose is null!");
         	return false;
         } else {
-        	return Math.abs(mLastError) < Constants.kAcceptableTurnAngleError &&
-        			Math.abs(mCachedPose.leftEncVelocity) < Constants.kAcceptableDriveVelocityError &&
-        			Math.abs(mCachedPose.rightEncVelocity) < Constants.kAcceptableDriveVelocityError;
+        	return Math.abs(mLastError) < DrivetrainConstants.kAcceptableTurnAngleError &&
+        			Math.abs(mCachedPose.leftEncVelocity) < DrivetrainConstants.kAcceptableDriveVelocityError &&
+        			Math.abs(mCachedPose.rightEncVelocity) < DrivetrainConstants.kAcceptableDriveVelocityError;
         }
         
     }

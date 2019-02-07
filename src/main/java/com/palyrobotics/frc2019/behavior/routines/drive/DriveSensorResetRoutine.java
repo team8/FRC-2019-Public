@@ -2,13 +2,10 @@ package com.palyrobotics.frc2019.behavior.routines.drive;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants;
-import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
-import edu.wpi.first.wpilibj.Timer;
 
 import java.util.logging.Level;
 
@@ -61,9 +58,9 @@ public class DriveSensorResetRoutine extends Routine {
 			Logger.getInstance().logRobotThread(Level.WARNING, "Drive sensor reset routine timed out!");
 //			System.out.println("Time: " + String.valueOf(System.currentTimeMillis() - mStartTime) + " timed out");
 			return true;
-		} else if(Math.abs(drive.getPose().leftEnc) <= Constants.kAcceptableEncoderZeroError
-				&& Math.abs(drive.getPose().rightEnc) <= Constants.kAcceptableEncoderZeroError
-				&& Math.abs(drive.getPose().heading) <= Constants.kAcceptableGyroZeroError) {
+		} else if(Math.abs(drive.getPose().leftEnc) <= DrivetrainConstants.kAcceptableEncoderZeroError
+				&& Math.abs(drive.getPose().rightEnc) <= DrivetrainConstants.kAcceptableEncoderZeroError
+				&& Math.abs(drive.getPose().heading) <= DrivetrainConstants.kAcceptableGyroZeroError) {
 //			System.out.println("Time: " + String.valueOf(System.currentTimeMillis() - mStartTime));
 //			System.out.println("Good error on drive sensors, finished");
 			return true;

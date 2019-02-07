@@ -2,8 +2,6 @@ package com.palyrobotics.frc2019.behavior.routines.drive;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants;
-import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.logger.Logger;
@@ -33,10 +31,10 @@ public class DrivePathRoutine extends Routine {
 	 */
 	public DrivePathRoutine(Path path, boolean inverted) {
 		this.mPath = path;
-		this.mLookAhead = Constants.kPathFollowingLookahead;
+		this.mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
 		this.mStartSpeed = 0.0;
 		this.mInverted = inverted;
-		this.mTolerance = Constants.kPathFollowingTolerance;
+		this.mTolerance = DrivetrainConstants.kPathFollowingTolerance;
 		this.mRelative = false;
 	}
 
@@ -51,7 +49,7 @@ public class DrivePathRoutine extends Routine {
 		this.mLookAhead = lookAhead;
 		this.mStartSpeed = 0.0;
 		this.mInverted = inverted;
-		this.mTolerance = Constants.kPathFollowingTolerance;
+		this.mTolerance = DrivetrainConstants.kPathFollowingTolerance;
 		this.mRelative = false;
 	}
 
@@ -60,8 +58,8 @@ public class DrivePathRoutine extends Routine {
 	    this.pathList = pathList;
 		this.mInverted = inverted;
 		this.mStartSpeed = startSpeed;
-		this.mLookAhead = Constants.kPathFollowingLookahead;
-		this.mTolerance = Constants.kPathFollowingTolerance;
+		this.mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
+		this.mTolerance = DrivetrainConstants.kPathFollowingTolerance;
 		this.mRelative = false;
 	}
 
@@ -71,7 +69,7 @@ public class DrivePathRoutine extends Routine {
 		this.mInverted = inverted;
 		this.mStartSpeed = startSpeed;
 		this.mLookAhead = lookahead;
-		this.mTolerance = Constants.kPathFollowingTolerance;
+		this.mTolerance = DrivetrainConstants.kPathFollowingTolerance;
 		this.mRelative = false;
 	}
 
@@ -99,7 +97,7 @@ public class DrivePathRoutine extends Routine {
 		this.mPath = new Path(new ArrayList<>());
 		this.pathList = pathList;
 		this.mInverted = inverted;
-		this.mLookAhead = Constants.kPathFollowingLookahead;
+		this.mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
 		this.mStartSpeed = 0.0;
 		this.mRelative = relative;
 	}

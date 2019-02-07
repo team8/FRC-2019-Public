@@ -22,7 +22,7 @@ public class AutoDistances {
 	private static File field;
 	
 	private static void loadField() { // Make sure to ant deploy constants to roboRIO
-		switch (Constants.kFieldName) {
+		switch (OtherConstants.kFieldName) {
 			case DMR:
 				field = JSONFormatter.loadFileDirectory("constants/fields", "DMRField.json");
 				break;

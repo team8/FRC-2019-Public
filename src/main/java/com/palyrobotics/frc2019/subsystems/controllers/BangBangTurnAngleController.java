@@ -1,10 +1,9 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
-import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.util.DriveSignal;
 import com.palyrobotics.frc2019.util.Pose;
+import com.palyrobotics.frc2019.util.SparkSignal;
 import com.palyrobotics.frc2019.util.logger.Logger;
 
 import java.util.logging.Level;
@@ -28,7 +27,7 @@ public class BangBangTurnAngleController implements Drive.DriveController {
 	 *            Degrees relative to current state to turn
 	 */
 	public BangBangTurnAngleController(Pose currentPose, double heading) {
-		this.mPower = Constants.kTurnInPlacePower;
+		this.mPower = DrivetrainConstants.kTurnInPlacePower;
 		this.mCachedPose = currentPose;
 		this.mTargetHeading = this.mCachedPose.heading + heading;
 		Logger.getInstance().logSubsystemThread(Level.INFO, "Starting Heading", this.mCachedPose.heading);
@@ -37,13 +36,13 @@ public class BangBangTurnAngleController implements Drive.DriveController {
 	}
 
 	@Override
-	public DriveSignal update(RobotState state) {
+	public SparkSignal update(RobotState state) {
 		if(this.onTarget()) {
-			return DriveSignal.getNeutralSignal();
+			return SparkSignal.getNeutralSignal();
 		}
 		mCachedPose = state.drivePose;
 		//System.out.println("Current Pose: " + mCachedPose.heading);
-		DriveSignal output = DriveSignal.getNeutralSignal();
+		SparkSignal output = SparkSignal.getNeutralSignal();
 		if(mCachedPose.heading < mTargetHeading) {
 			output.leftMotor.setPercentOutput(this.mPower);
 			output.rightMotor.setPercentOutput(-(this.mPower));
@@ -63,7 +62,7 @@ public class BangBangTurnAngleController implements Drive.DriveController {
 
 	@Override
 	public boolean onTarget() {
-		double tolerance = Constants.kAcceptableTurnAngleError;
+		double tolerance = DrivetrainConstants.kAcceptableTurnAngleError;
 		return Math.abs(mCachedPose.heading - mTargetHeading) < tolerance;
 	}
 

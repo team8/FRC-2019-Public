@@ -6,12 +6,10 @@ import com.palyrobotics.frc2019.auto.AutoModeSelector;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.config.AutoDistances;
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
 import com.palyrobotics.frc2019.subsystems.*;
-import com.palyrobotics.frc2019.util.LEDColor;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
@@ -44,11 +42,10 @@ public class Robot extends TimedRobot {
 	private Shooter mShooter = Shooter.getInstance();
 	private Pusher mPusher = Pusher.getInstance();
 	private Fingers mFingers = Fingers.getInstance();
-	private AutoPlacer mAutoPlacer = AutoPlacer.getInstance();
     private Intake mIntake = Intake.getInstance();
 
 	//Hardware Updater
-	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mPusher, mShovel, mFingers, mAutoPlacer, mIntake);
+	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mPusher, mShovel, mFingers, mIntake);
 
 	// Started boolean for if auto has been started.
 	private boolean mAutoStarted = false;
@@ -62,12 +59,12 @@ public class Robot extends TimedRobot {
 		Logger.getInstance().setFileName("Silicon Valley");
 		Logger.getInstance().start();
 
-		Logger.getInstance().logRobotThread(Level.INFO, "Start robotInit() for " + Constants.kRobotName.toString());
+		Logger.getInstance().logRobotThread(Level.INFO, "Start robotInit() for " + OtherConstants.kRobotName.toString());
 
 		DashboardManager.getInstance().robotInit();
 
 		Logger.getInstance().logRobotThread(Level.CONFIG, "Startup successful");
-		Logger.getInstance().logRobotThread(Level.CONFIG, "Robot name: " + Constants.kRobotName);
+		Logger.getInstance().logRobotThread(Level.CONFIG, "Robot name: " + OtherConstants.kRobotName);
 		Logger.getInstance().logRobotThread(Level.CONFIG, "Alliance: " + DriverStation.getInstance().getAlliance());
 		Logger.getInstance().logRobotThread(Level.CONFIG, "FMS connected: " + DriverStation.getInstance().isFMSAttached());
 		Logger.getInstance().logRobotThread(Level.CONFIG, "Alliance station: " + DriverStation.getInstance().getLocation());
@@ -91,14 +88,6 @@ public class Robot extends TimedRobot {
 
 		robotState.matchStartTime = System.currentTimeMillis();
 
-		//Wait for talons to update
-//		try {
-//			Logger.getInstance().logRobotThread(Level.FINEST, "Sleeping thread for 200 ms");
-//			Thread.sleep(200);
-//		} catch(InterruptedException e) {
-//
-//		}
-
 		mHardwareUpdater.updateState(robotState);
 		mRoutineManager.reset(commands);
 		robotState.reset(0, new RigidTransform2d());
@@ -121,7 +110,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-		//if(!this.mAutoStarted) {
 		if(AutoFMS.isFMSDataAvailable() && !this.mAutoStarted) {
 			//Get the selected auto mode
 			AutoModeBase mode = AutoModeSelector.getInstance().getAutoMode();
@@ -198,8 +186,6 @@ public class Robot extends TimedRobot {
 
 		//Stop controllers
 		mDrive.setNeutral();
-//		mHardwareUpdater.disableTalons();
-//		mHardwareUpdater.disableBrakeMode();
 		DashboardManager.getInstance().toggleCANTable(false);
 
 		stopSubsystems();
@@ -245,7 +231,6 @@ public class Robot extends TimedRobot {
 		mPusher.start();
 		mFingers.start();
 		mShovel.start();
-		mAutoPlacer.start();
 		mIntake.start();
 	}
 
@@ -256,7 +241,6 @@ public class Robot extends TimedRobot {
 		mPusher.update(commands, robotState);
 		mFingers.update(commands, robotState);
 		mShovel.update(commands, robotState);
-		mAutoPlacer.update(commands, robotState);
 		mIntake.update(commands, robotState);
 	}
 
@@ -268,7 +252,6 @@ public class Robot extends TimedRobot {
 		mPusher.stop();
 		mFingers.stop();
 		mShovel.stop();
-		mAutoPlacer.stop();
 		mIntake.stop();
 	}
 }

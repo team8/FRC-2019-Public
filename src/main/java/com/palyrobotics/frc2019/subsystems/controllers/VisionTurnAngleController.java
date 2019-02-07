@@ -1,10 +1,11 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
+import com.palyrobotics.frc2019.config.Constants.*;
 import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.util.DriveSignal;
 import com.palyrobotics.frc2019.util.Pose;
+import com.palyrobotics.frc2019.util.SparkSignal;
 import com.palyrobotics.frc2019.util.SynchronousPID;
 import com.palyrobotics.frc2019.vision.Limelight;
 
@@ -36,16 +37,15 @@ public class VisionTurnAngleController implements Drive.DriveController {
     }
 
     @Override
-    public DriveSignal update(RobotState state) {
+    public SparkSignal update(RobotState state) {
         if(this.onTarget()) {
-            return DriveSignal.getNeutralSignal();
+            return SparkSignal.getNeutralSignal();
         }
 
         mCachedPose = state.drivePose;
         double error = Limelight.getInstance().getYawToTarget();
         double turn = pidController.calculate(error);
-        System.out.println("runn " + turn);
-        DriveSignal output = DriveSignal.getNeutralSignal();
+        SparkSignal output = SparkSignal.getNeutralSignal();
         output.leftMotor.setPercentOutput(turn);
         output.rightMotor.setPercentOutput(-turn);
 
@@ -61,11 +61,8 @@ public class VisionTurnAngleController implements Drive.DriveController {
 
     @Override
     public boolean onTarget() {
-        System.out.println("DIEEE");
-        System.out.println("a " + Limelight.getInstance().getYawToTarget());
-        System.out.println(Limelight.getInstance().isConnected());
-        double tolerance = 1;
-        return Math.abs(Limelight.getInstance().getYawToTarget()) < tolerance && Math.abs(mCachedPose.headingVelocity) < 1;
+        return Math.abs(Limelight.getInstance().getYawToTarget()) < OtherConstants.kVisionAlignDistanceTolerance
+                && Math.abs(mCachedPose.headingVelocity) < OtherConstants.kVisionAlignSpeedyTolerance;
     }
 
 }

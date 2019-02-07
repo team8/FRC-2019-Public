@@ -1,12 +1,13 @@
 package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants;
+import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.config.dashboard.DashboardValue;
 import com.palyrobotics.frc2019.subsystems.controllers.*;
 import com.palyrobotics.frc2019.util.VisionDriveHelper;
+import com.palyrobotics.frc2019.util.SparkSignal;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.CheesyDriveHelper;
 import com.palyrobotics.frc2019.util.DriveSignal;
@@ -19,7 +20,7 @@ import java.util.logging.Level;
 /**
  * Represents the drivetrain Uses controllers or cheesydrivehelper/proportionaldrivehelper to calculate DriveSignal
  * 
- * @author Nihar
+ * @author Not Nihar
  */
 public class Drive extends Subsystem {
 	private static Drive instance = new Drive();
@@ -65,7 +66,7 @@ public class Drive extends Subsystem {
 	//Cached robot state, updated by looper
 	private RobotState mCachedRobotState;
 	//Stores output
-	private DriveSignal mSignal = DriveSignal.getNeutralSignal();
+	private SparkSignal mSignal = SparkSignal.getNeutralSignal();
 
 	private DashboardValue motors;
 
@@ -78,8 +79,8 @@ public class Drive extends Subsystem {
 		super("Drive");
 		kWheelbaseWidth = 0;
 		kTurnSlipFactor = 0;
-		kInchesPerTick = 1 / Constants.kDriveTicksPerInch;
-		kInchesToTicks = Constants.kDriveTicksPerInch;
+		kInchesPerTick = 1 / DrivetrainConstants.kDriveTicksPerInch;
+		kInchesToTicks = DrivetrainConstants.kDriveTicksPerInch;
 
 		motors = new DashboardValue("driveSpeedUpdate");
 
@@ -90,7 +91,7 @@ public class Drive extends Subsystem {
 	/**
 	 * @return DriveSignal
 	 */
-	public DriveSignal getDriveSignal() {
+	public SparkSignal getDriveSignal() {
 		return mSignal;
 	}
 
@@ -105,7 +106,7 @@ public class Drive extends Subsystem {
 	 * <br>
 	 * Contains a state machine that switches. based on {@link DriveState} and updates the
 	 * {@link DriveController} with the current {@link RobotState}. The controllers then output 
-	 * a {@link DriveSignal}, which is then used to {@link Drive#setDriveOutputs}.
+	 * a {@link SparkSignal}, which is then used to {@link Drive#setDriveOutputs}.
 	 * <br><br>
 	 * 
 	 * States and behavior:
@@ -179,7 +180,7 @@ public class Drive extends Subsystem {
 				if(!newController && mIsNewState) {
 					resetController();
 				}
-				setDriveOutputs(DriveSignal.getNeutralSignal());
+				setDriveOutputs(SparkSignal.getNeutralSignal());
 
 				if(mCachedRobotState.gamePeriod.equals(RobotState.GamePeriod.TELEOP)) {
 					if(mIsNewState) {
@@ -221,7 +222,7 @@ public class Drive extends Subsystem {
 	public void stop() {
 	}
 
-	private void setDriveOutputs(DriveSignal signal) {
+	private void setDriveOutputs(SparkSignal signal) {
 		mSignal = signal;
 	}
 
@@ -231,11 +232,11 @@ public class Drive extends Subsystem {
 	public void setNeutral() {
 		mController = null;
 		mState = DriveState.NEUTRAL;
-		setDriveOutputs(DriveSignal.getNeutralSignal());
+		setDriveOutputs(SparkSignal.getNeutralSignal());
 	}
 
-	public void setTalonSRXController(DriveSignal signal) {
-		mController = new TalonSRXDriveController(signal);
+	public void setSparkMaxController(SparkSignal signal) {
+		mController = new SparkMaxDriveController(signal);
 		newController = true;
 	}
 	public void setVisionAngleSetpoint() {
@@ -247,17 +248,6 @@ public class Drive extends Subsystem {
 		newController = true;
 	}
 
-	public void setTurnAngleEncoderSetpoint(double angle) {
-		Logger.getInstance().logSubsystemThread(Level.FINE, "Encoder angle", angle);
-		mController = new EncoderTurnAngleController(mCachedPose, angle);
-		newController = true;
-	}
-
-	public void setGyroMotionMagicTurnAngleSetpoint(double angle) {
-		mController = new GyroMotionMagicTurnAngleController(mCachedPose, angle);
-		newController = true;
-	}
-
 	/**
 	 * Motion profile hype
 	 * 
@@ -265,21 +255,22 @@ public class Drive extends Subsystem {
 	 * @param inverted Boolean to invert path
 	 */
 	public void setTrajectoryController(Path path, boolean inverted) {
-		mController = new AdaptivePurePursuitController(Constants.kPathFollowingLookahead, Constants.kPathFollowingMaxAccel, Constants.kNormalLoopsDt, path,
+		mController = new AdaptivePurePursuitController(DrivetrainConstants.kPathFollowingLookahead, DrivetrainConstants.kPathFollowingMaxAccel,
+				DrivetrainConstants.kNormalLoopsDt, path,
 				inverted, 0);
 		mController.update(mCachedRobotState);
 		newController = true;
 	}
 
 	public void setTrajectoryController(Path path, double lookahead, boolean inverted) {
-		mController = new AdaptivePurePursuitController(lookahead, Constants.kPathFollowingMaxAccel, Constants.kNormalLoopsDt, path,
+		mController = new AdaptivePurePursuitController(lookahead, DrivetrainConstants.kPathFollowingMaxAccel, DrivetrainConstants.kNormalLoopsDt, path,
 				inverted, 0);
 		mController.update(mCachedRobotState);
 		newController = true;
 	}
 
 	public void setTrajectoryController(Path path, double lookahead, boolean inverted, double tolerance) {
-		mController = new AdaptivePurePursuitController(lookahead, Constants.kPathFollowingMaxAccel, Constants.kNormalLoopsDt, path,
+		mController = new AdaptivePurePursuitController(lookahead, DrivetrainConstants.kPathFollowingMaxAccel, DrivetrainConstants.kNormalLoopsDt, path,
 				inverted, tolerance);
 		mController.update(mCachedRobotState);
 		newController = true;
@@ -334,7 +325,7 @@ public class Drive extends Subsystem {
 	 * Contains an {@code update} method that takes a {@link RobotState} and generates a {@link DriveSignal}.
 	 */
 	public interface DriveController {
-		DriveSignal update(RobotState state);
+		SparkSignal update(RobotState state);
 
 		Pose getSetpoint();
 
@@ -343,7 +334,7 @@ public class Drive extends Subsystem {
 
 	@Override
 	public String getStatus() {
-		return "Drive State: " + mState + "\nOutput Control Mode: " + mSignal.leftMotor.getControlMode() + "\nLeft Setpoint: " + mSignal.leftMotor.getSetpoint()
+		return "Drive State: " + mState + "\nOutput Control Mode: " + mSignal.leftMotor.getControlType() + "\nLeft Setpoint: " + mSignal.leftMotor.getSetpoint()
 				+ "\nRight Setpoint: " + mSignal.rightMotor.getSetpoint() + "\nLeft Enc: " + mCachedPose.leftEnc + "\nRight Enc: " + mCachedPose.rightEnc
 				+ "\nGyro: " + mCachedPose.heading + "\n";
 	}

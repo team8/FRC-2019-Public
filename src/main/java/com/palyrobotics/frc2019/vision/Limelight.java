@@ -1,21 +1,11 @@
 package com.palyrobotics.frc2019.vision;
 
-import com.palyrobotics.frc2019.config.Constants;
-import com.palyrobotics.frc2019.robot.Robot;
-import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import com.palyrobotics.frc2019.vision.LimelightControlMode.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
-import org.opencv.core.*;
-import org.opencv.calib3d.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.logging.Level;
 
 /**
  *   Limelight class was started by Corey Applegate of Team 3244

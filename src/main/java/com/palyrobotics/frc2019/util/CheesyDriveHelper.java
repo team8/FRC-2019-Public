@@ -1,8 +1,8 @@
 package com.palyrobotics.frc2019.util;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.Constants.*;
 
 /**
  * CheesyDriveHelper implements the calculations used in CheesyDrive for teleop control. Returns a DriveSignal for the motor output
@@ -12,7 +12,7 @@ public class CheesyDriveHelper {
 	private boolean mInitialBrake;
 	private double mOldThrottle = 0.0, mBrakeRate;
 
-	public DriveSignal cheesyDrive(Commands commands, RobotState robotState) {
+	public SparkSignal cheesyDrive(Commands commands, RobotState robotState) {
 		double throttle = -robotState.leftStickInput.getY();
 		double wheel = -robotState.rightStickInput.getX();
 
@@ -24,8 +24,8 @@ public class CheesyDriveHelper {
 
 		double wheelNonLinearity;
 
-		wheel = ChezyMath.handleDeadband(wheel, Constants.kDeadband);
-		throttle = ChezyMath.handleDeadband(throttle, Constants.kDeadband);
+		wheel = ChezyMath.handleDeadband(wheel, DrivetrainConstants.kDeadband);
+		throttle = ChezyMath.handleDeadband(throttle, DrivetrainConstants.kDeadband);
 
 		double negInertia = wheel - mOldWheel;
 		mOldWheel = wheel;
@@ -59,7 +59,7 @@ public class CheesyDriveHelper {
 			}
 		}
 
-		sensitivity = Constants.kDriveSensitivity;
+		sensitivity = DrivetrainConstants.kDriveSensitivity;
 
 		//neginertia is difference in wheel
 		double negInertiaPower = negInertia * negInertiaScalar;
@@ -76,7 +76,7 @@ public class CheesyDriveHelper {
 				//Old throttle initially set to throttle
 				mOldThrottle = linearPower;
 				//Braking rate set
-				mBrakeRate = mOldThrottle / Constants.kCyclesUntilStop;
+				mBrakeRate = mOldThrottle / DrivetrainConstants.kCyclesUntilStop;
 			}
 
 			//If braking is not complete, decrease by the brake rate
@@ -93,16 +93,16 @@ public class CheesyDriveHelper {
 
 		//Quickturn
 		if(isQuickTurn) {
-			if(Math.abs(robotState.rightStickInput.getX()) < Constants.kQuickTurnSensitivityThreshold) {
-				sensitivity = Constants.kPreciseQuickTurnSensitivity;
+			if(Math.abs(robotState.rightStickInput.getX()) < DrivetrainConstants.kQuickTurnSensitivityThreshold) {
+				sensitivity = DrivetrainConstants.kPreciseQuickTurnSensitivity;
 			} else {
-				sensitivity = Constants.kQuickTurnSensitivity;
+				sensitivity = DrivetrainConstants.kQuickTurnSensitivity;
 			}
 
 			angularPower = wheel * sensitivity;
 
 			//Can be tuned
-			double alpha = Constants.kAlpha;
+			double alpha = DrivetrainConstants.kAlpha;
 			mQuickStopAccumulator = (1 - alpha) * mQuickStopAccumulator + alpha * angularPower * 6.5;
 
 			overPower = 1.0;
@@ -112,10 +112,10 @@ public class CheesyDriveHelper {
 			//Sets turn amount
 			angularPower = Math.abs(throttle) * wheel * sensitivity - mQuickStopAccumulator;
 
-			if(mQuickStopAccumulator > Constants.kQuickStopAccumulatorDecreaseThreshold) {
-				mQuickStopAccumulator -= Constants.kQuickStopAccumulatorDecreaseRate;
-			} else if(mQuickStopAccumulator < -Constants.kQuickStopAccumulatorDecreaseThreshold) {
-				mQuickStopAccumulator += Constants.kQuickStopAccumulatorDecreaseRate;
+			if(mQuickStopAccumulator > DrivetrainConstants.kQuickStopAccumulatorDecreaseThreshold) {
+				mQuickStopAccumulator -= DrivetrainConstants.kQuickStopAccumulatorDecreaseRate;
+			} else if(mQuickStopAccumulator < -DrivetrainConstants.kQuickStopAccumulatorDecreaseThreshold) {
+				mQuickStopAccumulator += DrivetrainConstants.kQuickStopAccumulatorDecreaseRate;
 			} else {
 				mQuickStopAccumulator = 0.0;
 			}
@@ -139,7 +139,7 @@ public class CheesyDriveHelper {
 			rightPower = -1.0;
 		}
 
-		DriveSignal mSignal = DriveSignal.getNeutralSignal();
+		SparkSignal mSignal = SparkSignal.getNeutralSignal();
 
 		mSignal.leftMotor.setPercentOutput(leftPower);
 		mSignal.rightMotor.setPercentOutput(rightPower);
@@ -151,7 +151,7 @@ public class CheesyDriveHelper {
 	 */
 	public double remapThrottle(double initialThrottle) {
 		double x = Math.abs(initialThrottle);
-		switch(Constants.kDriverName) {
+		switch(OtherConstants.kDriverName) {
 			case BRYAN:
 				//Reversal of directions
 				//Stick a 0 cycle in between
@@ -161,7 +161,7 @@ public class CheesyDriveHelper {
 
 				//Increase in magnitude, deceleration is fine. This misses rapid direction switches, but that's up to driver
 				if(x > Math.abs(mOldThrottle)) {
-					x = mOldThrottle + Math.signum(initialThrottle) * Constants.kMaxAccelRate;
+					x = mOldThrottle + Math.signum(initialThrottle) * DrivetrainConstants.kMaxAccelRate;
 				} else {
 					x = initialThrottle;
 				}

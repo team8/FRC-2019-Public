@@ -6,6 +6,7 @@ import com.palyrobotics.frc2019.util.JoystickInput;
 import com.palyrobotics.frc2019.util.Pose;
 import com.palyrobotics.frc2019.util.XboxInput;
 import com.palyrobotics.frc2019.util.trajectory.*;
+import com.revrobotics.ControlType;
 
 import java.util.*;
 
@@ -36,17 +37,20 @@ public class RobotState {
 	public GamePeriod gamePeriod = GamePeriod.DISABLED;
 	
 	//Drivetrain
-	public ControlMode leftControlMode = ControlMode.Disabled;
-	public ControlMode rightControlMode = ControlMode.Disabled;
+	public ControlType leftControlMode = ControlType.kDutyCycle;
+	public ControlType rightControlMode = ControlType.kDutyCycle;
 
 	public double leftSetpoint = 0;
 	public double rightSetpoint = 0;
 
+	public double robotVelocity;
+	public double robotAccel;
+
 	//Intake
 	public boolean hasCargo = false;
 	public double cargoDistance = 0;
-	public double intakeAngle = 0; //ticks
-	public double intakePosition = 0;  // Angle in degrees
+	public double intakeStartAngle = 0;  // Angle in degrees
+	public double intakeAngle = 0;  // Angle in degrees
 	public double intakeVelocity = 0; //rpm
 	public boolean hasIntakeStickyFaults = false;
 	public ArrayList<Double> mLeftReadings = new ArrayList<>();

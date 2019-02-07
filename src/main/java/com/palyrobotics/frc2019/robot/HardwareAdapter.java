@@ -1,10 +1,7 @@
 package com.palyrobotics.frc2019.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.palyrobotics.frc2019.config.Constants;
 import com.palyrobotics.frc2019.util.XboxController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -18,8 +15,8 @@ import edu.wpi.first.wpilibj.*;
  */
 public class HardwareAdapter {
 	//Hardware components at the top for maintenance purposes, variables and getters at bottom
-	/*
-	 * DRIVETRAIN - 2 WPI_TalonSRX's and 4 WPI_VictorSPX's
+	/**
+	 * DRIVETRAIN - 6 CANSparkMax, 1 Gyro
 	 */
 	public static class DrivetrainHardware {
 		private static DrivetrainHardware instance = new DrivetrainHardware();
@@ -28,12 +25,12 @@ public class HardwareAdapter {
 			return instance;
 		}
 
-		public final WPI_TalonSRX leftMasterTalon;
-		public final WPI_VictorSPX leftSlave1Victor;
-		public final WPI_VictorSPX leftSlave2Victor;
-        public final WPI_TalonSRX rightMasterTalon;
-		public final WPI_VictorSPX rightSlave1Victor;
-		public final WPI_VictorSPX rightSlave2Victor;
+		public final CANSparkMax leftMasterSpark;
+		public final CANSparkMax leftSlave1Spark;
+		public final CANSparkMax leftSlave2Spark;
+        public final CANSparkMax rightMasterSpark;
+		public final CANSparkMax rightSlave1Spark;
+		public final CANSparkMax rightSlave2Spark;
 		
 		public final PigeonIMU gyro;
 
@@ -41,19 +38,17 @@ public class HardwareAdapter {
 			instance.gyro.setYaw(0, 0);
 			instance.gyro.setFusedHeading(0, 0);
 			instance.gyro.setAccumZAngle(0, 0);
-			instance.leftMasterTalon.setSelectedSensorPosition(0, 0, 0);
-			instance.rightMasterTalon.setSelectedSensorPosition(0, 0, 0);
 		}
 
 		protected DrivetrainHardware() {
-			leftMasterTalon = new WPI_TalonSRX(Constants.kVidarLeftDriveMasterDeviceID);
-			leftSlave1Victor = new WPI_VictorSPX(Constants.kVidarLeftDriveSlave1DeviceID);
-			leftSlave2Victor = new WPI_VictorSPX(Constants.kVidarLeftDriveSlave2DeviceID);
-            rightMasterTalon = new WPI_TalonSRX(Constants.kVidarRightDriveMasterDeviceID);
-			rightSlave1Victor = new WPI_VictorSPX(Constants.kVidarRightDriveSlave1DeviceID);
-			rightSlave2Victor = new WPI_VictorSPX(Constants.kVidarRightDriveSlave2DeviceID);
+			leftMasterSpark = new CANSparkMax(PortConstants.kVidarLeftDriveMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			leftSlave1Spark = new CANSparkMax(PortConstants.kVidarLeftDriveSlave1DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			leftSlave2Spark = new CANSparkMax(PortConstants.kVidarLeftDriveSlave2DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            rightMasterSpark = new CANSparkMax(PortConstants.kVidarRightDriveMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			rightSlave1Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave1DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			rightSlave2Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave2DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-			gyro = new PigeonIMU(0);
+			gyro = new PigeonIMU(PortConstants.kGyroPort);
 		}
 	}
 
@@ -73,15 +68,15 @@ public class HardwareAdapter {
         public final DigitalInput elevatorHFX;
 
         protected ElevatorHardware() {
-            elevatorMasterSpark = new CANSparkMax(Constants.kVidarElevatorMasterSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            elevatorSlaveSpark = new CANSparkMax(Constants.kVidarElevatorSlaveSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            elevatorDoubleSolenoid = new DoubleSolenoid(Constants.kVidarElevatorDoubleSolenoidForwardsID, Constants.kVidarElevatorDoubleSolenoidReverseID);
-			elevatorHFX = new DigitalInput(Constants.kElevatorHFXPort);
+            elevatorMasterSpark = new CANSparkMax(PortConstants.kVidarElevatorMasterSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            elevatorSlaveSpark = new CANSparkMax(PortConstants.kVidarElevatorSlaveSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            elevatorDoubleSolenoid = new DoubleSolenoid(PortConstants.kVidarElevatorDoubleSolenoidForwardsID, PortConstants.kVidarElevatorDoubleSolenoidReverseID);
+			elevatorHFX = new DigitalInput(PortConstants.kElevatorHFXPort);
         }
     }
 
 	/**
-	 * Intake - 2 WPI_TalonSRX's, 1 WPI_VictorSPX, 2 Ultrasonics
+	 * Intake - 2 CANSparkMax, 1 WPI_VictorSPX, 2 Ultrasonics
 	 */
 	public static class IntakeHardware {
 		private static IntakeHardware instance = new IntakeHardware();
@@ -95,13 +90,15 @@ public class HardwareAdapter {
 		public final CANSparkMax intakeSlaveSpark;
 		public final Ultrasonic ultrasonic1;
 		public final Ultrasonic ultrasonic2;
+		public final AnalogPotentiometer potentiometer;
 
 		protected IntakeHardware() {
-			intakeVictor = new WPI_VictorSPX(Constants.kIntakeVictorID);
-			intakeMasterSpark = new CANSparkMax(Constants.kIntakeMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-			intakeSlaveSpark = new CANSparkMax(Constants.kIntakeSlaveDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-			ultrasonic1 = new Ultrasonic(Constants.kLeftUltrasonicPing,Constants.kLeftUltrasonicEcho);
-			ultrasonic2 = new Ultrasonic(Constants.kRightUltrasonicPing,Constants.kRightUltrasonicEcho);
+			intakeVictor = new WPI_VictorSPX(PortConstants.kVidarIntakeVictorDeviceID);
+			intakeMasterSpark = new CANSparkMax(PortConstants.kVidarIntakeMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			intakeSlaveSpark = new CANSparkMax(PortConstants.kVidarIntakeSlaveDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			ultrasonic1 = new Ultrasonic(OtherConstants.kLeftUltrasonicPing, OtherConstants.kLeftUltrasonicEcho);
+			ultrasonic2 = new Ultrasonic(OtherConstants.kRightUltrasonicPing,OtherConstants.kRightUltrasonicEcho);
+			potentiometer = new AnalogPotentiometer(PortConstants.kVidarAnalogPot);
 		}
 	}
 
@@ -119,10 +116,10 @@ public class HardwareAdapter {
 		public final AnalogPotentiometer pusherPotentiometer;
 
 		protected PusherHardware() {
-			pusherVictor = new WPI_VictorSPX(Constants.kVidarPusherVictorID);
-			pusherUltrasonicRight = new Ultrasonic(Constants.kVidarPusherRightUltrasonicPing, Constants.kVidarPusherRightUltrasonicEcho);
-			pusherUltrasonicLeft = new Ultrasonic(Constants.kVidarPusherLeftUltrasonicPing, Constants.kVidarPusherLeftUltrasonicEcho);
-			pusherPotentiometer = new AnalogPotentiometer(Constants.kVidarPusherPotID, 360, 0);
+			pusherVictor = new WPI_VictorSPX(PortConstants.kVidarPusherVictorID);
+			pusherUltrasonicRight = new Ultrasonic(OtherConstants.kVidarPusherRightUltrasonicPing, OtherConstants.kVidarPusherRightUltrasonicEcho);
+			pusherUltrasonicLeft = new Ultrasonic(OtherConstants.kVidarPusherLeftUltrasonicPing, OtherConstants.kVidarPusherLeftUltrasonicEcho);
+			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
 		}
 	}
 
@@ -137,27 +134,10 @@ public class HardwareAdapter {
 		public final WPI_VictorSPX shooterSlaveVictor;
 
 		protected ShooterHardware() {
-			shooterMasterVictor = new WPI_VictorSPX(Constants.kVidarShooterMasterVictorDeviceID);
-			shooterSlaveVictor = new WPI_VictorSPX(Constants.kVidarShooterSlaveVictorDeviceID);
+			shooterMasterVictor = new WPI_VictorSPX(PortConstants.kVidarShooterMasterVictorDeviceID);
+			shooterSlaveVictor = new WPI_VictorSPX(PortConstants.kVidarShooterSlaveVictorDeviceID);
 		}
 	}
-
-    /**
-     * Auto Placer Hardware
-     */
-    public static class AutoPlacerHardware {
-        private static AutoPlacerHardware instance = new AutoPlacerHardware();
-
-        private static AutoPlacerHardware getInstance() {
-            return instance;
-        }
-
-        public final Solenoid solenoid;
-
-        protected AutoPlacerHardware() {
-            solenoid = new Solenoid(Constants.kAutoPlacerSolenoidID);
-        }
-    }
 
 	/**
 	 * Hatch Intake - 1 WPI_VictorSPX, 1 SingleSolenoid
@@ -174,9 +154,9 @@ public class HardwareAdapter {
 		public final DigitalInput upDownHFX;
 
 		protected ShovelHardware() {
-			ShovelVictor = new WPI_VictorSPX(Constants.kShovelID);
-			upDownSolenoid = new Solenoid(0, Constants.kShovelUpDownSolenoid);
-			upDownHFX = new DigitalInput(Constants.kShovelHFXPort);
+			ShovelVictor = new WPI_VictorSPX(PortConstants.kVidarShovelDeviceID);
+			upDownSolenoid = new Solenoid(0, PortConstants.kVidarShovelSolenoidUpDownID);
+			upDownHFX = new DigitalInput(PortConstants.kVidarShovelHFXPort);
 		}
 	}
 
@@ -189,8 +169,8 @@ public class HardwareAdapter {
 		public final DoubleSolenoid expelSolenoid;
 
 		protected FingersHardware() {
-			openCloseSolenoid = new DoubleSolenoid(Constants.kVidarOpenCloseSolenoidForwardID, Constants.kVidarOpenCloseSolenoidReverseID);
-			expelSolenoid = new DoubleSolenoid(Constants.kVidarExpelSolenoidForwardID, Constants.kVidarExpelSolenoidReverseID);
+			openCloseSolenoid = new DoubleSolenoid(PortConstants.kVidarOpenCloseSolenoidForwardID, PortConstants.kVidarOpenCloseSolenoidReverseID);
+			expelSolenoid = new DoubleSolenoid(PortConstants.kVidarExpelSolenoidForwardID, PortConstants.kVidarExpelSolenoidReverseID);
 		}
 	}
 
@@ -209,7 +189,7 @@ public class HardwareAdapter {
 		public XboxController operatorXboxController = null;
 
 		protected Joysticks() {
-			if(Constants.operatorXBoxController) {
+			if(OtherConstants.operatorXBoxController) {
 				operatorXboxController = new XboxController(2, false);
 			} else {
 				operatorJoystick = new Joystick(3);
@@ -258,10 +238,6 @@ public class HardwareAdapter {
 	public ShovelHardware getShovel() {
 	    return ShovelHardware.getInstance();
 	}
-
-	public AutoPlacerHardware getAutoPlacer() {
-	    return AutoPlacerHardware.getInstance();
-    }
 
 	public PusherHardware getPusher() { return PusherHardware.getInstance(); }
 
