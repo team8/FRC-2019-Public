@@ -1,10 +1,10 @@
-package com.palyrobotics.frc2018.util;
+package com.palyrobotics.frc2019.util;
 
-import com.palyrobotics.frc2018.config.Commands;
-import com.palyrobotics.frc2018.config.Constants;
-import com.palyrobotics.frc2018.config.Gains;
-import com.palyrobotics.frc2018.config.RobotState;
-import com.palyrobotics.frc2018.vision.Limelight;
+import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.config.Constants;
+import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.vision.Limelight;
 
 /**
  * CheesyDriveHelper implements the calculations used in CheesyDrive for teleop control. Returns a DriveSignal for the motor output
@@ -189,7 +189,7 @@ public class VisionDriveHelper {
 	public double remapThrottle(double initialThrottle) {
 		double x = Math.abs(initialThrottle);
 		switch(Constants.kDriverName) {
-			case ERIC:
+			case BRYAN:
 				//Reversal of directions
 				//Stick a 0 cycle in between
 				if(initialThrottle * mOldThrottle < 0) {

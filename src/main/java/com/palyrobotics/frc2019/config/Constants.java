@@ -1,5 +1,8 @@
 package com.palyrobotics.frc2019.config;
 
+import org.opencv.core.MatOfDouble;
+import org.opencv.core.Point3;
+
 public class Constants {
 	public enum RobotName {
         VIDAR
@@ -130,6 +133,29 @@ public class Constants {
 
     public static final double kClimberAcceptablePositionError = 0;
     public static final double kClimberAcceptableVelocityError = 0;
+
+	/**
+	 * Vision constants
+	 */
+	// Physical constants of the limelight mount
+	public static final double kLimelightElevationAngleDegrees = 30.00;
+	public static final double kLimelightHeightInches = 11.00;
+	// Limelight video feed dimensions
+	public static final double kLimelightHeightPixels = 240;
+	public static final double kLimelightWidthPixels = 320;
+	// Height of the centers of vision targets
+	public static final double kRocketHatchTargetHeight = 31.5 - (2.0 * Math.sin(Math.toRadians(14.5)) - 5.5 * Math.cos(Math.toRadians(14.5))) / 2;
+	public static final double kCargoHatchTargetHeight = kRocketHatchTargetHeight;
+	public static final double kLoadingHatchTargetHeight = kRocketHatchTargetHeight;
+	public static final double kRocketPortTargetHeight = 39.375 - (2.0 * Math.sin(Math.toRadians(14.5)) - 5.5 * Math.cos(Math.toRadians(14.5))) / 2;
+	// Dimensions of vision target
+	public static final double kTargetHeight = 6.0;
+	public static final double kTargetWidth = 14.5;
+	public static final double kTargetWidthTop = 10.5;
+	public static final double kTargetWidthBottom = 12.75;
+	public static final double kVisionDrivePathToleranceFar = 15.0;
+	public static final double kVisionDrivePathToleranceClose = 12.0;
+
 
 	//Intake
 	public static final double kIntakingMotorVelocity = .4;

@@ -1,10 +1,11 @@
-package com.palyrobotics.frc2018.behavior.routines.drive;
+package com.palyrobotics.frc2019.behavior.routines.drive;
 
-import com.palyrobotics.frc2018.behavior.Routine;
-import com.palyrobotics.frc2018.config.Commands;
-import com.palyrobotics.frc2018.subsystems.Drive;
-import com.palyrobotics.frc2018.subsystems.Subsystem;
-import com.palyrobotics.frc2018.util.logger.Logger;
+import com.palyrobotics.frc2019.behavior.Routine;
+import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.subsystems.Drive;
+import com.palyrobotics.frc2019.subsystems.Subsystem;
+import com.palyrobotics.frc2019.util.logger.Logger;
+import com.palyrobotics.frc2019.vision.Limelight;
 
 import java.util.logging.Level;
 
@@ -24,9 +25,7 @@ public class VisionAlignRoutine extends Routine {
     }
 
     public VisionAlignRoutine() {
-        this.mAngle = -robotState.degRotationToTarget;
-        System.out.println("Target: " + this.mAngle);
-        System.out.println("Current: " + robotState.drivePose.heading);
+        this.mAngle = Limelight.getInstance().getYawToTarget();
     }
 
     @Override
