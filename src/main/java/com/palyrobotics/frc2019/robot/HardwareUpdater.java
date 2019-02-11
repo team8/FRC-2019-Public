@@ -16,6 +16,7 @@ import com.palyrobotics.frc2019.util.trajectory.Rotation2d;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -57,6 +58,7 @@ class HardwareUpdater {
 		Logger.getInstance().logRobotThread(Level.INFO, "Init hardware");
 		configureHardware();
 		startIntakeArm(); // just sensor wise
+		startUltrasonics();
 	}
 
 	void disableSpeedControllers() {
@@ -162,9 +164,6 @@ class HardwareUpdater {
 		CANSparkMax intakeSlaveSpark = HardwareAdapter.getInstance().getIntake().intakeSlaveSpark;
 		WPI_VictorSPX intakeVictor = HardwareAdapter.getInstance().getIntake().intakeVictor;
 
-		Ultrasonic ultrasonic1 = HardwareAdapter.getInstance().getIntake().ultrasonic1;
-		Ultrasonic ultrasonic2 = HardwareAdapter.getInstance().getIntake().ultrasonic2;
-
 		intakeMasterSpark.setInverted(true);
 		intakeSlaveSpark.setInverted(true);
 		intakeVictor.setInverted(true);
@@ -184,11 +183,6 @@ class HardwareUpdater {
 
 		//Set slave sparks to follower mode
 		intakeSlaveSpark.follow(intakeMasterSpark);
-
-        ultrasonic1.setAutomaticMode(true);
-		ultrasonic1.setEnabled(true);
-		ultrasonic2.setAutomaticMode(true);
-		ultrasonic2.setAutomaticMode(true);
 
 	}
 
@@ -229,13 +223,26 @@ class HardwareUpdater {
 		pusherVictor.configVoltageCompSaturation(14, 0);
 		pusherVictor.configForwardSoftLimitEnable(false, 0);
 
+
+	}
+
+	void startUltrasonics() {
 		Ultrasonic pusherUltrasonicRight = HardwareAdapter.getInstance().getPusher().pusherUltrasonicRight;
 		Ultrasonic pusherUltrasonicLeft = HardwareAdapter.getInstance().getPusher().pusherUltrasonicLeft;
+
+
+		Ultrasonic ultrasonic1 = HardwareAdapter.getInstance().getIntake().ultrasonic1;
+		Ultrasonic ultrasonic2 = HardwareAdapter.getInstance().getIntake().ultrasonic2;
 
 		pusherUltrasonicRight.setAutomaticMode(true);
 		pusherUltrasonicRight.setEnabled(true);
 		pusherUltrasonicLeft.setAutomaticMode(true);
 		pusherUltrasonicLeft.setEnabled(true);
+
+		ultrasonic1.setAutomaticMode(true);
+		ultrasonic1.setEnabled(true);
+		ultrasonic2.setAutomaticMode(true);
+		ultrasonic2.setAutomaticMode(true);
 	}
 
 	void configureShovelHardware() {
@@ -257,8 +264,11 @@ class HardwareUpdater {
 		CANSparkMax leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark;
 		CANSparkMax rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
 
-		robotState.leftControlMode = ControlType.values()[leftMasterSpark.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kCtrlType).get()];
-		robotState.rightControlMode = ControlType.values()[rightMasterSpark.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kCtrlType).get()];
+		int lcm = leftMasterSpark.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kCtrlType).isPresent() ? leftMasterSpark.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kCtrlType).get() : 0;
+		int rcm = rightMasterSpark.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kCtrlType).isPresent() ? rightMasterSpark.getParameterInt(CANSparkMaxLowLevel.ConfigParameter.kCtrlType).get() : 0;
+
+		robotState.leftControlMode = ControlType.values()[lcm];
+		robotState.rightControlMode = ControlType.values()[rcm];
 
 		robotState.leftStickInput.update(HardwareAdapter.getInstance().getJoysticks().driveStick);
 		robotState.rightStickInput.update(HardwareAdapter.getInstance().getJoysticks().turnStick);
@@ -505,7 +515,7 @@ class HardwareUpdater {
      */
 	private void updateShovel() {
 		HardwareAdapter.getInstance().getShovel().ShovelVictor.set(mShovel.getVictorOutput());
-		HardwareAdapter.getInstance().getShovel().upDownSolenoid.set(mShovel.getUpDownOutput());
+		HardwareAdapter.getInstance().getShovel().upDownSolenoid.set(mShovel.getUpDownOutput() ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 	}
 
 	/**

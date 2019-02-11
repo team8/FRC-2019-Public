@@ -18,7 +18,7 @@ public class Pusher extends Subsystem {
     private final double kTolerance;
     private SynchronousPID pusherPID;
 
-    private double mVictorOutput = pusherPID.calculate(PusherConstants.kVidarDistanceIn);
+    private double mVictorOutput = 0;
 
     public enum PusherState {
         IN, MIDDLE, OUT

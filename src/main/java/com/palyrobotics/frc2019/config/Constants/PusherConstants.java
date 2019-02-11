@@ -24,4 +24,9 @@ public class PusherConstants {
      * Unit Conversions
      */
     public static final double kTicksPerInch = 42.0 / (1.0 * Math.PI); // todo: change the 1 to the actual sprocket size
+
+    public static final int kVidarPusherRightUltrasonicPing = 5;
+    public static final int kVidarPusherRightUltrasonicEcho = 6;
+    public static final int kVidarPusherLeftUltrasonicPing = 7;
+    public static final int kVidarPusherLeftUltrasonicEcho = 8;
 }

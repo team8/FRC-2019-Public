@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.Constants.PortConstants;
+import com.palyrobotics.frc2019.config.Constants.PusherConstants;
 import com.palyrobotics.frc2019.util.XboxController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -74,8 +75,8 @@ public class HardwareAdapter {
         protected ElevatorHardware() {
             elevatorMasterSpark = new CANSparkMax(PortConstants.kVidarElevatorMasterSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
             elevatorSlaveSpark = new CANSparkMax(PortConstants.kVidarElevatorSlaveSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            elevatorDoubleSolenoid = new DoubleSolenoid(PortConstants.kVidarElevatorDoubleSolenoidForwardsID, PortConstants.kVidarElevatorDoubleSolenoidReverseID);
-            elevatorHolderSolenoid = new Solenoid(PortConstants.kVidarElevatorHolderSolenoidID);
+            elevatorDoubleSolenoid = new DoubleSolenoid(0,PortConstants.kVidarElevatorDoubleSolenoidForwardsID, PortConstants.kVidarElevatorDoubleSolenoidReverseID);
+            elevatorHolderSolenoid = new Solenoid(1,PortConstants.kVidarElevatorHolderSolenoidID);
 			elevatorHFX = new DigitalInput(PortConstants.kElevatorHFXPort);
         }
     }
@@ -122,9 +123,10 @@ public class HardwareAdapter {
 
 		protected PusherHardware() {
 			pusherVictor = new WPI_VictorSPX(PortConstants.kVidarPusherVictorID);
-			pusherUltrasonicRight = new Ultrasonic(OtherConstants.kVidarPusherRightUltrasonicPing, OtherConstants.kVidarPusherRightUltrasonicEcho);
-			pusherUltrasonicLeft = new Ultrasonic(OtherConstants.kVidarPusherLeftUltrasonicPing, OtherConstants.kVidarPusherLeftUltrasonicEcho);
+			pusherUltrasonicRight = new Ultrasonic(PusherConstants.kVidarPusherRightUltrasonicPing, PusherConstants.kVidarPusherRightUltrasonicEcho);
+			pusherUltrasonicLeft = new Ultrasonic(PusherConstants.kVidarPusherLeftUltrasonicPing, PusherConstants.kVidarPusherLeftUltrasonicEcho);
 			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
+
 		}
 	}
 
@@ -155,12 +157,12 @@ public class HardwareAdapter {
 		}
 
 		public final WPI_VictorSPX ShovelVictor;
-		public final Solenoid upDownSolenoid;
+		public final DoubleSolenoid upDownSolenoid;
 		public final DigitalInput upDownHFX;
 
 		protected ShovelHardware() {
 			ShovelVictor = new WPI_VictorSPX(PortConstants.kVidarShovelDeviceID);
-			upDownSolenoid = new Solenoid(0, PortConstants.kVidarShovelSolenoidUpDownID);
+			upDownSolenoid = new DoubleSolenoid(0, PortConstants.kVidarShovelSolenoidUpDownID, PortConstants.kVidarShovelSolenoidUpDownID2);
 			upDownHFX = new DigitalInput(PortConstants.kVidarShovelHFXPort);
 		}
 	}
@@ -174,8 +176,8 @@ public class HardwareAdapter {
 		public final DoubleSolenoid expelSolenoid;
 
 		protected FingersHardware() {
-			openCloseSolenoid = new DoubleSolenoid(PortConstants.kVidarOpenCloseSolenoidForwardID, PortConstants.kVidarOpenCloseSolenoidReverseID);
-			expelSolenoid = new DoubleSolenoid(PortConstants.kVidarExpelSolenoidForwardID, PortConstants.kVidarExpelSolenoidReverseID);
+			openCloseSolenoid = new DoubleSolenoid(0, PortConstants.kVidarOpenCloseSolenoidForwardID, PortConstants.kVidarOpenCloseSolenoidReverseID);
+			expelSolenoid = new DoubleSolenoid(0, PortConstants.kVidarExpelSolenoidForwardID, PortConstants.kVidarExpelSolenoidReverseID);
 		}
 	}
 
