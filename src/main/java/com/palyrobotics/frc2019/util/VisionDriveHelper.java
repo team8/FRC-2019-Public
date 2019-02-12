@@ -73,7 +73,7 @@ public class VisionDriveHelper {
         rightPower = leftPower = mOldThrottle = linearPower;
         leftPower += angularPower;
         rightPower -= angularPower;
-        System.out.println(angularPower);
+//        System.out.println(angularPower);
 
         if(leftPower > 1.0) {
             leftPower = 1.0;

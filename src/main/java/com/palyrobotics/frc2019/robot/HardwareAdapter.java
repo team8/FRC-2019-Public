@@ -51,8 +51,7 @@ public class HardwareAdapter {
             rightMasterSpark = new CANSparkMax(PortConstants.kVidarRightDriveMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
 			rightSlave1Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave1DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
 			rightSlave2Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave2DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-
-			gyro = new PigeonIMU(PortConstants.kGyroPort);
+			gyro = new PigeonIMU(ShovelHardware.getInstance().shovelTalon);
 		}
 	}
 
@@ -116,13 +115,13 @@ public class HardwareAdapter {
 
 		private static PusherHardware getInstance() { return instance; }
 
-		public final WPI_VictorSPX pusherVictor;
+		public final CANSparkMax pusherSpark;
 		public final Ultrasonic pusherUltrasonicRight;
 		public final Ultrasonic pusherUltrasonicLeft;
 		public final AnalogPotentiometer pusherPotentiometer;
 
 		protected PusherHardware() {
-			pusherVictor = new WPI_VictorSPX(PortConstants.kVidarPusherVictorID);
+			pusherSpark = new CANSparkMax(PortConstants.kVidarPusherVictorID, CANSparkMaxLowLevel.MotorType.kBrushless);
 			pusherUltrasonicRight = new Ultrasonic(PusherConstants.kVidarPusherRightUltrasonicPing, PusherConstants.kVidarPusherRightUltrasonicEcho);
 			pusherUltrasonicLeft = new Ultrasonic(PusherConstants.kVidarPusherLeftUltrasonicPing, PusherConstants.kVidarPusherLeftUltrasonicEcho);
 			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
@@ -156,12 +155,12 @@ public class HardwareAdapter {
 		    return instance;
 		}
 
-		public final WPI_VictorSPX ShovelVictor;
+		public final WPI_TalonSRX shovelTalon;
 		public final DoubleSolenoid upDownSolenoid;
 		public final DigitalInput upDownHFX;
 
 		protected ShovelHardware() {
-			ShovelVictor = new WPI_VictorSPX(PortConstants.kVidarShovelDeviceID);
+			shovelTalon = new WPI_TalonSRX(PortConstants.kVidarShovelDeviceID);
 			upDownSolenoid = new DoubleSolenoid(0, PortConstants.kVidarShovelSolenoidUpDownID, PortConstants.kVidarShovelSolenoidUpDownID2);
 			upDownHFX = new DigitalInput(PortConstants.kVidarShovelHFXPort);
 		}
@@ -212,11 +211,11 @@ public class HardwareAdapter {
         }
 
         public final Compressor compressor;
-		public final PowerDistributionPanel pdp;
+//		public final PowerDistributionPanel pdp;
 
         protected MiscellaneousHardware() {
             compressor = new Compressor();
-            pdp = new PowerDistributionPanel();
+//            pdp = new PowerDistributionPanel();
         }
 
     }

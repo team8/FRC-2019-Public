@@ -81,7 +81,7 @@ public class Elevator extends Subsystem {
      */
     protected Elevator(String name) {
         super(name);
-        mElevatorState = ElevatorState.CALIBRATING;
+        mElevatorState = ElevatorState.IDLE;
         mClimberState = ClimberState.INACTIVE;
         mGearboxState = GearboxState.ELEVATOR;
     }

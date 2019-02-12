@@ -109,7 +109,7 @@ public class Shovel extends Subsystem {
         }
     }
 
-    public double getVictorOutput() {
+    public double getPercentOutput() {
         return mVictorOutput;
     }
 

@@ -57,7 +57,7 @@ public class PortConstants {
     public static final int kInOutSolenoidA = 0;
     public static final int kInOutSolenoidB = 1;
 
-    public static final int kGyroPort = 7;
+    public static final int kGyroPort = 9;
 
 
     /**
