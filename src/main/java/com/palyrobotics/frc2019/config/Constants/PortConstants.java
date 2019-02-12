@@ -44,10 +44,10 @@ public class PortConstants {
     public static final int kVidarPusherPotID = 0;
 
     //FINGERS
-    public static final int kVidarOpenCloseSolenoidForwardID = 0;
-    public static final int kVidarOpenCloseSolenoidReverseID = 1;
-    public static final int kVidarExpelSolenoidForwardID = 2;
-    public static final int kVidarExpelSolenoidReverseID = 3;
+    public static final int kVidarOpenCloseSolenoidForwardID = 3;
+    public static final int kVidarOpenCloseSolenoidReverseID = 2;
+    public static final int kVidarExpelSolenoidForwardID = 4;
+    public static final int kVidarExpelSolenoidReverseID = 5;
 
     //PCM 0
     public static final int kVidarIntakeUpDownSolenoidForwardID = 2;

@@ -70,7 +70,7 @@ public class Elevator extends Subsystem {
 
     //The subsystem output
     private SparkMaxOutput mOutput = new SparkMaxOutput();
-    private DoubleSolenoid.Value mSolenoidOutput;
+    private DoubleSolenoid.Value mSolenoidOutput = DoubleSolenoid.Value.kForward;
     private boolean mHolderSolenoidOutput = false;
 
     /**

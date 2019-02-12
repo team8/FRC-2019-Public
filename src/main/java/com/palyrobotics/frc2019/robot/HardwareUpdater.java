@@ -93,19 +93,12 @@ class HardwareUpdater {
 	}
 
 	void configureHardware() {
-		System.out.println("0");
 		configureShovelHardware();
-		System.out.println("1");
 		configureDriveHardware();
-		System.out.println("2");
 		configureElevatorHardware();
-		System.out.println("3");
 		configureIntakeHardware();
-		System.out.println("4");
 		configureShooterHardware();
-		System.out.println("5");
 		configurePusherHardware();
-		System.out.println("6");
 	}
 
 	void configureDriveHardware() {
@@ -138,13 +131,13 @@ class HardwareUpdater {
 
 
 		//Reverse right side
-		leftMasterSpark.setInverted(true);
-		leftSlave1Spark.setInverted(true);
-		leftSlave2Spark.setInverted(true);
+		leftMasterSpark.setInverted(false);
+		leftSlave1Spark.setInverted(false);
+		leftSlave2Spark.setInverted(false);
 
-		rightMasterSpark.setInverted(false);
-		rightSlave1Spark.setInverted(false);
-		rightSlave2Spark.setInverted(false);
+		rightMasterSpark.setInverted(true);
+		rightSlave1Spark.setInverted(true);
+		rightSlave2Spark.setInverted(true);
 
 		//Set slave victors to follower mode
 		leftSlave1Spark.follow(leftMasterSpark);
@@ -621,14 +614,14 @@ class HardwareUpdater {
      * @param output
      */
     private void updateSparkMax(CANSparkMax spark, SparkMaxOutput output) {
-//        if(output.getControlType().equals(ControlType.kPosition) || output.getControlType().equals(ControlType.kVelocity)) {
-//            updateSparkGains(spark, output);
-//        }
-//        if(output.getArbitraryFF() != 0.0 && output.getControlType().equals(ControlType.kPosition)) {
-//            spark.getPIDController().setReference(output.getSetpoint(), output.getControlType(), 0, output.getArbitraryFF());
-//        } else {
-//            spark.getPIDController().setReference(output.getSetpoint(), output.getControlType());
-//        }
+        if(output.getControlType().equals(ControlType.kPosition) || output.getControlType().equals(ControlType.kVelocity)) {
+            updateSparkGains(spark, output);
+        }
+        if(output.getArbitraryFF() != 0.0 && output.getControlType().equals(ControlType.kPosition)) {
+            spark.getPIDController().setReference(output.getSetpoint(), output.getControlType(), 0, output.getArbitraryFF());
+        } else {
+            spark.getPIDController().setReference(output.getSetpoint(), output.getControlType());
+        }
     }
 
 	private void updateSparkGains(CANSparkMax spark, SparkMaxOutput output) {

@@ -92,6 +92,6 @@ public class SparkMaxOutput {
     }
 
     public ControlType getControlType() {
-        return this.getControlType();
+        return this.mSparkMode;
     }
 }

@@ -108,31 +108,14 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		System.out.println("12");
 		robotState.gamePeriod = RobotState.GamePeriod.TELEOP;
-		System.out.println("13");
-
 		robotState.reset(0.0, new RigidTransform2d());
-		System.out.println("14");
-
 		mHardwareUpdater.updateState(robotState);
-		System.out.println("15");
-
 		mHardwareUpdater.updateHardware();
-		System.out.println("16");
-
 		mRoutineManager.reset(commands);
-		System.out.println("17");
-
 		DashboardManager.getInstance().toggleCANTable(true);
-		System.out.println("18");
-
 		commands.wantedDriveState = Drive.DriveState.CHEZY; //switch to chezy after auto ends
-		System.out.println("19");
-
 		commands = operatorInterface.updateCommands(commands);
-		System.out.println("20");
-
 
 		startSubsystems();
 		mHardwareUpdater.enableBrakeMode();

@@ -36,7 +36,6 @@ public class Intake extends Subsystem {
 
     private enum UpDownState {
         HOLD, //Keeping arm position fixed
-        UP,
         CLIMBING,
         MANUAL_POSITIONING, //Moving elevator with joystick
         CUSTOM_POSITIONING, //Moving elevator with a control loop
@@ -53,7 +52,7 @@ public class Intake extends Subsystem {
     }
 
     private WheelState mWheelState = WheelState.IDLE;
-    private UpDownState mUpDownState = UpDownState.UP;
+    private UpDownState mUpDownState = UpDownState.IDLE;
     private IntakeMacroState mMacroState = IntakeMacroState.IDLE;
 
     private double lastIntakeQueueTime = 0;
@@ -65,19 +64,19 @@ public class Intake extends Subsystem {
     protected Intake() {
         super("Intake");
         mWheelState = WheelState.IDLE;
-        mUpDownState = UpDownState.UP;
+        mUpDownState = UpDownState.IDLE;
     }
 
     @Override
     public void start() {
         mWheelState = WheelState.IDLE;
-        mUpDownState = UpDownState.UP;
+        mUpDownState = UpDownState.IDLE;
     }
 
     @Override
     public void stop() {
         mWheelState = WheelState.IDLE;
-        mUpDownState = UpDownState.UP;
+        mUpDownState = UpDownState.IDLE;
     }
 
     @Override
@@ -162,10 +161,6 @@ public class Intake extends Subsystem {
             case HOLD:
                 mSparkOutput.setGains(Gains.intakeHold);
                 mSparkOutput.setTargetPosition(mIntakeWantedPosition.get());
-                break;
-            case UP:
-                mSparkOutput.setGains(Gains.intakeUp);
-                mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), -arb_ff);
                 break;
             case CLIMBING:
                 mSparkOutput.setGains(Gains.intakeClimbing);
