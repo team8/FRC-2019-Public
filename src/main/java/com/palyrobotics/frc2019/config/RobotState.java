@@ -80,7 +80,8 @@ public class RobotState {
 	public double pusherCachePosition = 0;
 	public double pusherPosition = 0;
 	public double pusherVelocity = 0;
-	public boolean hasPusherStickyFaults = false;
+	public double pusherEncPosition = 0;
+	public double pusherEncVelocity = 0;
 
 	//Elevator sensor data
     public double elevatorPosition = 0;

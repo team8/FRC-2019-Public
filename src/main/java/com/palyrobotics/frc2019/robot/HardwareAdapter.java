@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.Constants.PortConstants;
-import com.palyrobotics.frc2019.config.Constants.PusherConstants;
 import com.palyrobotics.frc2019.util.XboxController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -121,9 +120,9 @@ public class HardwareAdapter {
 		public final AnalogPotentiometer pusherPotentiometer;
 
 		protected PusherHardware() {
-			pusherSpark = new CANSparkMax(PortConstants.kVidarPusherVictorID, CANSparkMaxLowLevel.MotorType.kBrushless);
-			pusherUltrasonicRight = new Ultrasonic(PusherConstants.kVidarPusherRightUltrasonicPing, PusherConstants.kVidarPusherRightUltrasonicEcho);
-			pusherUltrasonicLeft = new Ultrasonic(PusherConstants.kVidarPusherLeftUltrasonicPing, PusherConstants.kVidarPusherLeftUltrasonicEcho);
+			pusherSpark = new CANSparkMax(PortConstants.kVidarPusherSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
+			pusherUltrasonicRight = new Ultrasonic(PortConstants.kVidarPusherRightUltrasonicPing, PortConstants.kVidarPusherRightUltrasonicEcho);
+			pusherUltrasonicLeft = new Ultrasonic(PortConstants.kVidarPusherLeftUltrasonicPing, PortConstants.kVidarPusherLeftUltrasonicEcho);
 			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
 
 		}

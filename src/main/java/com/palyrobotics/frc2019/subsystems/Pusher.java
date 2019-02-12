@@ -2,23 +2,28 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.PusherConstants;
+import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.robot.Robot;
+import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.SynchronousPID;
 
 public class Pusher extends Subsystem {
 
     private static Pusher instance = new Pusher();
 
-    public static Pusher getInstance() { return instance; }
+    public static Pusher getInstance() {
+        return instance;
+    }
 
-    public static void resetInstance() { instance = new Pusher();}
+    public static void resetInstance() {
+        instance = new Pusher();
+    }
 
     private double target;
     private final double kTolerance;
-    private SynchronousPID pusherPID;
 
-    private double mVictorOutput = 0;
+    private SparkMaxOutput mOutput;
 
     public enum PusherState {
         IN, MIDDLE, OUT
@@ -29,8 +34,6 @@ public class Pusher extends Subsystem {
     protected Pusher(){
         super("Pusher");
         kTolerance = PusherConstants.kAcceptablePositionError;
-        pusherPID = new SynchronousPID(PusherConstants.kVidarPositionkP, PusherConstants.kVidarPositionkI, PusherConstants.kVidarPositionkD);
-        pusherPID.setOutputRange(-1, 1);
     }
 
     @Override
@@ -44,24 +47,33 @@ public class Pusher extends Subsystem {
     }
 
     @Override
-    public void update(Commands commands, RobotState robotState){
+    public void update(Commands commands, RobotState robotState) {
         mState = commands.wantedPusherInOutState;
-        pusherPID.setSetpoint(robotState.pusherPosition);
+        mOutput.setTargetPosition(robotState.pusherPosition, Gains.pusherPosition);
         commands.hasPusherCargo = robotState.hasPusherCargo;
         switch(mState) {
             case IN:
                 target = PusherConstants.kVidarDistanceIn;
-                mVictorOutput = pusherPID.calculate(PusherConstants.kVidarDistanceIn);
+                mOutput.setTargetPosition(PusherConstants.kVidarDistanceIn * PusherConstants.kPusherRotationsPerInch, Gains.pusherPosition);
                 break;
             case MIDDLE:
                 target = PusherConstants.kVidarDistanceMiddle;
-                mVictorOutput = pusherPID.calculate(PusherConstants.kVidarDistanceMiddle);
+                mOutput.setTargetPosition(PusherConstants.kVidarDistanceMiddle * PusherConstants.kPusherRotationsPerInch, Gains.pusherPosition);
                 break;
             case OUT:
                 target = PusherConstants.kVidarDistanceOut;
-                mVictorOutput = pusherPID.calculate(PusherConstants.kVidarDistanceOut);
+                mOutput.setTargetPosition(PusherConstants.kVidarDistanceOut * PusherConstants.kPusherRotationsPerInch, Gains.pusherPosition);
                 break;
         }
+
+        mWriter.addData("pusherEncPosition", robotState.pusherEncPosition);
+        mWriter.addData("pusherEncPositionInches", robotState.pusherEncPosition / PusherConstants.kPusherRotationsPerInch);
+        mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);
+        mWriter.addData("pusherEncVelocityInchPerSec", robotState.pusherEncVelocity * PusherConstants.kPusherEncSpeedUnitConversion);
+        mWriter.addData("pusherPotPosition", robotState.pusherPosition);
+        mWriter.addData("pusherPotPositionInches", robotState.pusherPosition / PusherConstants.kTicksPerInch);
+        mWriter.addData("pusherPotVelocity", robotState.pusherVelocity);
+        mWriter.addData("pusherPotVelocity", robotState.pusherVelocity * PusherConstants.kPusherPotSpeedUnitConversion);
     }
 
     public boolean onTarget() {
@@ -73,11 +85,11 @@ public class Pusher extends Subsystem {
         return mState;
     }
 
-    public double getPusherOutput() {
-        return mVictorOutput;
+    public SparkMaxOutput getPusherOutput() {
+        return mOutput;
     }
     @Override
     public String getStatus() {
-        return "Pusher State: " + mState + "\nPusher output" + mVictorOutput;
+        return "Pusher State: " + mState + "\nPusher output" + mOutput.getSetpoint();
     }
 }

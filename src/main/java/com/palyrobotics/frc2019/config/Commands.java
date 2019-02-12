@@ -2,7 +2,6 @@ package com.palyrobotics.frc2019.config;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.subsystems.*;
-import com.palyrobotics.frc2019.util.DriveSignal;
 import com.palyrobotics.frc2019.util.SparkSignal;
 import com.palyrobotics.frc2019.util.logger.Logger;
 
@@ -87,6 +86,7 @@ public class Commands {
 		public Optional<SparkSignal> drivePowerSetpoint = Optional.empty();
 		public Optional<Double> elevatorPositionSetpoint = Optional.empty();
 		public Optional<Double> climberPositionSetpoint = Optional.empty();
+		public Optional<Double> pusherPositionSetpoint = Optional.empty();
 		public Optional<Double> intakePositionSetpoint = Optional.empty();
 		/**
 		 * Resets all the setpoints
@@ -95,6 +95,7 @@ public class Commands {
 			drivePowerSetpoint = Optional.empty();
 			elevatorPositionSetpoint = Optional.empty();
 			climberPositionSetpoint = Optional.empty();
+			pusherPositionSetpoint = Optional.empty();
 			intakePositionSetpoint = Optional.empty();
 		}
 	}
@@ -144,8 +145,8 @@ public class Commands {
 		robotSetpoints.drivePowerSetpoint.ifPresent((SparkSignal signal) -> copy.robotSetpoints.drivePowerSetpoint = Optional.of(signal));
 		robotSetpoints.elevatorPositionSetpoint.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.elevatorPositionSetpoint = Optional.of(elevatorPositionSetpoint));
         robotSetpoints.climberPositionSetpoint.ifPresent((Double climberPositionSetpoint) -> copy.robotSetpoints.climberPositionSetpoint = Optional.of(climberPositionSetpoint));
-		robotSetpoints.intakePositionSetpoint
-				.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.intakePositionSetpoint = Optional.of(elevatorPositionSetpoint));
+		robotSetpoints.intakePositionSetpoint.ifPresent((Double elevatorPositionSetpoint) -> copy.robotSetpoints.intakePositionSetpoint = Optional.of(elevatorPositionSetpoint));
+		robotSetpoints.pusherPositionSetpoint.ifPresent((Double pusherPositionSetpoint) -> copy.robotSetpoints.pusherPositionSetpoint = Optional.of(pusherPositionSetpoint));
         return copy;
 	}
 

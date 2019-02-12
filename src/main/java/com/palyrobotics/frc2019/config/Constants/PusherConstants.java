@@ -11,10 +11,6 @@ public class PusherConstants {
     public static final double kVidarDistanceOut = 0;
     public static final double kVidarCargoTolerance = 0;
 
-    public static final double kVidarPositionkP = 0;
-    public static final double kVidarPositionkI = 0;
-    public static final double kVidarPositionkD = 0;
-
     /**
      * Tolerances
      */
@@ -23,10 +19,9 @@ public class PusherConstants {
     /**
      * Unit Conversions
      */
+    public static final double kPusherRotationsPerInch = 1.0 / (1.0 * Math.PI); // TODO: change the 1 to the actual sprocket size
+    public static final double kPusherEncSpeedUnitConversion = (1.0 / kPusherRotationsPerInch) / 60; // RPM -> in/s
     public static final double kTicksPerInch = 42.0 / (1.0 * Math.PI); // todo: change the 1 to the actual sprocket size
+    public static final double kPusherPotSpeedUnitConversion = (1.0 / kTicksPerInch) / OtherConstants.updatesPerSecond; // ticks/20ms -> in/s
 
-    public static final int kVidarPusherRightUltrasonicPing = 5;
-    public static final int kVidarPusherRightUltrasonicEcho = 6;
-    public static final int kVidarPusherLeftUltrasonicPing = 7;
-    public static final int kVidarPusherLeftUltrasonicEcho = 8;
 }

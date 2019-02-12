@@ -71,6 +71,17 @@ public class Gains {
 	public static final double kVidarCascadingTurnkD = 5;
 	public static final double kVidarCascadingTurnIzone = 7.0;
 
+	//Pusher Constants
+    //TODO: Find and tune gains
+    public static final double kVidarPusherPositionkP = 0.0;
+    public static final double kVidarPusherPositionkI = 0.0;
+    public static final double kVidarPusherPositionkD = 0.0;
+    public static final double kVidarPusherPositionkF = 0.0;
+    public static final int kVidarPusherPositionkIzone = 0;
+    public static final double kVidarPusherPositionkRampRate = 0.0;
+    public static final Gains pusherPosition = new Gains(kVidarPusherPositionkP, kVidarPusherPositionkI, kVidarPusherPositionkD,
+            kVidarPusherPositionkF, kVidarPusherPositionkIzone, kVidarPusherPositionkRampRate);
+
 	//Intake Constants
 	//TODO: Find and tune gains
 	public static final double kVidarIntakeUpkP = 0.0;

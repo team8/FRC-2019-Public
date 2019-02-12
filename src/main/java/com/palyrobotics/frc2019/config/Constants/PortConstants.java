@@ -40,7 +40,7 @@ public class PortConstants {
     public static final int kVidarShovelPDPPort = 0;
 
     //PUSHER
-    public static final int kVidarPusherVictorID = 8;
+    public static final int kVidarPusherSparkID = 8;
     public static final int kVidarPusherPotID = 0;
 
     //FINGERS
@@ -68,4 +68,9 @@ public class PortConstants {
     public static final int kLeftUltrasonicEcho = 11;
     public static final int kRightUltrasonicPing = 12;
     public static final int kRightUltrasonicEcho = 13;
+
+    public static final int kVidarPusherRightUltrasonicPing = 5;
+    public static final int kVidarPusherRightUltrasonicEcho = 6;
+    public static final int kVidarPusherLeftUltrasonicPing = 7;
+    public static final int kVidarPusherLeftUltrasonicEcho = 8;
 }

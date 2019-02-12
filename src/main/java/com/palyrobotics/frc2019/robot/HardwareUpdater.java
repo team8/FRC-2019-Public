@@ -217,9 +217,7 @@ class HardwareUpdater {
 		CANSparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
 
 		pusherSpark.setInverted(false);
-		pusherSpark.setIdleMode(CANSparkMax.IdleMode.kCoast);
-		pusherSpark.setRampRate(0.09);
-
+		pusherSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
 	}
 
 		void startUltrasonics() {
@@ -338,10 +336,10 @@ class HardwareUpdater {
 		robotState.pusherPosition = HardwareAdapter.getInstance().getPusher().pusherPotentiometer.get() /
 				PusherConstants.kTicksPerInch;
 		robotState.pusherVelocity = (robotState.pusherPosition - robotState.pusherCachePosition) / DrivetrainConstants.kNormalLoopsDt;
-		StickyFaults pusherStickyFaults = new StickyFaults();
-		HardwareAdapter.getInstance().getPusher().pusherSpark.clearFaults();
-		robotState.hasPusherStickyFaults = false;
 		robotState.pusherCachePosition = robotState.pusherPosition;
+
+		robotState.pusherEncPosition = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getPosition();
+		robotState.pusherEncPosition = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getVelocity();
 
 
 		CANSparkMax.FaultID intakeStickyFaults = CANSparkMax.FaultID.kSensorFault;
@@ -520,7 +518,7 @@ class HardwareUpdater {
 	 * Updates the pusher
 	 */
 	private void updatePusher() {
-		HardwareAdapter.getInstance().getPusher().pusherSpark.set(mPusher.getPusherOutput());
+	    updateSparkMax(HardwareAdapter.getInstance().getPusher().pusherSpark, mPusher.getPusherOutput());
 	}
 
     /**
