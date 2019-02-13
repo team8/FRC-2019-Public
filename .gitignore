@@ -232,7 +232,6 @@ modules.xml
 .idea/misc.xml
 *.ipr
 .idea/
-*.csv
 
 # Sonarlint plugin
 .idea/sonarlint
