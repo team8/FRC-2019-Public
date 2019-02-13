@@ -205,8 +205,6 @@ public class Drive extends Subsystem {
 		mWriter.addData("driveRightEnc", state.drivePose.rightEnc);
 		mWriter.addData("driveRightEncVelocity", state.drivePose.rightEncVelocity);
 		mWriter.addData("driveHeading", state.drivePose.heading);
-        System.out.println("Heading: " + state.drivePose.heading);
-        System.out.println("Drive right encoder: " + state.drivePose.rightEnc);
 		mWriter.addData("driveHeadingVelocity", state.drivePose.headingVelocity);
 		state.drivePose.leftError.ifPresent(integer -> mWriter.addData("driveLeftError", (double) integer));
 		state.drivePose.rightError.ifPresent(integer -> mWriter.addData("driveRightError", (double) integer));

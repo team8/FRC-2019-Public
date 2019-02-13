@@ -166,6 +166,7 @@ class HardwareUpdater {
 
 		intakeMasterSpark.setInverted(true);
 		intakeSlaveSpark.setInverted(true);
+		
 		intakeVictor.setInverted(true);
 
 		intakeVictor.setNeutralMode(NeutralMode.Brake);
@@ -346,9 +347,7 @@ class HardwareUpdater {
 		HardwareAdapter.getInstance().getIntake().intakeMasterSpark.clearFaults();
 		HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getStickyFault(intakeStickyFaults);
 
-        robotState.intakeVelocity = HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getVelocity();
-        robotState.intakeAngle = HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition();
-
+        updateIntakeSensors();
 		updateUltrasonicSensors(robotState);
 	}
 
@@ -412,25 +411,12 @@ class HardwareUpdater {
 	 * Updates the hardware to run with output values of subsystems
 	 */
 	void updateHardware() {
-		System.out.println("A");
 		updateDrivetrain();
-		System.out.println("B");
-
 		updateElevator();
-		System.out.println("C");
-
 		updateShooter();
-		System.out.println("D");
-
 		updatePusher();
-		System.out.println("E");
-
 		updateShovel();
-		System.out.println("F");
-
 		updateFingers();
-		System.out.println("G");
-
 		updateMiscellaneousHardware();
 	}
 

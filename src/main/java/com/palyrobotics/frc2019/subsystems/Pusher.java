@@ -23,7 +23,7 @@ public class Pusher extends Subsystem {
     private double target;
     private final double kTolerance;
 
-    private SparkMaxOutput mOutput;
+    private SparkMaxOutput mOutput = new SparkMaxOutput();
 
     public enum PusherState {
         IN, MIDDLE, OUT

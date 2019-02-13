@@ -204,6 +204,7 @@ public class Intake extends Subsystem {
 
         cachedCargoState = robotState.hasCargo;
 
+        System.out.println("Angle: " + mRobotState.intakeAngle);
         mWriter.addData("intakeAngle", mRobotState.intakeAngle);
         mWriter.addData("intakeVelocity", mRobotState.intakeVelocity);
         mWriter.addData("intakeVelocityDegreePerSec", mRobotState.intakeVelocity * IntakeConstants.kArmEncoderSpeedUnitConversion);
