@@ -19,8 +19,8 @@ public class PusherConstants {
     /**
      * Unit Conversions
      */
-    public static final double kPusherRotationsPerInch = 1.0 / (1.0 * Math.PI); // TODO: change the 1 to the actual sprocket size
-    public static final double kPusherEncSpeedUnitConversion = (1.0 / kPusherRotationsPerInch) / 60; // RPM -> in/s
+    public static final double kPusherInchesPerRotation = (1.0 * Math.PI); // TODO: change the 1 to the actual sprocket size
+    public static final double kPusherEncSpeedUnitConversion = kPusherInchesPerRotation / 60; // RPM -> in/s
     public static final double kTicksPerInch = 42.0 / (1.0 * Math.PI); // todo: change the 1 to the actual sprocket size
     public static final double kPusherPotSpeedUnitConversion = (1.0 / kTicksPerInch) / OtherConstants.updatesPerSecond; // ticks/20ms -> in/s
 

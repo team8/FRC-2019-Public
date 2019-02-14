@@ -102,9 +102,8 @@ class HardwareUpdater {
 	}
 
 	void configureDriveHardware() {
-		PigeonIMU gyro = HardwareAdapter.getInstance().getDrivetrain().gyro;
-		gyro.setYaw(0, 0);
-		gyro.setFusedHeading(0, 0);
+
+		HardwareAdapter.getInstance().getDrivetrain().resetSensors();
 
 		CANSparkMax leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark;
 		CANSparkMax leftSlave1Spark = HardwareAdapter.getInstance().getDrivetrain().leftSlave1Spark;
@@ -114,6 +113,26 @@ class HardwareUpdater {
 		CANSparkMax rightSlave1Spark = HardwareAdapter.getInstance().getDrivetrain().rightSlave1Spark;
 		CANSparkMax rightSlave2Spark = HardwareAdapter.getInstance().getDrivetrain().rightSlave2Spark;
 
+		leftMasterSpark.enableVoltageCompensation(12);
+		leftSlave1Spark.enableVoltageCompensation(12);
+		leftSlave2Spark.enableVoltageCompensation(12);
+		rightMasterSpark.enableVoltageCompensation(12);
+		rightSlave1Spark.enableVoltageCompensation(12);
+		rightSlave2Spark.enableVoltageCompensation(12);
+
+		leftMasterSpark.getEncoder().setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
+		leftSlave1Spark.getEncoder().setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
+		leftSlave2Spark.getEncoder().setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
+		rightMasterSpark.getEncoder().setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
+		rightSlave1Spark.getEncoder().setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
+		rightSlave2Spark.getEncoder().setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
+
+        leftMasterSpark.getEncoder().setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
+        leftSlave1Spark.getEncoder().setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
+        leftSlave2Spark.getEncoder().setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
+        rightMasterSpark.getEncoder().setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
+        rightSlave1Spark.getEncoder().setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
+        rightSlave2Spark.getEncoder().setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
 
 		leftMasterSpark.getPIDController().setOutputRange(-DrivetrainConstants.kDriveMaxClosedLoopOutput, DrivetrainConstants.kDriveMaxClosedLoopOutput);
 		leftSlave1Spark.getPIDController().setOutputRange(-DrivetrainConstants.kDriveMaxClosedLoopOutput, DrivetrainConstants.kDriveMaxClosedLoopOutput);
@@ -123,11 +142,11 @@ class HardwareUpdater {
 		rightSlave1Spark.getPIDController().setOutputRange(-DrivetrainConstants.kDriveMaxClosedLoopOutput, DrivetrainConstants.kDriveMaxClosedLoopOutput);
         rightSlave2Spark.getPIDController().setOutputRange(-DrivetrainConstants.kDriveMaxClosedLoopOutput, DrivetrainConstants.kDriveMaxClosedLoopOutput);
 
-        leftMasterSpark.setControlFramePeriod(5);
-        rightMasterSpark.setControlFramePeriod(5);
+        leftMasterSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 5);
+        rightMasterSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 5);
 
-		leftMasterSpark.setRampRate(0.2);
-		rightMasterSpark.setRampRate(0.2);
+		leftMasterSpark.setOpenLoopRampRate(0.2);
+		rightMasterSpark.setOpenLoopRampRate(0.2);
 
 
 		//Reverse right side
@@ -147,22 +166,39 @@ class HardwareUpdater {
     }
 
     void configureElevatorHardware() {
+
+	    HardwareAdapter.getInstance().getElevator().resetSensors();
+
 	    CANSparkMax masterSpark = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark;
 	    CANSparkMax slaveSpark = HardwareAdapter.getInstance().getElevator().elevatorSlaveSpark;
+
+	    masterSpark.enableVoltageCompensation(12);
+	    slaveSpark.enableVoltageCompensation(12);
 
 	    masterSpark.setInverted(true);
 	    slaveSpark.setInverted(false);
 
 	    slaveSpark.follow(masterSpark);
 
-        masterSpark.setRampRate(0.4);
-        slaveSpark.setRampRate(0.4);
+        masterSpark.setOpenLoopRampRate(0.4);
+        slaveSpark.setOpenLoopRampRate(0.4);
 	}
 
 	void configureIntakeHardware() {
+
+	    HardwareAdapter.getInstance().getIntake().resetSensors();
+
 		CANSparkMax intakeMasterSpark = HardwareAdapter.getInstance().getIntake().intakeMasterSpark;
 		CANSparkMax intakeSlaveSpark = HardwareAdapter.getInstance().getIntake().intakeSlaveSpark;
 		WPI_VictorSPX intakeVictor = HardwareAdapter.getInstance().getIntake().intakeVictor;
+
+		intakeMasterSpark.enableVoltageCompensation(12);
+		intakeSlaveSpark.enableVoltageCompensation(12);
+
+		intakeMasterSpark.getEncoder().setPositionConversionFactor(IntakeConstants.kArmDegreesPerRevolution);
+		intakeSlaveSpark.getEncoder().setPositionConversionFactor(IntakeConstants.kArmDegreesPerRevolution);
+		intakeMasterSpark.getEncoder().setVelocityConversionFactor(IntakeConstants.kArmEncoderSpeedUnitConversion);
+		intakeSlaveSpark.getEncoder().setVelocityConversionFactor(IntakeConstants.kArmEncoderSpeedUnitConversion);
 
 		intakeMasterSpark.setInverted(true);
 		intakeSlaveSpark.setInverted(true);
@@ -171,8 +207,8 @@ class HardwareUpdater {
 
 		intakeVictor.setNeutralMode(NeutralMode.Brake);
 
-		intakeMasterSpark.setRampRate(0.4);
-		intakeSlaveSpark.setRampRate(0.4);
+		intakeMasterSpark.setOpenLoopRampRate(0.4);
+		intakeSlaveSpark.setOpenLoopRampRate(0.4);
 
 		intakeVictor.enableVoltageCompensation(true);
 		intakeVictor.configVoltageCompSaturation(14, 0);
@@ -215,7 +251,15 @@ class HardwareUpdater {
 	}
 
 	void configurePusherHardware() {
+
+	    HardwareAdapter.getInstance().getPusher().resetSensors();
+
 		CANSparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
+
+		pusherSpark.enableVoltageCompensation(12);
+
+		pusherSpark.getEncoder().setPositionConversionFactor(PusherConstants.kPusherInchesPerRotation);
+		pusherSpark.getEncoder().setVelocityConversionFactor(PusherConstants.kPusherEncSpeedUnitConversion);
 
 		pusherSpark.setInverted(false);
 		pusherSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -306,8 +350,7 @@ class HardwareUpdater {
 		robotState.drivePose.rightEnc = rightMasterSpark.getEncoder().getPosition();
 		robotState.drivePose.rightEncVelocity = rightMasterSpark.getEncoder().getVelocity();
 
-		double robotVelocity = (robotState.drivePose.leftEncVelocity + robotState.drivePose.rightEncVelocity) /
-                (2 * DrivetrainConstants.kDriveSpeedUnitConversion);
+		double robotVelocity = (robotState.drivePose.leftEncVelocity + robotState.drivePose.rightEncVelocity) / 2;
 
 		double[] accelerometer_angle = new double[3];
 		HardwareAdapter.getInstance().getDrivetrain().gyro.getAccelerometerAngles(accelerometer_angle);
@@ -321,15 +364,11 @@ class HardwareUpdater {
 		Rotation2d gyro_angle = Rotation2d.fromDegrees(robotState.drivePose.heading);
 		Rotation2d gyro_velocity = Rotation2d.fromDegrees(robotState.drivePose.headingVelocity);
 
-		RigidTransform2d odometry = robotState.generateOdometryFromSensors(
-		        (robotState.drivePose.leftEnc - robotState.drivePose.lastLeftEnc) /
-                        DrivetrainConstants.kDriveTicksPerInch,
-				(robotState.drivePose.rightEnc - robotState.drivePose.lastRightEnc) /
-                        DrivetrainConstants.kDriveTicksPerInch, gyro_angle);
+		RigidTransform2d odometry = robotState.generateOdometryFromSensors(robotState.drivePose.leftEnc -
+                        robotState.drivePose.lastLeftEnc,robotState.drivePose.rightEnc - robotState.drivePose.lastRightEnc, gyro_angle);
 
 		RigidTransform2d.Delta velocity = Kinematics.forwardKinematics(
-		        robotState.drivePose.leftEncVelocity / DrivetrainConstants.kDriveSpeedUnitConversion,
-				robotState.drivePose.rightEncVelocity / DrivetrainConstants.kDriveSpeedUnitConversion, gyro_velocity.getRadians());
+		        robotState.drivePose.leftEncVelocity, robotState.drivePose.rightEncVelocity, gyro_velocity.getRadians());
 
 		robotState.addObservations(time, odometry, velocity);
 
@@ -360,7 +399,7 @@ class HardwareUpdater {
 
 	void updateIntakeSensors() {
 		Robot.getRobotState().intakeAngle = Robot.getRobotState().intakeStartAngle -
-				HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition() / IntakeConstants.kArmEncoderRevolutionsPerDegree;
+				HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition();
 	}
 
 	void updateUltrasonicSensors(RobotState robotState) {
@@ -614,6 +653,6 @@ class HardwareUpdater {
 		spark.getPIDController().setI(output.getGains().I);
 		spark.getPIDController().setFF(output.getGains().F);
 		spark.getPIDController().setIZone(output.getGains().izone);
-		spark.setRampRate(output.getGains().rampRate);
+		spark.setClosedLoopRampRate(output.getGains().rampRate);
 	}
 }

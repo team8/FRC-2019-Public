@@ -37,10 +37,16 @@ public class HardwareAdapter {
 		
 		public final PigeonIMU gyro;
 
-		public static void resetSensors() {
+		public void resetSensors() {
 			instance.gyro.setYaw(0, 0);
 			instance.gyro.setFusedHeading(0, 0);
 			instance.gyro.setAccumZAngle(0, 0);
+			instance.leftMasterSpark.getEncoder().setPosition(0);
+			instance.leftSlave1Spark.getEncoder().setPosition(0);
+			instance.leftSlave2Spark.getEncoder().setPosition(0);
+			instance.rightMasterSpark.getEncoder().setPosition(0);
+			instance.rightSlave1Spark.getEncoder().setPosition(0);
+			instance.rightSlave2Spark.getEncoder().setPosition(0);
 		}
 
 		protected DrivetrainHardware() {
@@ -70,6 +76,11 @@ public class HardwareAdapter {
         public final Solenoid elevatorHolderSolenoid;
         public final DigitalInput elevatorHFX;
 
+        public void resetSensors() {
+            instance.elevatorMasterSpark.getEncoder().setPosition(0);
+            instance.elevatorSlaveSpark.getEncoder().setPosition(0);
+        }
+
         protected ElevatorHardware() {
             elevatorMasterSpark = new CANSparkMax(PortConstants.kVidarElevatorMasterSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
             elevatorSlaveSpark = new CANSparkMax(PortConstants.kVidarElevatorSlaveSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -96,6 +107,11 @@ public class HardwareAdapter {
 		public final Ultrasonic ultrasonic2;
 		public final AnalogPotentiometer potentiometer;
 
+		public void resetSensors() {
+		    instance.intakeMasterSpark.getEncoder().setPosition(0);
+		    instance.intakeSlaveSpark.getEncoder().setPosition(0);
+        }
+
 		protected IntakeHardware() {
 			intakeVictor = new WPI_VictorSPX(PortConstants.kVidarIntakeVictorDeviceID);
 			intakeMasterSpark = new CANSparkMax(PortConstants.kVidarIntakeMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -118,6 +134,10 @@ public class HardwareAdapter {
 		public final Ultrasonic pusherUltrasonicRight;
 		public final Ultrasonic pusherUltrasonicLeft;
 		public final AnalogPotentiometer pusherPotentiometer;
+
+		public void resetSensors() {
+		    instance.pusherSpark.getEncoder().setPosition(0);
+        }
 
 		protected PusherHardware() {
 			pusherSpark = new CANSparkMax(PortConstants.kVidarPusherSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);

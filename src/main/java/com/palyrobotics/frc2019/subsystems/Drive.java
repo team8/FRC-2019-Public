@@ -52,10 +52,8 @@ public class Drive extends Subsystem {
 	private boolean newController = false;
 
 	//Encoder DPP
-	private final double kInchesPerTick;
 	private final double kWheelbaseWidth; //Get from CAD
 	private final double kTurnSlipFactor; //Measure empirically
-	public final double kInchesToTicks;
 
 	//Cache poses to not be allocating at 200Hz
 	private Pose mCachedPose = new Pose(0, 0, 0, 0, 0, 0, 0, 0);
@@ -75,8 +73,6 @@ public class Drive extends Subsystem {
 		super("Drive");
 		kWheelbaseWidth = 0;
 		kTurnSlipFactor = 0;
-		kInchesPerTick = 1 / DrivetrainConstants.kDriveTicksPerInch;
-		kInchesToTicks = DrivetrainConstants.kDriveTicksPerInch;
 
 		motors = new DashboardValue("driveSpeedUpdate");
 
