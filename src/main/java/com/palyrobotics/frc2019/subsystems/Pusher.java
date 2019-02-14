@@ -54,15 +54,15 @@ public class Pusher extends Subsystem {
         switch(mState) {
             case IN:
                 target = PusherConstants.kVidarDistanceIn;
-                mOutput.setTargetPosition(PusherConstants.kVidarDistanceIn / PusherConstants.kPusherInchesPerRotation, Gains.pusherPosition);
+                mOutput.setTargetPosition(PusherConstants.kVidarDistanceIn, Gains.pusherPosition);
                 break;
             case MIDDLE:
                 target = PusherConstants.kVidarDistanceMiddle;
-                mOutput.setTargetPosition(PusherConstants.kVidarDistanceMiddle / PusherConstants.kPusherInchesPerRotation, Gains.pusherPosition);
+                mOutput.setTargetPosition(PusherConstants.kVidarDistanceMiddle, Gains.pusherPosition);
                 break;
             case OUT:
                 target = PusherConstants.kVidarDistanceOut;
-                mOutput.setTargetPosition(PusherConstants.kVidarDistanceOut / PusherConstants.kPusherInchesPerRotation, Gains.pusherPosition);
+                mOutput.setTargetPosition(PusherConstants.kVidarDistanceOut, Gains.pusherPosition);
                 break;
         }
 
