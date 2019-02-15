@@ -35,7 +35,7 @@ public class Elevator extends Subsystem {
 
     public enum ClimberState {
         HOLD, //Keeping the climber position fixed
-        MANUAL_POSITIONING, //Moving the climber with the joystick
+        ON_MANUAL,
         CUSTOM_POSITIONING, //Moving the climber with a control loop
         INACTIVE, //Used when the elevator is being used
         IDLE //Not moving
@@ -187,17 +187,16 @@ public class Elevator extends Subsystem {
                     mOutput.setTargetPosition(mClimberWantedPosition.get());
                     mOutput.setGains(Gains.climberHold);
                     break;
-                case MANUAL_POSITIONING:
+                case ON_MANUAL:
 
                     if(mClimberWantedPosition.isPresent()) {
                         mClimberWantedPosition = Optional.empty();
                     }
 
-                    mOutput.setPercentOutput(mRobotState.operatorXboxControllerInput.getRightY());
+                    mOutput.setPercentOutput(ElevatorConstants.kManualOutputPercentOutput);
 
                     break;
                 case CUSTOM_POSITIONING:
-
                     mOutput.setTargetPosition(mClimberWantedPosition.get());
                     mOutput.setGains(Gains.climberPosition);
 

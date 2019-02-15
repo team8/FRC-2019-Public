@@ -35,7 +35,7 @@ public class OperatorInterface {
 
 	private JoystickInput mDriveStick = Robot.getRobotState().leftStickInput;
 	private JoystickInput mTurnStick = Robot.getRobotState().rightStickInput;
-	private JoystickInput mBackupStick = Robot.getRobotState().backupStickInput;
+	private JoystickInput mClimbStick = Robot.getRobotState().backupStickInput;
 	private XboxInput mOperatorXboxController;
 
 	protected OperatorInterface() {
@@ -133,11 +133,22 @@ public class OperatorInterface {
 			newCommands.addWantedRoutine(new IntakeUpRoutine());
 		}
 
+		if (mClimbStick.getButtonPressed(4)) {
+			newCommands.wantedGearboxState = Elevator.GearboxState.CLIMBER;
+		}
+
+		if (mClimbStick.getButtonPressed(5)) {
+			newCommands.wantedGearboxState = Elevator.GearboxState.ELEVATOR;
+		}
+
 		/**
 		 * Climber Control
 		 */
-		if(mTurnStick.getSlider() != 0) {
-			newCommands.robotSetpoints.climberPositionSetpoint = Optional.of(mTurnStick.getSlider() * ElevatorConstants.kClimberSliderScale);
+		if(mClimbStick.getButtonPressed(6)) {
+			newCommands.wantedClimberState = Elevator.ClimberState.ON_MANUAL;
+		}
+		else {
+			newCommands.wantedClimberState = Elevator.ClimberState.IDLE;
 		}
 
 		/**

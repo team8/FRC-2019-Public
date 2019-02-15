@@ -12,7 +12,6 @@ public class ElevatorConstants {
 
     public static double kUncalibratedManualPower = 0;
     public static double kClosedLoopManualControlPositionSensitivity = 500;//250;
-    public static double kConstantDownPower =0;
 
     public static final double kCalibratePower = -0.28;
 
@@ -21,6 +20,12 @@ public class ElevatorConstants {
     public static final double kElevatorCargoHeight3Inches = 83.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
     public static final double kElevatorCargoHeight2Inches = 55.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
     public static final double kElevatorCargoHeight1Inches = 27.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
+
+    /**
+     * CAM Climb Constants
+     */
+
+    public static final double kManualOutputPercentOutput = .5;
 
     /**
      * Tolerances

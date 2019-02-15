@@ -15,8 +15,8 @@ public class PortConstants {
     public static final int kVidarElevatorMasterSparkID = 3;
     public static final int kVidarElevatorSlaveSparkID = 12;
 
-    public static final int kVidarElevatorDoubleSolenoidForwardsID = 0;
-    public static final int kVidarElevatorDoubleSolenoidReverseID = 7;
+    public static final int kVidarElevatorDoubleSolenoidForwardsID = 2;
+    public static final int kVidarElevatorDoubleSolenoidReverseID = 5;
     public static final int kVidarElevatorHolderSolenoidID = 0;
 
     //INTAKE
@@ -31,8 +31,8 @@ public class PortConstants {
 
     //SHOVEL
     public static final int kVidarShovelDeviceID = 9;
-    public static final int kVidarShovelSolenoidUpDownID = 2;
-    public static final int kVidarShovelSolenoidUpDownID2 = 5;
+    public static final int kVidarShovelSolenoidUpDownID = 0;
+    public static final int kVidarShovelSolenoidUpDownID2 = 7;
 
     public static final int kVidarShovelHFXPort = 2;
     public static final int kVidarShovelPDPPort = 0;
