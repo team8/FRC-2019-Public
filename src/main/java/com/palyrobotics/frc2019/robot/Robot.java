@@ -112,13 +112,13 @@ public class Robot extends TimedRobot {
 		mRoutineManager.reset(commands);
 		DashboardManager.getInstance().toggleCANTable(true);
 		commands.wantedDriveState = Drive.DriveState.CHEZY; //switch to chezy after auto ends
+		commands.wantedGearboxState = Elevator.GearboxState.ELEVATOR;
 		commands = operatorInterface.updateCommands(commands);
 
 		startSubsystems();
 		mHardwareUpdater.enableBrakeMode();
 		robotState.reset(0, new RigidTransform2d());
 		robotState.matchStartTime = System.currentTimeMillis();
-
 	}
 
 	@Override
