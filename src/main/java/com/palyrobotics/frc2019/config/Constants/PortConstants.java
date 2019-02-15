@@ -16,10 +16,8 @@ public class PortConstants {
     public static final int kVidarElevatorSlaveSparkID = 12;
 
     public static final int kVidarElevatorDoubleSolenoidForwardsID = 0;
-    public static final int kVidarElevatorDoubleSolenoidReverseID = 1;
+    public static final int kVidarElevatorDoubleSolenoidReverseID = 7;
     public static final int kVidarElevatorHolderSolenoidID = 0;
-
-    public static final int kElevatorHFXPort = 1;
 
     //INTAKE
     public static final int kVidarIntakeMasterDeviceID = 4;
@@ -33,8 +31,8 @@ public class PortConstants {
 
     //SHOVEL
     public static final int kVidarShovelDeviceID = 9;
-    public static final int kVidarShovelSolenoidUpDownID = 6;
-    public static final int kVidarShovelSolenoidUpDownID2 = 7;
+    public static final int kVidarShovelSolenoidUpDownID = 2;
+    public static final int kVidarShovelSolenoidUpDownID2 = 5;
 
     public static final int kVidarShovelHFXPort = 2;
     public static final int kVidarShovelPDPPort = 0;
@@ -44,21 +42,10 @@ public class PortConstants {
     public static final int kVidarPusherPotID = 0;
 
     //FINGERS
-    public static final int kVidarOpenCloseSolenoidForwardID = 3;
-    public static final int kVidarOpenCloseSolenoidReverseID = 2;
-    public static final int kVidarExpelSolenoidForwardID = 4;
-    public static final int kVidarExpelSolenoidReverseID = 5;
-
-    //PCM 0
-    public static final int kVidarIntakeUpDownSolenoidForwardID = 2;
-    public static final int kVidarIntakeUpDownSolenoidReverseID = 5;
-
-    //PCM 1
-    public static final int kInOutSolenoidA = 0;
-    public static final int kInOutSolenoidB = 1;
-
-    public static final int kGyroPort = 9;
-
+    public static final int kVidarOpenCloseSolenoidForwardID = 1;
+    public static final int kVidarOpenCloseSolenoidReverseID = 6;
+    public static final int kVidarExpelSolenoidForwardID = 3;
+    public static final int kVidarExpelSolenoidReverseID = 4;
 
     /**
      * Ultrasonics

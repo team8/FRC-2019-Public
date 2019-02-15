@@ -72,9 +72,8 @@ public class HardwareAdapter {
 
         public final CANSparkMax elevatorMasterSpark;
         public final CANSparkMax elevatorSlaveSpark;
-        public final DoubleSolenoid elevatorDoubleSolenoid;
+        public final DoubleSolenoid elevatorShifter;
         public final Solenoid elevatorHolderSolenoid;
-        public final DigitalInput elevatorHFX;
 
         public void resetSensors() {
             instance.elevatorMasterSpark.getEncoder().setPosition(0);
@@ -84,9 +83,8 @@ public class HardwareAdapter {
         protected ElevatorHardware() {
             elevatorMasterSpark = new CANSparkMax(PortConstants.kVidarElevatorMasterSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
             elevatorSlaveSpark = new CANSparkMax(PortConstants.kVidarElevatorSlaveSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            elevatorDoubleSolenoid = new DoubleSolenoid(0,PortConstants.kVidarElevatorDoubleSolenoidForwardsID, PortConstants.kVidarElevatorDoubleSolenoidReverseID);
+            elevatorShifter = new DoubleSolenoid(0,PortConstants.kVidarElevatorDoubleSolenoidForwardsID, PortConstants.kVidarElevatorDoubleSolenoidReverseID);
             elevatorHolderSolenoid = new Solenoid(1,PortConstants.kVidarElevatorHolderSolenoidID);
-			elevatorHFX = new DigitalInput(PortConstants.kElevatorHFXPort);
         }
     }
 
@@ -230,11 +228,11 @@ public class HardwareAdapter {
         }
 
         public final Compressor compressor;
-//		public final PowerDistributionPanel pdp;
+		public final PowerDistributionPanel pdp;
 
         protected MiscellaneousHardware() {
             compressor = new Compressor();
-//            pdp = new PowerDistributionPanel();
+            pdp = new PowerDistributionPanel();
         }
 
     }

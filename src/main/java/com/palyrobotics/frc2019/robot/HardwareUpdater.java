@@ -321,16 +321,13 @@ class HardwareUpdater {
 		robotState.backupStickInput.update(HardwareAdapter.getInstance().getJoysticks().backupStick);
 
 		robotState.hatchIntakeUp = HardwareAdapter.getInstance().getShovel().upDownHFX.get();
-//		robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(PortConstants.kVidarShovelPDPPort);
+		robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(PortConstants.kVidarShovelPDPPort);
 
 		robotState.leftSetpoint = leftMasterSpark.getAppliedOutput();
 		robotState.rightSetpoint = rightMasterSpark.getAppliedOutput();
 
 		robotState.elevatorPosition = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getEncoder().getPosition();
 		robotState.elevatorVelocity = HardwareAdapter.getInstance().getElevator().elevatorSlaveSpark.getEncoder().getVelocity();
-
-		// Change HFX Talon location
-		robotState.elevatorHFX = HardwareAdapter.getInstance().getElevator().elevatorHFX.get();
 
 		PigeonIMU gyro = HardwareAdapter.getInstance().getDrivetrain().gyro;
 		if(gyro != null) {
@@ -535,7 +532,7 @@ class HardwareUpdater {
         } else {
             updateSparkMax(HardwareAdapter.getInstance().getElevator().elevatorMasterSpark, mElevator.getOutput());
         }
-        HardwareAdapter.getInstance().getElevator().elevatorDoubleSolenoid.set(mElevator.getSolenoidOutput());
+        HardwareAdapter.getInstance().getElevator().elevatorShifter.set(mElevator.getSolenoidOutput());
         HardwareAdapter.getInstance().getElevator().elevatorHolderSolenoid.set(mElevator.getHolderSolenoidOutput());
     }
 
