@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
 	private OperatorInterface operatorInterface = OperatorInterface.getInstance();
 	private RoutineManager mRoutineManager = RoutineManager.getInstance();
 
+	private CSVWriter mWriter = CSVWriter.getInstance();
+
 	//Subsystem controllers
 	private Drive mDrive = Drive.getInstance();
 	private Elevator mElevator = Elevator.getInstance();
@@ -56,6 +58,8 @@ public class Robot extends TimedRobot {
 
 		mHardwareUpdater.initHardware();
 
+		mWriter.cleanFile();
+
 		DriveTeam.configConstants();
 
 	}
@@ -75,6 +79,8 @@ public class Robot extends TimedRobot {
 
 
 		AutoDistances.updateAutoDistances();
+
+		mWriter.cleanFile();
 
 		startSubsystems();
 		mHardwareUpdater.enableBrakeMode();
@@ -99,6 +105,11 @@ public class Robot extends TimedRobot {
 			updateSubsystems();
 			mHardwareUpdater.updateHardware();
 		}
+
+        if(mWriter.getSize() > 10000) {
+            mWriter.write();
+        }
+
 //		System.out.println(mRoutineManager.getCurrentRoutines().contains(new DriveSensorResetRoutine(1.0)));
 //		System.out.println("Position: " + Robot.getRobotState().getLatestFieldToVehicle().getValue());
 	}
@@ -114,7 +125,7 @@ public class Robot extends TimedRobot {
 		commands.wantedDriveState = Drive.DriveState.CHEZY; //switch to chezy after auto ends
 		commands.wantedGearboxState = Elevator.GearboxState.ELEVATOR;
 		commands = operatorInterface.updateCommands(commands);
-
+        mWriter.cleanFile();
 		startSubsystems();
 		mHardwareUpdater.enableBrakeMode();
 		robotState.reset(0, new RigidTransform2d());
@@ -129,6 +140,10 @@ public class Robot extends TimedRobot {
 
 		//Update the hardware
 		mHardwareUpdater.updateHardware();
+
+        if(mWriter.getSize() > 10000) {
+            mWriter.write();
+        }
 
 	}
 
@@ -147,6 +162,8 @@ public class Robot extends TimedRobot {
 		//Stop controllers
 		mDrive.setNeutral();
 		stopSubsystems();
+
+		mWriter.write();
 
 		//Manually run garbage collector
 		System.gc();
