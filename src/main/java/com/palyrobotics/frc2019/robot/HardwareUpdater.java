@@ -495,13 +495,13 @@ class HardwareUpdater {
         double shovelRumbleLength = mShovel.getRumbleLength();
         double shooterRumbleLength = mShooter.getRumbleLength();
 
-        if(intakeRumbleLength >= 0) {
+        if(intakeRumbleLength > 0) {
             rumble = true;
             intakeRumbleLength -= OtherConstants.deltaTime;
-        } else if(shovelRumbleLength >= 0) {
+        } else if(shovelRumbleLength > 0) {
             rumble = true;
             shovelRumbleLength -= OtherConstants.deltaTime;
-        } else if(shooterRumbleLength >= 0) {
+        } else if(shooterRumbleLength > 0) {
             rumble = true;
             shooterRumbleLength -= OtherConstants.deltaTime;
         } else {
