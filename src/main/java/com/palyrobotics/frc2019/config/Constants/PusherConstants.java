@@ -7,7 +7,7 @@ public class PusherConstants {
     public static final int kVidarRequiredUltrasonicCount = 0;
     public static final double kVidarDistanceIn = 0.0;
     public static final double kVidarDistanceMiddle = 0;
-    public static final double kVidarDistanceOut = 0;
+    public static final double kVidarDistanceOut = 7.0;
     public static final double kVidarCargoTolerance = 0;
     public static final double kVidarDistanceCompress = 1;
 

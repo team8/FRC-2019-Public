@@ -58,7 +58,6 @@ class HardwareUpdater {
 		Logger.getInstance().logRobotThread(Level.INFO, "Init hardware");
 		configureHardware();
 		startIntakeArm(); // just sensor wise
-		startPusher(); //also just sensor wise
 		startUltrasonics();
 	}
 
@@ -297,7 +296,8 @@ class HardwareUpdater {
 	 * Updates all the sensor data taken from the hardware
 	 */
 	void updateState(RobotState robotState) {
-
+//		System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get());
+		System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get()/IntakeConstants.kArmPotentiometerTicksPerDegree);
 		CANSparkMax leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark;
 		CANSparkMax rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
 
@@ -369,9 +369,8 @@ class HardwareUpdater {
 		robotState.addObservations(time, odometry, velocity);
 
 		//Update pusher sensors
-		robotState.pusherPosition = HardwareAdapter.getInstance().getPusher().pusherPotentiometer.get() /
-				PusherConstants.kTicksPerInch;
-		robotState.pusherVelocity = (robotState.pusherPosition - robotState.pusherCachePosition) / DrivetrainConstants.kNormalLoopsDt;
+		robotState.pusherPosition = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getPosition();
+		robotState.pusherVelocity = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getVelocity();
 		robotState.pusherCachePosition = robotState.pusherPosition;
 
 		CANSparkMax.FaultID intakeStickyFaults = CANSparkMax.FaultID.kSensorFault;
@@ -379,7 +378,6 @@ class HardwareUpdater {
 		HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getStickyFault(intakeStickyFaults);
 
         updateIntakeSensors();
-        updatePusherSensors();
 		updateUltrasonicSensors(robotState);
 	}
 
@@ -393,17 +391,6 @@ class HardwareUpdater {
 	void updateIntakeSensors() {
 		Robot.getRobotState().intakeAngle = Robot.getRobotState().intakeStartAngle -
 				HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition();
-	}
-
-	void startPusher() {
-		Robot.getRobotState().pusherStartAngle = PusherConstants.kMaxAngle -
-				1/PusherConstants.kPusherPotentiometerTicksPerDegree * (PusherConstants.kMaxAngleTicks -
-						HardwareAdapter.getInstance().getPusher().pusherPotentiometer.get());
-	}
-
-	void updatePusherSensors() {
-		Robot.getRobotState().pusherAngle = Robot.getRobotState().pusherStartAngle -
-				HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getPosition();
 	}
 
 	void updateUltrasonicSensors(RobotState robotState) {

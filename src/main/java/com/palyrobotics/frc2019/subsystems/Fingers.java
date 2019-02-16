@@ -57,8 +57,6 @@ public class Fingers extends Subsystem {
                 break;
         }
 
-        System.out.println(mOpenCloseValue);
-
         switch(mExpelState) {
             case EXPELLING:
                 mExpelValue = DoubleSolenoid.Value.kForward;

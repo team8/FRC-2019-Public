@@ -49,8 +49,8 @@ public class Pusher extends Subsystem {
     @Override
     public void update(Commands commands, RobotState robotState) {
         mState = commands.wantedPusherInOutState;
-        mOutput.setTargetPosition(robotState.pusherPosition, Gains.pusherPosition);
         commands.hasPusherCargo = robotState.hasPusherCargo;
+//        System.out.println(robotState.pusherPosition);
         switch(mState) {
             case IN:
                 target = PusherConstants.kVidarDistanceIn;
@@ -68,6 +68,7 @@ public class Pusher extends Subsystem {
                 mOutput.setTargetPosition(target, Gains.pusherPosition);
                 break;
         }
+        mOutput.setTargetPosition(robotState.pusherPosition, Gains.pusherPosition);
 
         mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);
         mWriter.addData("pusherPotPosition", robotState.pusherPosition);

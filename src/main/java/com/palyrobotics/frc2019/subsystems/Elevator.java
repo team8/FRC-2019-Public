@@ -120,7 +120,6 @@ public class Elevator extends Subsystem {
                     }
                     break;
                 case MANUAL_POSITIONING:
-
                     //Clear any existing wanted positions
                     if (mElevatorWantedPosition.isPresent()) {
                         mElevatorWantedPosition = Optional.empty();
