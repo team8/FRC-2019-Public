@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
 
 		DriveTeam.configConstants();
 
-		}
+	}
 
 	@Override
 	public void autonomousInit() {
@@ -135,7 +135,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		mAutoStarted = false;
-//		Logger.getInstance().start();
 
 		robotState.reset(0, new RigidTransform2d());
 		//Stops updating routines
@@ -155,6 +154,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
+
 	}
 
 	private void startSubsystems() {
@@ -169,11 +169,11 @@ public class Robot extends TimedRobot {
 
 	private void updateSubsystems() {
 		mDrive.update(commands, robotState);
-//		mElevator.update(commands, robotState);
-//		mShooter.update(commands, robotState);
-//		mPusher.update(commands, robotState);
-//		mFingers.update(commands, robotState);
-//		mShovel.update(commands, robotState);
+		mElevator.update(commands, robotState);
+		mShooter.update(commands, robotState);
+		mPusher.update(commands, robotState);
+		mFingers.update(commands, robotState);
+		mShovel.update(commands, robotState);
 		mIntake.update(commands, robotState);
 	}
 

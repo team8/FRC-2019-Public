@@ -2,6 +2,9 @@ package com.palyrobotics.frc2019.robot;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCycleRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelDownRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelWheelRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.WaitForHatchIntakeCurrentSpike;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.Constants.ElevatorConstants;
@@ -12,13 +15,10 @@ import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositio
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeBeginCycleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeUpRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
-import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.ChezyMath;
 import com.palyrobotics.frc2019.util.JoystickInput;
 import com.palyrobotics.frc2019.util.XboxInput;
-
-import java.util.Optional;
 
 /**
  * Used to produce Commands {@link Commands} from human input Singleton class. Should only be used in robot package.
@@ -92,15 +92,21 @@ public class OperatorInterface {
 		/**
 		 * Hatch Ground Intake/Shovel Control
 		 */
-		if(mOperatorXboxController.getButtonX()) {
-			if(prevCommands.wantedShovelUpDownState == Shovel.UpDownState.UP) {
-				newCommands.wantedShovelUpDownState = Shovel.UpDownState.DOWN;
-				newCommands.cancelCurrentRoutines = true;
-			} else if (prevCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
-				newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
-				newCommands.cancelCurrentRoutines = true;
-			}
+//		if(mOperatorXboxController.getButtonX()) {
+//			if(prevCommands.wantedShovelUpDownState == Shovel.UpDownState.UP) {
+//				newCommands.wantedShovelUpDownState = Shovel.UpDownState.DOWN;
+//				newCommands.cancelCurrentRoutines = true;
+//			} else if (prevCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+//				newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
+//				newCommands.cancelCurrentRoutines = true;
+//			}
+//		}
+
+		if (mOperatorXboxController.getButtonX()) {
+			newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(), new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
+					new IntakeUpRoutine()));
 		}
+
 
 		/**
 		 * Elevator Control

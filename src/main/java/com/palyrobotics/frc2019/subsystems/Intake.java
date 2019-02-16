@@ -204,7 +204,7 @@ public class Intake extends Subsystem {
 
         cachedCargoState = robotState.hasCargo;
 
-        System.out.println("Angle: " + mRobotState.intakeAngle);
+//        System.out.println("Angle: " + mRobotState.intakeAngle);
         mWriter.addData("intakeAngle", mRobotState.intakeAngle);
         mIntakeWantedPosition.ifPresent(intakeWantedPosition -> mWriter.addData("intakeWantedPosition", intakeWantedPosition));
         mWriter.addData("intakeSparkSetpoint", mSparkOutput.getSetpoint());

@@ -60,6 +60,7 @@ public class Commands {
 	public boolean autoPlacerOutput = false;
 
 	public boolean intakeHFX = false;
+	public boolean intakeHasHatch = false;
 	public boolean hasCargo = false;
 	public boolean hasPusherCargo = false;
 

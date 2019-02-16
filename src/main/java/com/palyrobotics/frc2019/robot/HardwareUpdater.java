@@ -279,7 +279,7 @@ class HardwareUpdater {
 		intakeUltrasonicLeft.setAutomaticMode(true);
 		intakeUltrasonicLeft.setEnabled(true);
 		intakeUltrasonicRight.setAutomaticMode(true);
-		intakeUltrasonicRight.setAutomaticMode(true);
+		intakeUltrasonicLeft.setEnabled(true);
 	}
 
 	void configureShovelHardware() {
@@ -320,6 +320,7 @@ class HardwareUpdater {
 
 		robotState.hatchIntakeUp = HardwareAdapter.getInstance().getShovel().upDownHFX.get();
 		robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(PortConstants.kVidarShovelPDPPort);
+		robotState.hasHatch = (robotState.shovelCurrentDraw > ShovelConstants.kMaxShovelCurrentDraw);
 
 		robotState.leftSetpoint = leftMasterSpark.getAppliedOutput();
 		robotState.rightSetpoint = rightMasterSpark.getAppliedOutput();
@@ -425,7 +426,7 @@ class HardwareUpdater {
 		int rightTotal = (int) robotState.mRightReadings.stream().filter(i -> (i < IntakeConstants.kCargoInchTolerance)).count();
 
 		robotState.hasCargo = (leftTotal > OtherConstants.kRequiredUltrasonicCount && rightTotal > OtherConstants.kRequiredUltrasonicCount);
-		robotState.cargoDistance = (mUltrasonicLeft.getRangeInches() + mUltrasonicRight.getRangeInches()) / 2;
+		robotState.cargoDistance = (mUltrasonicLeft.getRangeInches() + mUltrasonicRight.getRangeInches()) / 2.0;
 
 		// HAS CARGO IN CARRIAGE
 
@@ -439,6 +440,7 @@ class HardwareUpdater {
 		int pusherTotal = (int) robotState.mPusherReadings.stream().filter(i -> i < PusherConstants.kVidarCargoTolerance).count();
 		robotState.hasPusherCargo = (pusherTotal > OtherConstants.kRequiredUltrasonicCount);
 		robotState.cargoPusherDistance = (mPusherUltrasonic.getRangeInches());
+
 	}
 
 	/**
@@ -480,6 +482,7 @@ class HardwareUpdater {
      * low enough
      */
     private boolean shouldCompress() {
+    	System.out.println(RobotState.getInstance().gamePeriod);
     	return !(RobotState.getInstance().gamePeriod == RobotState.GamePeriod.AUTO);
     }
 

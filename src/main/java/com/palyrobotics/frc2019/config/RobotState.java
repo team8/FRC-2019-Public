@@ -70,6 +70,7 @@ public class RobotState {
 
 	//Tracks total current from kPDP
 	public double shovelCurrentDraw = 0;
+	public boolean hasShovel = false;
 
 	//Tracks pressure in compressor
     public double compressorPressure = 0;
