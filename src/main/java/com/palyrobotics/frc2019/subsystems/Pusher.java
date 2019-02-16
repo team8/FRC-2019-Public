@@ -26,7 +26,7 @@ public class Pusher extends Subsystem {
     private SparkMaxOutput mOutput = new SparkMaxOutput();
 
     public enum PusherState {
-        IN, MIDDLE, OUT
+        IN, MIDDLE, OUT, COMPRESSION
     }
 
     private PusherState mState = PusherState.IN;
@@ -54,15 +54,18 @@ public class Pusher extends Subsystem {
         switch(mState) {
             case IN:
                 target = PusherConstants.kVidarDistanceIn;
-                mOutput.setTargetPosition(PusherConstants.kVidarDistanceIn, Gains.pusherPosition);
+                mOutput.setTargetPosition(target, Gains.pusherPosition);
                 break;
+            case COMPRESSION:
+                target = PusherConstants.kVidarDistanceCompress;
+                mOutput.setTargetPosition(target, Gains.pusherPosition);
             case MIDDLE:
                 target = PusherConstants.kVidarDistanceMiddle;
-                mOutput.setTargetPosition(PusherConstants.kVidarDistanceMiddle, Gains.pusherPosition);
+                mOutput.setTargetPosition(target, Gains.pusherPosition);
                 break;
             case OUT:
                 target = PusherConstants.kVidarDistanceOut;
-                mOutput.setTargetPosition(PusherConstants.kVidarDistanceOut, Gains.pusherPosition);
+                mOutput.setTargetPosition(target, Gains.pusherPosition);
                 break;
         }
 
