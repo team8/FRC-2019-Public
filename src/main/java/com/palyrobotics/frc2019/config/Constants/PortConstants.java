@@ -15,8 +15,8 @@ public class PortConstants {
     public static final int kVidarElevatorMasterSparkID = 3;
     public static final int kVidarElevatorSlaveSparkID = 12;
 
-    public static final int kVidarElevatorDoubleSolenoidForwardsID = 2;
-    public static final int kVidarElevatorDoubleSolenoidReverseID = 5;
+    public static final int kVidarElevatorDoubleSolenoidForwardsID = 6;
+    public static final int kVidarElevatorDoubleSolenoidReverseID = 1;
     public static final int kVidarElevatorHolderSolenoidID = 0;
 
     //INTAKE
@@ -42,8 +42,8 @@ public class PortConstants {
     public static final int kVidarPusherPotID = 0;
 
     //FINGERS
-    public static final int kVidarOpenCloseSolenoidForwardID = 1;
-    public static final int kVidarOpenCloseSolenoidReverseID = 6;
+    public static final int kVidarOpenCloseSolenoidForwardID = 2;
+    public static final int kVidarOpenCloseSolenoidReverseID = 5;
     public static final int kVidarExpelSolenoidForwardID = 3;
     public static final int kVidarExpelSolenoidReverseID = 4;
 
