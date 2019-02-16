@@ -2,6 +2,7 @@ package com.palyrobotics.frc2019.behavior.routines.shovel;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.subsystems.Pusher;
 import com.palyrobotics.frc2019.subsystems.Shovel;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
@@ -10,7 +11,7 @@ public class WaitForHatchIntakeCurrentSpike extends Routine {
 
     private boolean done;
     private Shovel.WheelState wantedWheelState;
-
+    private double startTime;
 
     public WaitForHatchIntakeCurrentSpike(Shovel.WheelState ws) {
         this.wantedWheelState = ws;
@@ -19,12 +20,12 @@ public class WaitForHatchIntakeCurrentSpike extends Routine {
 
     @Override
     public void start() {
-
+        startTime = System.currentTimeMillis();
     }
 
     @Override
     public Commands update(Commands commands) {
-        done = commands.intakeHasHatch;
+        done = Robot.getRobotState().hasHatch;
         commands.wantedShovelWheelState = wantedWheelState;
         return commands;
     }
@@ -37,7 +38,7 @@ public class WaitForHatchIntakeCurrentSpike extends Routine {
 
     @Override
     public boolean finished() {
-        return done;
+        return done && (System.currentTimeMillis() - 350) > startTime;
     }
 
     @Override

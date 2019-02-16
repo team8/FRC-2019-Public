@@ -3,6 +3,7 @@ package com.palyrobotics.frc2019.robot;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCycleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelDownRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelUpRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelWheelRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shovel.WaitForHatchIntakeCurrentSpike;
 import com.palyrobotics.frc2019.config.Commands;
@@ -104,7 +105,7 @@ public class OperatorInterface {
 
 		if (mOperatorXboxController.getButtonX()) {
 			newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(), new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
-					new IntakeUpRoutine()));
+					new ShovelUpRoutine()));
 		}
 
 

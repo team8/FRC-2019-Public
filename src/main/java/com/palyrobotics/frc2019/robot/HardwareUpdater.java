@@ -321,6 +321,7 @@ class HardwareUpdater {
 		robotState.hatchIntakeUp = HardwareAdapter.getInstance().getShovel().upDownHFX.get();
 		robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(PortConstants.kVidarShovelPDPPort);
 		robotState.hasHatch = (robotState.shovelCurrentDraw > ShovelConstants.kMaxShovelCurrentDraw);
+		System.out.println(robotState.shovelCurrentDraw);
 
 		robotState.leftSetpoint = leftMasterSpark.getAppliedOutput();
 		robotState.rightSetpoint = rightMasterSpark.getAppliedOutput();
@@ -482,7 +483,6 @@ class HardwareUpdater {
      * low enough
      */
     private boolean shouldCompress() {
-    	System.out.println(RobotState.getInstance().gamePeriod);
     	return !(RobotState.getInstance().gamePeriod == RobotState.GamePeriod.AUTO);
     }
 

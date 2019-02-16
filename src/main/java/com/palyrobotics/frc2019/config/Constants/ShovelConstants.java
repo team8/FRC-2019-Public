@@ -8,5 +8,5 @@ public class ShovelConstants {
     public static final double kExpellingMotorVelocity = 0;
     public static final double kSmallExpelMotorVelocity = 0;
 
-    public static final double kMaxShovelCurrentDraw = 5;
+    public static final double kMaxShovelCurrentDraw = 20;
 }
