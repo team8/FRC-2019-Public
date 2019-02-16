@@ -60,6 +60,8 @@ public class RobotState {
 	public boolean hasPusherCargo = false;
 	public double cargoPusherDistance = 0;
 	public ArrayList<Double> mPusherReadings = new ArrayList<>();
+	public double pusherStartAngle = 0; // Angle in degrees
+	public double pusherAngle = 0;
 
 
 	//Hatch Intake
@@ -79,7 +81,6 @@ public class RobotState {
 	public double pusherCachePosition = 0;
 	public double pusherPosition = 0;
 	public double pusherVelocity = 0;
-	public double pusherEncPosition = 0;
 	public double pusherEncVelocity = 0;
 
 	//Elevator sensor data

@@ -69,7 +69,6 @@ public class Pusher extends Subsystem {
                 break;
         }
 
-        mWriter.addData("pusherEncPosition", robotState.pusherEncPosition);
         mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);
         mWriter.addData("pusherPotPosition", robotState.pusherPosition);
         mWriter.addData("pusherPotPositionInches", robotState.pusherPosition / PusherConstants.kTicksPerInch);

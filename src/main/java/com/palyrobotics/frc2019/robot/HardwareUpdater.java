@@ -58,6 +58,7 @@ class HardwareUpdater {
 		Logger.getInstance().logRobotThread(Level.INFO, "Init hardware");
 		configureHardware();
 		startIntakeArm(); // just sensor wise
+		startPusher(); //also just sensor wise
 		startUltrasonics();
 	}
 
@@ -372,15 +373,12 @@ class HardwareUpdater {
 		robotState.pusherVelocity = (robotState.pusherPosition - robotState.pusherCachePosition) / DrivetrainConstants.kNormalLoopsDt;
 		robotState.pusherCachePosition = robotState.pusherPosition;
 
-		robotState.pusherEncPosition = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getPosition();
-		robotState.pusherEncPosition = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getVelocity();
-
-
 		CANSparkMax.FaultID intakeStickyFaults = CANSparkMax.FaultID.kSensorFault;
 		HardwareAdapter.getInstance().getIntake().intakeMasterSpark.clearFaults();
 		HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getStickyFault(intakeStickyFaults);
 
         updateIntakeSensors();
+        updatePusherSensors();
 		updateUltrasonicSensors(robotState);
 	}
 
@@ -394,6 +392,17 @@ class HardwareUpdater {
 	void updateIntakeSensors() {
 		Robot.getRobotState().intakeAngle = Robot.getRobotState().intakeStartAngle -
 				HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition();
+	}
+
+	void startPusher() {
+		Robot.getRobotState().pusherStartAngle = PusherConstants.kMaxAngle -
+				1/PusherConstants.kPusherPotentiometerTicksPerDegree * (PusherConstants.kMaxAngleTicks -
+						HardwareAdapter.getInstance().getPusher().pusherPotentiometer.get());
+	}
+
+	void updatePusherSensors() {
+		Robot.getRobotState().pusherAngle = Robot.getRobotState().pusherStartAngle -
+				HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder().getPosition();
 	}
 
 	void updateUltrasonicSensors(RobotState robotState) {
