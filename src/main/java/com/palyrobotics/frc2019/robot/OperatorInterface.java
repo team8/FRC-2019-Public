@@ -39,7 +39,7 @@ public class OperatorInterface {
 	private JoystickInput mClimbStick = Robot.getRobotState().backupStickInput;
 	private XboxInput mOperatorXboxController;
 
-	public static boolean demandIntakeUp = false; // force intake to come up
+	public static boolean demandIntakeUp = true; // force intake to come up
 	public static boolean intakeRunning = false; // force intake to come up
 	public static double intakeStartTime = 0; // force intake to come up
 
@@ -108,17 +108,15 @@ public class OperatorInterface {
 //			}
 //		}
 
-		if (mOperatorXboxController.getButtonX()) {
-			OperatorInterface.demandIntakeUp = false;
-			OperatorInterface.intakeRunning = true;
+		if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP) {
 			intakeStartTime = System.currentTimeMillis();
 			newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(), new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
 					new ShovelUpRoutine()));
-		}
-		if (mOperatorXboxController.getButtonX() && intakeRunning && (System.currentTimeMillis() - 100) > OperatorInterface.intakeStartTime) {
-			OperatorInterface.demandIntakeUp = true;
-			OperatorInterface.intakeRunning = false;
-		}
+		} else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 250 > OperatorInterface.intakeStartTime) && newCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+		    intakeStartTime = System.currentTimeMillis();
+		    newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
+        }
+
 
 
 		/**

@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.robot.OperatorInterface;
 import com.palyrobotics.frc2019.robot.Robot;
+import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Pusher;
 import com.palyrobotics.frc2019.subsystems.Shovel;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
@@ -39,7 +40,7 @@ public class WaitForHatchIntakeCurrentSpike extends Routine {
 
     @Override
     public boolean finished() {
-        return (done && (System.currentTimeMillis() - 350) > startTime) || OperatorInterface.demandIntakeUp;
+        return (done && (System.currentTimeMillis() - 350) > startTime) || shovel.getUpDownOutput();
     }
 
     @Override
