@@ -14,6 +14,8 @@ import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
+import com.palyrobotics.frc2019.vision.Limelight;
+import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import java.util.logging.Level;
@@ -94,7 +96,10 @@ public class Robot extends TimedRobot {
 		robotState.reset(0, new RigidTransform2d());
 //		commands.wantedIntakeUpDownState = Intake.UpDownState.UP;
 
-		mWriter.cleanFile();
+        // Limelight LED on
+        Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_ON);
+
+        mWriter.cleanFile();
 
 		AutoDistances.updateAutoDistances();
 
@@ -151,7 +156,10 @@ public class Robot extends TimedRobot {
 		robotState.reset(0, new RigidTransform2d());
 		robotState.matchStartTime = System.currentTimeMillis();
 
-		Logger.getInstance().logRobotThread(Level.INFO, "End teleopInit()");
+        // Limelight LED on
+        Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_ON);
+
+        Logger.getInstance().logRobotThread(Level.INFO, "End teleopInit()");
 	}
 
 	@Override
@@ -191,7 +199,10 @@ public class Robot extends TimedRobot {
 
 		stopSubsystems();
 
-		mWriter.write();
+        // Limelight LED off
+        Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
+
+        mWriter.write();
 
 		//Manually run garbage collector
 		System.gc();

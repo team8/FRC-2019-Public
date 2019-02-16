@@ -28,7 +28,7 @@ image_flip:0
 image_source:0
 img_to_show:0
 intersection_filter:1
-pipeline_led_enabled:1
+pipeline_led_enabled:0
 pipeline_res:1
 pipeline_type:0
 red_balance:1700
