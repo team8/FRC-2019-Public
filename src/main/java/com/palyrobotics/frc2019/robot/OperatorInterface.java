@@ -171,7 +171,7 @@ public class OperatorInterface {
 		 */
 		if(mOperatorXboxController.getRightTriggerPressed()) {
 			Routine hatchCycle = new FingersCycleRoutine(FingerConstants.kFingersCycleTime);
-			newCommands.cancelCurrentRoutines = true;
+			newCommands.cancelCurrentRoutines = false;
 			newCommands.addWantedRoutine(hatchCycle);
 		}
 
