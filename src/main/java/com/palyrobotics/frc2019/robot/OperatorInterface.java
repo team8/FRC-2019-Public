@@ -39,6 +39,11 @@ public class OperatorInterface {
 	private JoystickInput mClimbStick = Robot.getRobotState().backupStickInput;
 	private XboxInput mOperatorXboxController;
 
+	public static boolean demandIntakeUp = false; // force intake to come up
+	public static boolean intakeRunning = false; // force intake to come up
+	public static double intakeStartTime = 0; // force intake to come up
+
+
 	protected OperatorInterface() {
 		mOperatorXboxController = Robot.getRobotState().operatorXboxControllerInput;
 	}
@@ -104,8 +109,15 @@ public class OperatorInterface {
 //		}
 
 		if (mOperatorXboxController.getButtonX()) {
+			OperatorInterface.demandIntakeUp = false;
+			OperatorInterface.intakeRunning = true;
+			intakeStartTime = System.currentTimeMillis();
 			newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(), new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
 					new ShovelUpRoutine()));
+		}
+		if (mOperatorXboxController.getButtonX() && intakeRunning && (System.currentTimeMillis() - 100) > OperatorInterface.intakeStartTime) {
+			OperatorInterface.demandIntakeUp = true;
+			OperatorInterface.intakeRunning = false;
 		}
 
 
