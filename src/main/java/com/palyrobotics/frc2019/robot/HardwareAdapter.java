@@ -101,8 +101,8 @@ public class HardwareAdapter {
 		public final WPI_VictorSPX intakeVictor;
 		public final CANSparkMax intakeMasterSpark;
 		public final CANSparkMax intakeSlaveSpark;
-		public final Ultrasonic ultrasonic1;
-		public final Ultrasonic ultrasonic2;
+		public final Ultrasonic intakeUltrasonicLeft;
+		public final Ultrasonic intakeUltrasonicRight;
 		public final AnalogPotentiometer potentiometer;
 
 		public void resetSensors() {
@@ -114,8 +114,8 @@ public class HardwareAdapter {
 			intakeVictor = new WPI_VictorSPX(PortConstants.kVidarIntakeVictorDeviceID);
 			intakeMasterSpark = new CANSparkMax(PortConstants.kVidarIntakeMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
 			intakeSlaveSpark = new CANSparkMax(PortConstants.kVidarIntakeSlaveDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-			ultrasonic1 = new Ultrasonic(PortConstants.kLeftUltrasonicPing, PortConstants.kLeftUltrasonicEcho);
-			ultrasonic2 = new Ultrasonic(PortConstants.kRightUltrasonicPing,PortConstants.kRightUltrasonicEcho);
+			intakeUltrasonicLeft = new Ultrasonic(PortConstants.kVidarIntakeLeftUltrasonicPing, PortConstants.kVidarIntakeLeftUltrasonicEcho);
+			intakeUltrasonicRight = new Ultrasonic(PortConstants.kVidarIntakeRightUltrasonicPing,PortConstants.kVidarIntakeRightUltrasonicEcho);
 			potentiometer = new AnalogPotentiometer(PortConstants.kVidarAnalogPot);
 		}
 	}
@@ -129,8 +129,7 @@ public class HardwareAdapter {
 		private static PusherHardware getInstance() { return instance; }
 
 		public final CANSparkMax pusherSpark;
-		public final Ultrasonic pusherUltrasonicRight;
-		public final Ultrasonic pusherUltrasonicLeft;
+		public final Ultrasonic pusherUltrasonic;
 		public final AnalogPotentiometer pusherPotentiometer;
 
 		public void resetSensors() {
@@ -139,8 +138,7 @@ public class HardwareAdapter {
 
 		protected PusherHardware() {
 			pusherSpark = new CANSparkMax(PortConstants.kVidarPusherSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
-			pusherUltrasonicRight = new Ultrasonic(PortConstants.kVidarPusherRightUltrasonicPing, PortConstants.kVidarPusherRightUltrasonicEcho);
-			pusherUltrasonicLeft = new Ultrasonic(PortConstants.kVidarPusherLeftUltrasonicPing, PortConstants.kVidarPusherLeftUltrasonicEcho);
+			pusherUltrasonic = new Ultrasonic(PortConstants.kVidarPusherUltrasonicPing, PortConstants.kVidarPusherUltrasonicEcho);
 			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
 
 		}

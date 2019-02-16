@@ -59,8 +59,7 @@ public class RobotState {
 	//Pusher
 	public boolean hasPusherCargo = false;
 	public double cargoPusherDistance = 0;
-	public ArrayList<Double> mLeftPusherReadings = new ArrayList<>();
-	public ArrayList<Double> mRightPusherReadings = new ArrayList<>();
+	public ArrayList<Double> mPusherReadings = new ArrayList<>();
 
 
 	//Hatch Intake
