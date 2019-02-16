@@ -42,6 +42,7 @@ public class OperatorInterface {
 	public static boolean demandIntakeUp = true; // force intake to come up
 	public static boolean intakeRunning = false; // force intake to come up
 	public static double intakeStartTime = 0; // force intake to come up
+	public static double lastCancelTime = 0;
 
 
 	protected OperatorInterface() {
@@ -108,13 +109,14 @@ public class OperatorInterface {
 //			}
 //		}
 
-		if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP) {
+		if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP  && (lastCancelTime + 200) < System.currentTimeMillis()) {
 			intakeStartTime = System.currentTimeMillis();
 			newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(), new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
 					new ShovelUpRoutine()));
-		} else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 250 > OperatorInterface.intakeStartTime) && newCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+		} else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 350 > OperatorInterface.intakeStartTime) && newCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
 		    intakeStartTime = System.currentTimeMillis();
 		    newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
+		    lastCancelTime = System.currentTimeMillis();
         }
 
 
