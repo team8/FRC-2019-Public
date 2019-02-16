@@ -6,8 +6,8 @@ public class ElevatorConstants {
      */
     public static final double kNominalUpwardsOutput = 0.1;
     public static final double kTopBottomDifferenceInches = 0.0;
-    public static final double kHFXAcceptableError = 0.01;
-    public static final double kBotomPositionInches = 0;
+    public static final double kTopPositionInches = 0.0;
+    public static final double kBottomPositionInches = 0.0;
     public static final double kHoldVoltage = 0.11;
 
     public static double kUncalibratedManualPower = 0;

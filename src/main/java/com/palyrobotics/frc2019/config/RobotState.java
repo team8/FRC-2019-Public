@@ -85,7 +85,6 @@ public class RobotState {
 	//Elevator sensor data
     public double elevatorPosition = 0;
     public double elevatorVelocity = 0;
-    public boolean elevatorHFX = false;
 
 	//Robot position
 	public final int kObservationBufferSize = 100;

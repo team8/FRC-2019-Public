@@ -61,7 +61,7 @@ public class HardwareAdapter {
 	}
 
     /**
-     *  Elevator - 2 CANSparkMax, 1 HFX, 1 Encoder, 1 DoubleSolenoid
+     *  Elevator - 2 CANSparkMax, 1 Encoder, 1 DoubleSolenoid
      */
     public static class ElevatorHardware {
         private static ElevatorHardware instance = new ElevatorHardware();

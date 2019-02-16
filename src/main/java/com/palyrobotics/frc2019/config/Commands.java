@@ -50,7 +50,7 @@ public class Commands {
 	public boolean customShooterSpeed = false;
 	public boolean customIntakeSpeed = false;
 
-	public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.CALIBRATING;
+	public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.IDLE;
 	public Elevator.ClimberState wantedClimberState = Elevator.ClimberState.INACTIVE;
 	public Elevator.GearboxState wantedGearboxState = Elevator.GearboxState.ELEVATOR;
 
