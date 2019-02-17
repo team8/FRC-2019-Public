@@ -73,7 +73,7 @@ public class Pusher extends Subsystem {
             mOutput.setPercentOutput(0.0);
         }
 
-        System.out.println("Target: " + target);
+//        System.out.println("Target: " + target);
         mOutput.setTargetPosition(robotState.pusherPosition, Gains.pusherPosition);
 
         mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);

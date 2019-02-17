@@ -119,7 +119,7 @@ public class OperatorInterface {
 		    lastCancelTime = System.currentTimeMillis();
         }
 
-
+		newCommands.wantedElevatorState = Elevator.ElevatorState.MANUAL_POSITIONING;
 
 		/**
 		 * Elevator Control

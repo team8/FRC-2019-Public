@@ -175,13 +175,13 @@ class HardwareUpdater {
 	    masterSpark.enableVoltageCompensation(12);
 	    slaveSpark.enableVoltageCompensation(12);
 
-	    masterSpark.setInverted(true);
+	    masterSpark.setInverted(false);
 	    slaveSpark.setInverted(false);
 
 	    slaveSpark.follow(masterSpark);
 
-        masterSpark.setOpenLoopRampRate(0.4);
-        slaveSpark.setOpenLoopRampRate(0.4);
+//        masterSpark.setOpenLoopRampRate(0.4);
+//        slaveSpark.setOpenLoopRampRate(0.4);
 	}
 
 	void configureIntakeHardware() {
@@ -515,6 +515,7 @@ class HardwareUpdater {
                 elevatorHoldOutput.setPercentOutput(ElevatorConstants.kHoldVoltage);
                 updateSparkMax(HardwareAdapter.getInstance().getElevator().elevatorMasterSpark, elevatorHoldOutput);
             } else {
+            	System.out.println("Feed");
                 updateSparkMax(HardwareAdapter.getInstance().getElevator().elevatorMasterSpark, mElevator.getOutput());
             }
         } else {
@@ -528,10 +529,10 @@ class HardwareUpdater {
 	 * Updates the pusher
 	 */
 	private void updatePusher() {
-		System.out.println("update");
+//		System.out.println("update");
 	    updateSparkMax(HardwareAdapter.getInstance().getPusher().pusherSpark, mPusher.getPusherOutput());
-	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
-	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getPIDController().getP());
+//	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
+//	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getPIDController().getP());
 //	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.)
 	}
 

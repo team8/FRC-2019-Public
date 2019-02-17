@@ -78,7 +78,7 @@ public class Elevator extends Subsystem {
      */
     protected Elevator(String name) {
         super(name);
-        mElevatorState = ElevatorState.IDLE;
+        mElevatorState = ElevatorState.MANUAL_POSITIONING;
         mClimberState = ClimberState.INACTIVE;
         mGearboxState = GearboxState.ELEVATOR;
     }
@@ -96,7 +96,7 @@ public class Elevator extends Subsystem {
     public void update(Commands commands, RobotState robotState) {
         //Update for use in handleElevatorState()
         mRobotState = robotState;
-
+        System.out.println(mGearboxState);
         if(mGearboxState == GearboxState.ELEVATOR) {
             mHolderSolenoidOutput = commands.holderOutput;
 
@@ -105,6 +105,7 @@ public class Elevator extends Subsystem {
 
             handleElevatorState(commands);
             checkTopBottom(mRobotState);
+            System.out.println(mElevatorState);
 
             //Execute update loop based on the current state
             //Does not switch between states, only performs actions
@@ -124,6 +125,7 @@ public class Elevator extends Subsystem {
                     if (mElevatorWantedPosition.isPresent()) {
                         mElevatorWantedPosition = Optional.empty();
                     }
+                    System.out.println("Running");
 
                     if (OtherConstants.operatorXBoxController) {
                         mOutput.setPercentOutput(ElevatorConstants.kUncalibratedManualPower * mRobotState.operatorXboxControllerInput.getRightY());
@@ -299,7 +301,7 @@ public class Elevator extends Subsystem {
     public boolean movingUpwards() {
         //
         if((mOutput.getControlType() == ControlType.kDutyCycle || mOutput.getControlType() == ControlType.kVelocity) && mOutput.getSetpoint() > ElevatorConstants.kHoldVoltage) {
-            return true;
+            return false;
         } else if(mOutput.getControlType() == ControlType.kPosition) {
             if(mOutput.getSetpoint() > kElevatorTopPosition) {
                 return true;
