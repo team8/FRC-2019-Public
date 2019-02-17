@@ -260,8 +260,9 @@ class HardwareUpdater {
 
 		pusherSpark.getEncoder().setPositionConversionFactor(PusherConstants.kPusherInchesPerRotation);
 		pusherSpark.getEncoder().setVelocityConversionFactor(PusherConstants.kPusherEncSpeedUnitConversion);
+		pusherSpark.getPIDController().setOutputRange(-1,1);
 
-		pusherSpark.setInverted(false);
+		pusherSpark.setInverted(true);
 		pusherSpark.setIdleMode(CANSparkMax.IdleMode.kBrake);
 	}
 
@@ -297,7 +298,7 @@ class HardwareUpdater {
 	 */
 	void updateState(RobotState robotState) {
 //		System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get());
-		System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get()/IntakeConstants.kArmPotentiometerTicksPerDegree);
+//		System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get()/IntakeConstants.kArmPotentiometerTicksPerDegree);
 		CANSparkMax leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark;
 		CANSparkMax rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
 
@@ -527,7 +528,11 @@ class HardwareUpdater {
 	 * Updates the pusher
 	 */
 	private void updatePusher() {
+		System.out.println("update");
 	    updateSparkMax(HardwareAdapter.getInstance().getPusher().pusherSpark, mPusher.getPusherOutput());
+	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
+	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getPIDController().getP());
+//	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.)
 	}
 
     /**

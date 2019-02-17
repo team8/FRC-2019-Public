@@ -53,7 +53,7 @@ public class VisionDriveHelper {
             mInitialBrake = true;
         }
 
-        if(Limelight.getInstance().isTargetFound() && Limelight.getInstance().getCornerX().length == 4) {
+        if(Limelight.getInstance().isTargetFound() && Limelight.getInstance().getCornerX().length == 8) {
             // Is this the first time detecting the target?
             if (!found){
                 Gains turnGains = new Gains(0.5/Limelight.getInstance().getCorrectedEstimatedDistanceZ(), 0, 0, 0, 200, 0);
@@ -65,11 +65,14 @@ public class VisionDriveHelper {
             }
             pidController.setPID( 0.5/Limelight.getInstance().getCorrectedEstimatedDistanceZ(), 0, 0);
             angularPower = pidController.calculate(Limelight.getInstance().getYawToTarget());
+            System.out.println(angularPower);
         } else {
+            System.out.println(Limelight.getInstance().isTargetFound());
             found = false;
             angularPower = 0;
         }
 
+        angularPower *= -1;
         rightPower = leftPower = mOldThrottle = linearPower;
         leftPower += angularPower;
         rightPower -= angularPower;

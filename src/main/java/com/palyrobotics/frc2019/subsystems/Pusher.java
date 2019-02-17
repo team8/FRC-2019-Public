@@ -68,6 +68,12 @@ public class Pusher extends Subsystem {
                 mOutput.setTargetPosition(target, Gains.pusherPosition);
                 break;
         }
+
+        if (onTarget()) {
+            mOutput.setPercentOutput(0.0);
+        }
+
+        System.out.println("Target: " + target);
         mOutput.setTargetPosition(robotState.pusherPosition, Gains.pusherPosition);
 
         mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);
@@ -79,7 +85,7 @@ public class Pusher extends Subsystem {
 
     public boolean onTarget() {
         return Math.abs((Robot.getRobotState().pusherPosition - target)) < kTolerance
-                && Math.abs(Robot.getRobotState().pusherVelocity) < 0.05;
+                && Math.abs(Robot.getRobotState().pusherVelocity) < 0.15;
     }
 
     public PusherState getPusherState() {

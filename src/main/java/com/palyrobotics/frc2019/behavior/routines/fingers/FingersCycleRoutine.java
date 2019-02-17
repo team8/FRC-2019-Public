@@ -25,7 +25,7 @@ public class FingersCycleRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-        System.out.println("Updates");
+//        System.out.println("Updates");
         commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
         commands.wantedFingersExpelState = Fingers.PushingState.EXPELLING;
         if(System.currentTimeMillis() > this.timeout + startTime) {
