@@ -56,14 +56,13 @@ public class VisionDriveHelper {
         if(Limelight.getInstance().isTargetFound() && Limelight.getInstance().getCornerX().length == 8) {
             // Is this the first time detecting the target?
             if (!found){
-                Gains turnGains = new Gains(0.5/Limelight.getInstance().getCorrectedEstimatedDistanceZ(), 0, 0, 0, 200, 0);
+                Gains turnGains = new Gains(.017, 0, 0, 0, 200, 0);
                 pidController = new SynchronousPID(turnGains.P, turnGains.I, turnGains.D, turnGains.izone);
-                pidController.setOutputRange(-0.2,0.2);
+                pidController.setOutputRange(-0.2, 0.2);
 
                 pidController.setSetpoint(0);
                 found = true;
             }
-            pidController.setPID( 0.5/Limelight.getInstance().getCorrectedEstimatedDistanceZ(), 0, 0);
             angularPower = pidController.calculate(Limelight.getInstance().getYawToTarget());
             System.out.println(angularPower);
         } else {
@@ -72,10 +71,13 @@ public class VisionDriveHelper {
             angularPower = 0;
         }
 
-        angularPower *= -1;
         rightPower = leftPower = mOldThrottle = linearPower;
+
+        angularPower *= -1;
+        angularPower *= mOldThrottle;
         leftPower += angularPower;
         rightPower -= angularPower;
+
 //        System.out.println(angularPower);
 
         if(leftPower > 1.0) {
