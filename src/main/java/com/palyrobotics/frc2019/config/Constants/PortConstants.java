@@ -7,7 +7,7 @@ public class PortConstants {
     public static final int kVidarLeftDriveSlave1DeviceID = 14;
     public static final int kVidarLeftDriveSlave2DeviceID = 13;
 
-    public static final int kVidarRightDriveMasterDeviceID = 0;
+    public static final int kVidarRightDriveMasterDeviceID = 20;
     public static final int kVidarRightDriveSlave1DeviceID = 1;
     public static final int kVidarRightDriveSlave2DeviceID = 2;
 

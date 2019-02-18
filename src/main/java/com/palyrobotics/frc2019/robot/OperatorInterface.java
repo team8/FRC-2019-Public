@@ -192,7 +192,7 @@ public class OperatorInterface {
 		 * Shooter Spin Up Control
 		 */
 		if(mOperatorXboxController.getLeftTriggerPressed()) {
-			newCommands.addWantedRoutine(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 0));
+			newCommands.addWantedRoutine(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 5));
 		}
 
 		/**
