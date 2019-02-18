@@ -30,8 +30,8 @@ public class ElevatorConstants {
     /**
      * Tolerances
      */
-    public static final double kAcceptablePositionError = 40;
-    public static final double kAcceptableVelocityError = 0.01;
+    public static final double kAcceptablePositionError = 0.5;
+    public static final double kAcceptableVelocityError = 1.0;
     public static final double kClimberAcceptablePositionError = 0;
     public static final double kClimberAcceptableVelocityError = 0;
 

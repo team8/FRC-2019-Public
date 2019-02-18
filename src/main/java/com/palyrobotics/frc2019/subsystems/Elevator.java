@@ -252,14 +252,14 @@ public class Elevator extends Subsystem {
             //Set the wanted elevator position if not already set, or if switching from a
             //different state
             if(!mElevatorWantedPosition.isPresent() || mElevatorState != commands.wantedElevatorState) {
-                mElevatorWantedPosition = Optional.of(mRobotState.elevatorPosition);
+                mElevatorWantedPosition = Optional.of(mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
             }
             mElevatorState = commands.wantedElevatorState;
         } else if(commands.wantedElevatorState == ElevatorState.CUSTOM_POSITIONING) {
             //Assume bottom position is the bottom
-            if(!mElevatorWantedPosition.equals(Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get() * ElevatorConstants.kElevatorRotationsPerInch))) {
-                mElevatorWantedPosition = Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get() * ElevatorConstants.kElevatorRotationsPerInch);
-                if(mElevatorWantedPosition.get() >= mRobotState.elevatorPosition) {
+            if(!mElevatorWantedPosition.equals(Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get()))) {
+                mElevatorWantedPosition = Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get());
+                if(mElevatorWantedPosition.get() >= mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) {
                     movingDown = false;
                 } else {
                     movingDown = true;
@@ -283,12 +283,12 @@ public class Elevator extends Subsystem {
             //Set the wanted climberposition if not already set, or if switching from a
             //different state
             if(!mClimberWantedPosition.isPresent() || mClimberState != commands.wantedClimberState) {
-                mClimberWantedPosition = Optional.of(mRobotState.elevatorPosition);
+                mClimberWantedPosition = Optional.of(mRobotState.elevatorPosition/ElevatorConstants.kClimberRotationsPerInch);
             }
             mClimberState = commands.wantedClimberState;
         } else if(commands.wantedClimberState == ClimberState.CUSTOM_POSITIONING) {
-            if(!mClimberWantedPosition.equals(Optional.of(commands.robotSetpoints.climberPositionSetpoint.get() * ElevatorConstants.kClimberRotationsPerInch))) {
-                mClimberWantedPosition = Optional.of(commands.robotSetpoints.climberPositionSetpoint.get() * ElevatorConstants.kClimberRotationsPerInch);
+            if(!mClimberWantedPosition.equals(Optional.of(commands.robotSetpoints.climberPositionSetpoint.get()))) {
+                mClimberWantedPosition = Optional.of(commands.robotSetpoints.climberPositionSetpoint.get());
             }
             mClimberState = ClimberState.CUSTOM_POSITIONING;
         } else {
@@ -321,12 +321,12 @@ public class Elevator extends Subsystem {
      * @param state the robot state, used to obtain encoder values
      */
     private void checkTopBottom(RobotState state) {
-        if(state.elevatorPosition > kElevatorTopPosition) {
+        if(state.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch > kElevatorTopPosition) {
             isAtTop = true;
         } else {
             isAtTop = false;
         }
-        if(state.elevatorPosition < kElevatorBottomPosition) {
+        if(state.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch < kElevatorBottomPosition) {
             isAtBottom = true;
         } else {
             isAtBottom = false;
@@ -377,8 +377,8 @@ public class Elevator extends Subsystem {
             return false;
         }
 
-        return (Math.abs(mElevatorWantedPosition.get() - mRobotState.elevatorPosition) < ElevatorConstants.kAcceptablePositionError)
-                && (Math.abs(mRobotState.elevatorVelocity) < ElevatorConstants.kAcceptableVelocityError);
+        return (Math.abs(mElevatorWantedPosition.get() - mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) < ElevatorConstants.kAcceptablePositionError)
+                && (Math.abs(mRobotState.elevatorVelocity*ElevatorConstants.kElevatorSpeedUnitConversion) < ElevatorConstants.kAcceptableVelocityError);
     }
 
     /**
@@ -395,8 +395,8 @@ public class Elevator extends Subsystem {
             return false;
         }
 
-        return (Math.abs(mClimberWantedPosition.get() - mRobotState.elevatorPosition) < ElevatorConstants.kClimberAcceptablePositionError)
-                && (Math.abs(mRobotState.elevatorVelocity) < ElevatorConstants.kClimberAcceptableVelocityError);
+        return (Math.abs(mClimberWantedPosition.get() - mRobotState.elevatorPosition/ElevatorConstants.kClimberRotationsPerInch) < ElevatorConstants.kClimberAcceptablePositionError)
+                && (Math.abs(mRobotState.elevatorVelocity*ElevatorConstants.kClimberSpeedUnitConversion) < ElevatorConstants.kClimberAcceptableVelocityError);
     }
 
     public ElevatorState getElevatorState() {
