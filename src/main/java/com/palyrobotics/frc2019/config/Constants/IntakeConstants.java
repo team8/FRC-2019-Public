@@ -8,8 +8,8 @@ public class IntakeConstants {
     public static final double kFastIntakingVelocity = 0.8;
     public static final double kDroppingVelocity = -0.225;
 
-    public static final double kMaxAngle = 120;
-    public static final double kMaxAngleTicks = 2000;
+    public static final double kMaxAngle = 118.3; // 90 - 61.7 + 90
+    public static final double kMaxAngleTicks = .04903;
 
     // FEED FORWARD CONSTANTS
 
@@ -33,9 +33,9 @@ public class IntakeConstants {
     /**
      * Unit Conversions
      */
-    public static final double kArmPotentiometerTicksPerDegree = (4.5/1.0)*(0.1/360.0);
+    public static final double kArmPotentiometerTicksPerDegree = (4.5/1.0)*(0.2/360.0); // .2 comes from 1/5
     // Using the NEO built in Encoder, so we must account for reduction.  ~= 42 / 360 * 118
-    public static final double kArmDegreesPerRevolution = (360.0) * (68.0/14.0) * (38.0/18.0) * (36.0/14.0) * (54.0/12.0);
+    public static final double kArmDegreesPerRevolution = (360.0) / ((68.0/14.0) * (38.0/18.0) * (36.0/14.0) * (54.0/12.0));
     public static final double kArmEncoderSpeedUnitConversion = kArmDegreesPerRevolution / 60.0; // RPM -> Degrees per Second
     //TODO: Fix below
     public static final double kIntakeTicksPerInch = 0;

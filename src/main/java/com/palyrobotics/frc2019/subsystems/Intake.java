@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.IntakeConstants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 
 import java.util.Optional;
@@ -204,7 +205,9 @@ public class Intake extends Subsystem {
 
         cachedCargoState = robotState.hasCargo;
 
-//        System.out.println("Angle: " + mRobotState.intakeAngle);
+        System.out.println("Angle: " + mRobotState.intakeAngle);
+//        System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get());
+//        System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get() / IntakeConstants.kArmPotentiometerTicksPerDegree);
         mWriter.addData("intakeAngle", mRobotState.intakeAngle);
         mIntakeWantedPosition.ifPresent(intakeWantedPosition -> mWriter.addData("intakeWantedPosition", intakeWantedPosition));
         mWriter.addData("intakeSparkSetpoint", mSparkOutput.getSetpoint());
