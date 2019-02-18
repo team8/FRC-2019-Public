@@ -94,6 +94,7 @@ public class Elevator extends Subsystem {
      */
     @Override
     public void update(Commands commands, RobotState robotState) {
+        System.out.println(mElevatorState);
         //Update for use in handleElevatorState()
         mRobotState = robotState;
 //        System.out.println(mGearboxState);
@@ -376,7 +377,10 @@ public class Elevator extends Subsystem {
         if(mElevatorState != ElevatorState.CUSTOM_POSITIONING) {
             return false;
         }
-
+        System.out.println("Elevator wanted position: " + mElevatorWantedPosition.get());
+        System.out.println("Elevator position: " + mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
+        System.out.println("Elevator velocity: " + mRobotState.elevatorVelocity*ElevatorConstants.kElevatorSpeedUnitConversion);
+        System.out.println("");
         return (Math.abs(mElevatorWantedPosition.get() - mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) < ElevatorConstants.kAcceptablePositionError)
                 && (Math.abs(mRobotState.elevatorVelocity*ElevatorConstants.kElevatorSpeedUnitConversion) < ElevatorConstants.kAcceptableVelocityError);
     }

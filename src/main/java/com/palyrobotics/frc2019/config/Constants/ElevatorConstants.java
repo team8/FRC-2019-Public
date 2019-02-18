@@ -21,6 +21,8 @@ public class ElevatorConstants {
     public static final double kElevatorCargoHeight2Inches = 55.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
     public static final double kElevatorCargoHeight1Inches = 27.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
 
+    public static final double testHeight = 15;
+
     /**
      * CAM Climb Constants
      */
