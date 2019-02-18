@@ -96,7 +96,7 @@ public class Elevator extends Subsystem {
     public void update(Commands commands, RobotState robotState) {
         //Update for use in handleElevatorState()
         mRobotState = robotState;
-        System.out.println(mGearboxState);
+//        System.out.println(mGearboxState);
         if(mGearboxState == GearboxState.ELEVATOR) {
             mHolderSolenoidOutput = commands.holderOutput;
 
@@ -105,7 +105,7 @@ public class Elevator extends Subsystem {
 
             handleElevatorState(commands);
             checkTopBottom(mRobotState);
-            System.out.println(mElevatorState);
+//            System.out.println(mElevatorState);
 
             //Execute update loop based on the current state
             //Does not switch between states, only performs actions
@@ -126,9 +126,9 @@ public class Elevator extends Subsystem {
                     if (mElevatorWantedPosition.isPresent()) {
                         mElevatorWantedPosition = Optional.empty();
                     }
-                    System.out.println("Running");
+//                    System.out.println("Running");
 
-                    commands.elevatorMoving = true;
+                    commands.elevatorMoving = false;
 
                     if (OtherConstants.operatorXBoxController) {
                         mOutput.setPercentOutput(ElevatorConstants.kUncalibratedManualPower * mRobotState.operatorXboxControllerInput.getRightY());

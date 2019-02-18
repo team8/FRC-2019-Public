@@ -521,7 +521,7 @@ class HardwareUpdater {
                 elevatorHoldOutput.setPercentOutput(ElevatorConstants.kHoldVoltage);
                 updateSparkMax(HardwareAdapter.getInstance().getElevator().elevatorMasterSpark, elevatorHoldOutput);
             } else {
-            	System.out.println("Feed");
+//            	System.out.println("Feed");
                 updateSparkMax(HardwareAdapter.getInstance().getElevator().elevatorMasterSpark, mElevator.getOutput());
             }
         } else {
@@ -649,6 +649,6 @@ class HardwareUpdater {
 		spark.getPIDController().setI(output.getGains().I);
 		spark.getPIDController().setFF(output.getGains().F);
 		spark.getPIDController().setIZone(output.getGains().izone);
-		spark.setClosedLoopRampRate(output.getGains().rampRate);
+//		spark.setClosedLoopRampRate(output.getGains().rampRate);
 	}
 }

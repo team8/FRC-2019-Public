@@ -140,6 +140,7 @@ public class Commands {
 		copy.holderOutput = this.holderOutput;
 		copy.elevatorMoving = this.elevatorMoving;
 		copy.shooterSpinning = this.shooterSpinning;
+		copy.wantedPusherInOutState = this.wantedPusherInOutState;
 
 		for(Routine r : this.wantedRoutines) {
 			copy.wantedRoutines.add(r);

@@ -21,7 +21,6 @@ public class Pusher extends Subsystem {
     }
 
     private double target;
-    private final double kTolerance;
 
     private SparkMaxOutput mOutput = new SparkMaxOutput();
 
@@ -33,7 +32,6 @@ public class Pusher extends Subsystem {
 
     protected Pusher(){
         super("Pusher");
-        kTolerance = PusherConstants.kAcceptablePositionError;
     }
 
     @Override
@@ -50,11 +48,12 @@ public class Pusher extends Subsystem {
     public void update(Commands commands, RobotState robotState) {
         if(commands.elevatorMoving) {
             mState = PusherState.IN;
+            System.out.println("Running");
         } else {
             mState = commands.wantedPusherInOutState;
         }
         commands.hasPusherCargo = robotState.hasPusherCargo;
-//        System.out.println(robotState.pusherPosition);
+        System.out.println(robotState.pusherPosition);
         switch(mState) {
             case IN:
                 target = PusherConstants.kVidarDistanceIn;
@@ -75,20 +74,21 @@ public class Pusher extends Subsystem {
 
         if (onTarget()) {
             mOutput.setPercentOutput(0.0);
+            System.out.println("On target");
         }
 
-//        System.out.println("Target: " + target);
-        mOutput.setTargetPosition(robotState.pusherPosition, Gains.pusherPosition);
+        System.out.println("Target: " + target);
+        mOutput.setTargetPosition(target, Gains.pusherPosition);
 
+        mWriter.addData("pusherPos", robotState.pusherPosition);
         mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);
         mWriter.addData("pusherPotPosition", robotState.pusherPosition);
         mWriter.addData("pusherPotPositionInches", robotState.pusherPosition / PusherConstants.kTicksPerInch);
-        mWriter.addData("pusherPotVelocity", robotState.pusherVelocity);
         mWriter.addData("pusherPotVelocity", robotState.pusherVelocity * PusherConstants.kPusherPotSpeedUnitConversion);
     }
 
     public boolean onTarget() {
-        return Math.abs((Robot.getRobotState().pusherPosition - target)) < kTolerance
+        return Math.abs((Robot.getRobotState().pusherPosition - target)) < PusherConstants.kAcceptablePositionError
                 && Math.abs(Robot.getRobotState().pusherVelocity) < 0.15;
     }
 
