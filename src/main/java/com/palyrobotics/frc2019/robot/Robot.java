@@ -178,6 +178,7 @@ public class Robot extends TimedRobot {
 
         // Limelight LED off
         Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
+		HardwareAdapter.getInstance().getJoysticks().operatorXboxController.setRumble(false);
 
         mWriter.write();
 
