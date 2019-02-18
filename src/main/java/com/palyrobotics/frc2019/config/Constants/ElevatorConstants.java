@@ -8,7 +8,7 @@ public class ElevatorConstants {
     public static final double kTopBottomDifferenceInches = 0.0;
     public static final double kTopPositionInches = 0.0;
     public static final double kBottomPositionInches = 0.0;
-    public static final double kHoldVoltage = 0.11;
+    public static final double kHoldVoltage = 0.06;
 
     public static double kUncalibratedManualPower = 10;
     public static double kClosedLoopManualControlPositionSensitivity = 500;//250;

@@ -48,12 +48,11 @@ public class Pusher extends Subsystem {
     public void update(Commands commands, RobotState robotState) {
         if(commands.elevatorMoving) {
             mState = PusherState.IN;
-            System.out.println("Running");
         } else {
             mState = commands.wantedPusherInOutState;
         }
         commands.hasPusherCargo = robotState.hasPusherCargo;
-        System.out.println(robotState.pusherPosition);
+
         switch(mState) {
             case IN:
                 target = PusherConstants.kVidarDistanceIn;
@@ -74,10 +73,8 @@ public class Pusher extends Subsystem {
 
         if (onTarget()) {
             mOutput.setPercentOutput(0.0);
-            System.out.println("On target");
         }
 
-        System.out.println("Target: " + target);
         mOutput.setTargetPosition(target, Gains.pusherPosition);
 
         mWriter.addData("pusherPos", robotState.pusherPosition);

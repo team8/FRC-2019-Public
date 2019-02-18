@@ -142,11 +142,9 @@ public class Elevator extends Subsystem {
                     commands.elevatorMoving = true;
                     //Control loop
                     if (movingDown) {
-                        mOutput.setTargetPosition(mElevatorWantedPosition.get());
-                        mOutput.setGains(Gains.elevatorDownwardsPosition);
+                        mOutput.setTargetPosition(mElevatorWantedPosition.get(), ElevatorConstants.kHoldVoltage, Gains.elevatorDownwardsPosition);
                     } else {
-                        mOutput.setTargetPosition(mElevatorWantedPosition.get());
-                        mOutput.setGains(Gains.elevatorPosition);
+                        mOutput.setTargetPosition(mElevatorWantedPosition.get(), ElevatorConstants.kHoldVoltage, Gains.elevatorPosition);
                     }
 
                     break;

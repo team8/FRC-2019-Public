@@ -17,7 +17,7 @@ public class PusherConstants {
     /**
      * Tolerances
      */
-    public static final double kAcceptablePositionError = .5;
+    public static final double kAcceptablePositionError = .75;
 
     /**
      * Unit Conversions

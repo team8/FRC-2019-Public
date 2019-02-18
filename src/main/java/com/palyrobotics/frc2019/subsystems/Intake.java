@@ -183,10 +183,10 @@ public class Intake extends Subsystem {
 
                 if (movingDown) {
                     mSparkOutput.setGains(Gains.intakeDownwards);
-                    mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), arb_ff);
+                    mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), arb_ff, Gains.intakeDownwards);
                 } else {
                     mSparkOutput.setGains(Gains.intakePosition);
-                    mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), arb_ff);
+                    mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), arb_ff, Gains.intakeDownwards);
                 }
                 break;
             case IDLE:
