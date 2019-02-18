@@ -64,6 +64,9 @@ public class Commands {
 	public boolean hasCargo = false;
 	public boolean hasPusherCargo = false;
 
+	public boolean elevatorMoving = false;
+	public boolean shooterSpinning = false;
+
 	public void addWantedRoutine(Routine wantedRoutine) {
 		for(Routine routine : wantedRoutines) {
 			if(routine.getClass().equals(wantedRoutine.getClass())) {
@@ -135,6 +138,8 @@ public class Commands {
 		copy.disableIntakeScaling = this.disableIntakeScaling;
 		copy.hasPusherCargo = this.hasPusherCargo;
 		copy.holderOutput = this.holderOutput;
+		copy.elevatorMoving = this.elevatorMoving;
+		copy.shooterSpinning = this.shooterSpinning;
 
 		for(Routine r : this.wantedRoutines) {
 			copy.wantedRoutines.add(r);

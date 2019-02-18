@@ -111,6 +111,7 @@ public class Elevator extends Subsystem {
             //Does not switch between states, only performs actions
             switch (mElevatorState) {
                 case HOLD:
+                    commands.elevatorMoving = false;
                     //If at the bottom, supply no power
                     if (isAtBottom) {
                         mOutput.setPercentOutput(0.0);
@@ -127,6 +128,8 @@ public class Elevator extends Subsystem {
                     }
                     System.out.println("Running");
 
+                    commands.elevatorMoving = true;
+
                     if (OtherConstants.operatorXBoxController) {
                         mOutput.setPercentOutput(ElevatorConstants.kUncalibratedManualPower * mRobotState.operatorXboxControllerInput.getRightY());
                     } else {
@@ -135,6 +138,8 @@ public class Elevator extends Subsystem {
 
                     break;
                 case CUSTOM_POSITIONING:
+
+                    commands.elevatorMoving = true;
                     //Control loop
                     if (movingDown) {
                         mOutput.setTargetPosition(mElevatorWantedPosition.get());
@@ -146,6 +151,7 @@ public class Elevator extends Subsystem {
 
                     break;
                 case IDLE:
+                    commands.elevatorMoving = false;
                     //Clear any existing wanted positions
                     if (mElevatorWantedPosition.isPresent()) {
                         mElevatorWantedPosition = Optional.empty();
@@ -154,6 +160,7 @@ public class Elevator extends Subsystem {
                     mOutput.setPercentOutput(0.0);
                     break;
                 case INACTIVE:
+                    commands.elevatorMoving = false;
                     if(mElevatorWantedPosition.isPresent()) {
                         mElevatorWantedPosition = Optional.empty();
                     }

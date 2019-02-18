@@ -48,7 +48,11 @@ public class Pusher extends Subsystem {
 
     @Override
     public void update(Commands commands, RobotState robotState) {
-        mState = commands.wantedPusherInOutState;
+        if(commands.elevatorMoving) {
+            mState = PusherState.IN;
+        } else {
+            mState = commands.wantedPusherInOutState;
+        }
         commands.hasPusherCargo = robotState.hasPusherCargo;
 //        System.out.println(robotState.pusherPosition);
         switch(mState) {
