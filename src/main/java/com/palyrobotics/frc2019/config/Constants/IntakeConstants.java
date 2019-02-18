@@ -33,7 +33,7 @@ public class IntakeConstants {
     /**
      * Unit Conversions
      */
-    public static final double kArmPotentiometerTicksPerDegree = 12.0/54.0 * 1/360 * 5;
+    public static final double kArmPotentiometerTicksPerDegree = (4.5/1.0)*(0.1/360.0);
     // Using the NEO built in Encoder, so we must account for reduction.  ~= 42 / 360 * 118
     public static final double kArmDegreesPerRevolution = (360.0) * (68.0/14.0) * (38.0/18.0) * (36.0/14.0) * (54.0/12.0);
     public static final double kArmEncoderSpeedUnitConversion = kArmDegreesPerRevolution / 60.0; // RPM -> Degrees per Second
