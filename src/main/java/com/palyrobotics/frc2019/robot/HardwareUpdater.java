@@ -417,8 +417,8 @@ class HardwareUpdater {
 		int leftTotal = (int) robotState.mLeftReadings.stream().filter(i -> (i < IntakeConstants.kCargoInchTolerance)).count();
 		int rightTotal = (int) robotState.mRightReadings.stream().filter(i -> (i < IntakeConstants.kCargoInchTolerance)).count();
 
-		robotState.hasCargo = (leftTotal > OtherConstants.kRequiredUltrasonicCount && rightTotal > OtherConstants.kRequiredUltrasonicCount);
-		robotState.cargoDistance = (mUltrasonicLeft.getRangeInches() + mUltrasonicRight.getRangeInches()) / 2.0;
+		robotState.hasCargo = (leftTotal > OtherConstants.kRequiredUltrasonicCount || rightTotal > OtherConstants.kRequiredUltrasonicCount);
+		robotState.cargoDistance = Math.min(mUltrasonicLeft.getRangeInches(), mUltrasonicRight.getRangeInches());
 
 		// HAS CARGO IN CARRIAGE
 
@@ -445,6 +445,7 @@ class HardwareUpdater {
 		updatePusher();
 		updateShovel();
 		updateFingers();
+		updateIntake();
 		updateMiscellaneousHardware();
 	}
 
@@ -562,7 +563,7 @@ class HardwareUpdater {
     private void updateIntake() {
 		updateSparkMax(HardwareAdapter.getInstance().getIntake().intakeMasterSpark, mIntake.getSparkOutput());
 		HardwareAdapter.getInstance().getIntake().intakeVictor.set(mIntake.getVictorOutput());
-	}
+    }
 
 	void enableBrakeMode() {
 		CANSparkMax leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark;

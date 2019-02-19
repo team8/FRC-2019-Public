@@ -28,7 +28,7 @@ public class IntakeConstants {
      */
     public static final double kAcceptableAngularError = 3;
     public static final double kAngularVelocityError = .05;
-    public static final double kCargoInchTolerance = 3;
+    public static final double kCargoInchTolerance = 9;
 
     /**
      * Unit Conversions
