@@ -205,7 +205,7 @@ public class Intake extends Subsystem {
 
         cachedCargoState = robotState.hasCargo;
 
-        System.out.println("Angle: " + mRobotState.intakeAngle);
+        //System.out.println("Angle: " + mRobotState.intakeAngle);
 //        System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get());
 //        System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get() / IntakeConstants.kArmPotentiometerTicksPerDegree);
         mWriter.addData("intakeAngle", mRobotState.intakeAngle);

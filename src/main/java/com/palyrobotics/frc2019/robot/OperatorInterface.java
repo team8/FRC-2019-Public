@@ -20,6 +20,10 @@ import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.ChezyMath;
 import com.palyrobotics.frc2019.util.JoystickInput;
 import com.palyrobotics.frc2019.util.XboxInput;
+import com.palyrobotics.frc2019.util.logger.Logger;
+import com.palyrobotics.frc2019.vision.Limelight;
+
+import java.util.logging.Level;
 
 /**
  * Used to produce Commands {@link Commands} from human input Singleton class. Should only be used in robot package.
@@ -74,7 +78,6 @@ public class OperatorInterface {
 	 * @param prevCommands
 	 */
 	public Commands updateCommands(Commands prevCommands) {
-
 		Commands newCommands = prevCommands.copy();
 
 		newCommands.cancelCurrentRoutines = false;
@@ -92,7 +95,7 @@ public class OperatorInterface {
 			newCommands.wantedDriveState = Drive.DriveState.CHEZY;
 		}
 
-		if(mTurnStick.getButtonPressed(3)){
+		if(mTurnStick.getButtonPressed(3)) {
 			newCommands.wantedDriveState = Drive.DriveState.VISION_ASSIST;
 		}
 
