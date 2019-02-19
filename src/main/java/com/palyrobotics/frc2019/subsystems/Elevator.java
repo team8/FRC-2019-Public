@@ -249,34 +249,35 @@ public class Elevator extends Subsystem {
      *            the commands used to get the wanted state
      */
     private void handleElevatorState(Commands commands) {
-        if(commands.wantedElevatorState == ElevatorState.HOLD) {
-            //Set the wanted elevator position if not already set, or if switching from a
-            //different state
-            if(!mElevatorWantedPosition.isPresent() || mElevatorState != commands.wantedElevatorState) {
-                mElevatorWantedPosition = Optional.of(mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
-            }
-            mElevatorState = commands.wantedElevatorState;
-        } else if(commands.wantedElevatorState == ElevatorState.CUSTOM_POSITIONING) {
-            //Assume bottom position is the bottom
-            if(!mElevatorWantedPosition.equals(Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get()))) {
-                mElevatorWantedPosition = Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get());
-                if(mElevatorWantedPosition.get() >= mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) {
-                    movingDown = false;
-                } else {
-                    movingDown = true;
-                }
-            }
-            mElevatorState = ElevatorState.CUSTOM_POSITIONING;
-        } else {
-            //For idle/manual positioning, just set it
-            mElevatorState = commands.wantedElevatorState;
-        }
-
-        //If custom positioning is finished, hold it
-        if(elevatorOnTarget()) {
-            //Hold it next cycle
-            commands.wantedElevatorState = ElevatorState.HOLD;
-        }
+        commands.wantedElevatorState = ElevatorState.MANUAL_POSITIONING;
+//        if(commands.wantedElevatorState == ElevatorState.HOLD) {
+//            //Set the wanted elevator position if not already set, or if switching from a
+//            //different state
+//            if(!mElevatorWantedPosition.isPresent() || mElevatorState != commands.wantedElevatorState) {
+//                mElevatorWantedPosition = Optional.of(mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
+//            }
+//            mElevatorState = commands.wantedElevatorState;
+//        } else if(commands.wantedElevatorState == ElevatorState.CUSTOM_POSITIONING) {
+//            //Assume bottom position is the bottom
+//            if(!mElevatorWantedPosition.equals(Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get()))) {
+//                mElevatorWantedPosition = Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get());
+//                if(mElevatorWantedPosition.get() >= mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) {
+//                    movingDown = false;
+//                } else {
+//                    movingDown = true;
+//                }
+//            }
+//            mElevatorState = ElevatorState.CUSTOM_POSITIONING;
+//        } else {
+//            //For idle/manual positioning, just set it
+//            mElevatorState = commands.wantedElevatorState;
+//        }
+//
+//        //If custom positioning is finished, hold it
+//        if(elevatorOnTarget()) {
+//            //Hold it next cycle
+//            commands.wantedElevatorState = ElevatorState.HOLD;
+//        }
     }
 
     private void handleClimberState(Commands commands) {

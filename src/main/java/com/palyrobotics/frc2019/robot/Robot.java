@@ -6,6 +6,7 @@ import com.palyrobotics.frc2019.auto.AutoModeSelector;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.config.AutoDistances;
 import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.config.Constants.ElevatorConstants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
@@ -153,6 +154,8 @@ public class Robot extends TimedRobot {
 
 		//Update the hardware
 		mHardwareUpdater.updateHardware();
+        System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
+//        System.out.println(HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getEncoder().getPosition()/ ElevatorConstants.kElevatorRotationsPerInch);
 
         if(mWriter.getSize() > 10000) {
             mWriter.write();

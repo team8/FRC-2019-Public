@@ -5,10 +5,10 @@ public class ElevatorConstants {
      * Elevator Constants
      */
     public static final double kNominalUpwardsOutput = 0.1;
-    public static final double kTopBottomDifferenceInches = 0.0;
-    public static final double kTopPositionInches = 0.0;
+    public static final double kTopBottomDifferenceInches = 84.0;
+    public static final double kTopPositionInches = 84.0;
     public static final double kBottomPositionInches = 0.0;
-    public static final double kHoldVoltage = 0.06;
+    public static final double kHoldVoltage = 0.058;
 
     public static double kUncalibratedManualPower = 10;
     public static double kClosedLoopManualControlPositionSensitivity = 500;//250;
