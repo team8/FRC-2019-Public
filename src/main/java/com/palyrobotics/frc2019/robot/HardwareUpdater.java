@@ -273,20 +273,18 @@ class HardwareUpdater {
 	}
 
 		void startUltrasonics() {
-		Ultrasonic pusherUltrasonic = HardwareAdapter.getInstance().getPusher().pusherUltrasonic;
+        Ultrasonic intakeUltrasonicLeft = HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft;
+        Ultrasonic intakeUltrasonicRight = HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight;
+        Ultrasonic pusherUltrasonic = HardwareAdapter.getInstance().getPusher().pusherUltrasonic;
 
+        intakeUltrasonicLeft.setAutomaticMode(true);
+        intakeUltrasonicRight.setAutomaticMode(true);
+        pusherUltrasonic.setAutomaticMode(true);
 
-		Ultrasonic intakeUltrasonicRight = HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight;
-		Ultrasonic intakeUltrasonicLeft = HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft;
-
-		pusherUltrasonic.setAutomaticMode(true);
-		pusherUltrasonic.setEnabled(true);
-
-		intakeUltrasonicLeft.setAutomaticMode(true);
 		intakeUltrasonicLeft.setEnabled(true);
-		intakeUltrasonicRight.setAutomaticMode(true);
-		intakeUltrasonicLeft.setEnabled(true);
-	}
+        intakeUltrasonicRight.setEnabled(true);
+        pusherUltrasonic.setEnabled(true);
+        }
 
 	void configureShovelHardware() {
 		WPI_TalonSRX shovelVictor = HardwareAdapter.getInstance().getShovel().shovelTalon;
