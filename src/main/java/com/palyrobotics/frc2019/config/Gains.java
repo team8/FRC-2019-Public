@@ -166,12 +166,12 @@ public class Gains {
     public static final Gains elevatorDownwardsPosition = new Gains(kVidarElevatorDownPositionkP, kVidarElevatorDownPositionkI, kVidarElevatorDownPositionkD,
             kVidarElevatorDownPositionkF, kVidarElevatorDownPositionkIzone, kVidarElevatorDownPositionkRampRate);
 
-    public static final double kVidarElevatorPositionkP = 0.0;
+    public static final double kVidarElevatorPositionkP = .7;
     public static final double kVidarElevatorPositionkI = 0.0;
-    public static final double kVidarElevatorPositionkD = 0.0;
+    public static final double kVidarElevatorPositionkD = 55.0;
     public static final double kVidarElevatorPositionkF = 0.0;
     public static final int kVidarElevatorPositionkIzone = 0;
-    public static final double kVidarElevatorPositionkRampRate = 0.0;
+    public static final double kVidarElevatorPositionkRampRate = 1.0;
     public static final Gains elevatorPosition = new Gains(kVidarElevatorPositionkP, kVidarElevatorPositionkI, kVidarElevatorPositionkD,
             kVidarElevatorPositionkF, kVidarElevatorPositionkIzone, kVidarElevatorPositionkRampRate);
 

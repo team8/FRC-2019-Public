@@ -8,7 +8,7 @@ public class ElevatorConstants {
     public static final double kTopBottomDifferenceInches = 84.0;
     public static final double kTopPositionInches = 84.0;
     public static final double kBottomPositionInches = 0.0;
-    public static final double kHoldVoltage = 0.058;
+    public static final double kHoldVoltage = .725;
 
     public static double kUncalibratedManualPower = 10;
     public static double kClosedLoopManualControlPositionSensitivity = 500;//250;
@@ -18,7 +18,7 @@ public class ElevatorConstants {
     public static final double kClimberSliderScale = 0;
 
     public static final double kElevatorCargoHeight3Inches = 83.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
-    public static final double kElevatorCargoHeight2Inches = 55.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
+    public static final double kElevatorCargoHeight2Inches = 55.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches + 5;
     public static final double kElevatorCargoHeight1Inches = 27.5 - OtherConstants.kCarriageToCargoCenterInches - OtherConstants.kGroundToCarriageInches;
 
     public static final double testHeight = 15;

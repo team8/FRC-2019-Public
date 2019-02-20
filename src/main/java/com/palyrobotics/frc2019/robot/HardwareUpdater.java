@@ -180,8 +180,8 @@ class HardwareUpdater {
 
 	    slaveSpark.follow(masterSpark);
 
-	    masterSpark.getPIDController().setOutputRange(-1.0,1.0);
-	    slaveSpark.getPIDController().setOutputRange(-1.0,1.0);
+	    masterSpark.getPIDController().setOutputRange(-0.7,0.7);
+	    slaveSpark.getPIDController().setOutputRange(-0.7,0.7);
 
 //        masterSpark.setOpenLoopRampRate(0.4);
 //        slaveSpark.setOpenLoopRampRate(0.4);
@@ -534,12 +534,7 @@ class HardwareUpdater {
 	 * Updates the pusher
 	 */
 	private void updatePusher() {
-//		System.out.println("update");
 	    updateSparkMax(HardwareAdapter.getInstance().getPusher().pusherSpark, mPusher.getPusherOutput());
-	    System.out.println(mPusher.getPusherOutput().getControlType());
-//	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
-//	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getPIDController().getP());
-//	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.)
 	}
 
     /**

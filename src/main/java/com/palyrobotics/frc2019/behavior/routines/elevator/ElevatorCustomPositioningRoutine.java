@@ -63,11 +63,11 @@ public class ElevatorCustomPositioningRoutine extends Routine {
             }
         }
 
-        if(elevator.getElevatorWantedPosition().isPresent()) {
-            if(elevator.getElevatorWantedPosition().get() == ElevatorConstants.kBottomPositionInches) {
-                return true;
-            }
-        }
+//        if(elevator.getElevatorWantedPosition().isPresent()) {
+//            if(elevator.getElevatorWantedPosition().get() == ElevatorConstants.kBottomPositionInches) {
+//                return true;
+//            }
+//        }
 
         return elevator.elevatorOnTarget();
     }

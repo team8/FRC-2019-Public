@@ -6,6 +6,7 @@ import com.palyrobotics.frc2019.config.Constants.ElevatorConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -78,7 +79,7 @@ public class Elevator extends Subsystem {
      */
     protected Elevator(String name) {
         super(name);
-        mElevatorState = ElevatorState.MANUAL_POSITIONING;
+        mElevatorState = ElevatorState.IDLE;
         mClimberState = ClimberState.INACTIVE;
         mGearboxState = GearboxState.ELEVATOR;
     }
@@ -94,10 +95,8 @@ public class Elevator extends Subsystem {
      */
     @Override
     public void update(Commands commands, RobotState robotState) {
-//        System.out.println(mElevatorState);
         //Update for use in handleElevatorState()
         mRobotState = robotState;
-//        System.out.println(mGearboxState);
         if(mGearboxState == GearboxState.ELEVATOR) {
             mHolderSolenoidOutput = commands.holderOutput;
 
@@ -106,7 +105,6 @@ public class Elevator extends Subsystem {
 
             handleElevatorState(commands);
             checkTopBottom(mRobotState);
-//            System.out.println(mElevatorState);
 
             //Execute update loop based on the current state
             //Does not switch between states, only performs actions
@@ -118,8 +116,7 @@ public class Elevator extends Subsystem {
                         mOutput.setPercentOutput(0.0);
                     } else {
                         //Control loop to hold position otherwise
-                        mOutput.setTargetPosition(mElevatorWantedPosition.get());
-                        mOutput.setGains(Gains.elevatorHold);
+                        mOutput.setTargetPosition(mElevatorWantedPosition.get(), ElevatorConstants.kHoldVoltage, Gains.elevatorPosition);
                     }
                     break;
                 case MANUAL_POSITIONING:
@@ -127,7 +124,6 @@ public class Elevator extends Subsystem {
                     if (mElevatorWantedPosition.isPresent()) {
                         mElevatorWantedPosition = Optional.empty();
                     }
-//                    System.out.println("Running");
 
                     commands.elevatorMoving = false;
 
@@ -139,14 +135,10 @@ public class Elevator extends Subsystem {
 
                     break;
                 case CUSTOM_POSITIONING:
-
                     commands.elevatorMoving = true;
                     //Control loop
-                    if (movingDown) {
-                        mOutput.setTargetPosition(mElevatorWantedPosition.get(), ElevatorConstants.kHoldVoltage, Gains.elevatorDownwardsPosition);
-                    } else {
-                        mOutput.setTargetPosition(mElevatorWantedPosition.get(), ElevatorConstants.kHoldVoltage, Gains.elevatorPosition);
-                    }
+
+                    mOutput.setTargetPosition(mElevatorWantedPosition.get(), ElevatorConstants.kHoldVoltage, Gains.elevatorPosition);
 
                     break;
                 case IDLE:
@@ -211,9 +203,9 @@ public class Elevator extends Subsystem {
                     break;
             }
         }
-//        System.out.println("Elevator: ");
-//        System.out.println(mRobotState.elevatorPosition / ElevatorConstants.kElevatorRotationsPerInch);
-//        System.out.println(mOutput.getSetpoint());
+
+        System.out.println("Elevator: ");
+        System.out.println("applied output " + HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getAppliedOutput());
 
         mWriter.addData("elevatorPosition", mRobotState.elevatorPosition);
         mWriter.addData("elevatorPositionInches", mRobotState.elevatorPosition / ElevatorConstants.kElevatorRotationsPerInch);
@@ -252,35 +244,34 @@ public class Elevator extends Subsystem {
      *            the commands used to get the wanted state
      */
     private void handleElevatorState(Commands commands) {
-        commands.wantedElevatorState = ElevatorState.MANUAL_POSITIONING;
-//        if(commands.wantedElevatorState == ElevatorState.HOLD) {
-//            //Set the wanted elevator position if not already set, or if switching from a
-//            //different state
-//            if(!mElevatorWantedPosition.isPresent() || mElevatorState != commands.wantedElevatorState) {
-//                mElevatorWantedPosition = Optional.of(mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
-//            }
-//            mElevatorState = commands.wantedElevatorState;
-//        } else if(commands.wantedElevatorState == ElevatorState.CUSTOM_POSITIONING) {
-//            //Assume bottom position is the bottom
-//            if(!mElevatorWantedPosition.equals(Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get()))) {
-//                mElevatorWantedPosition = Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get());
-//                if(mElevatorWantedPosition.get() >= mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) {
-//                    movingDown = false;
-//                } else {
-//                    movingDown = true;
-//                }
-//            }
-//            mElevatorState = ElevatorState.CUSTOM_POSITIONING;
-//        } else {
-//            //For idle/manual positioning, just set it
-//            mElevatorState = commands.wantedElevatorState;
-//        }
-//
-//        //If custom positioning is finished, hold it
-//        if(elevatorOnTarget()) {
-//            //Hold it next cycle
-//            commands.wantedElevatorState = ElevatorState.HOLD;
-//        }
+        if(commands.wantedElevatorState == ElevatorState.HOLD) {
+            //Set the wanted elevator position if not already set, or if switching from a
+            //different state
+            if(!mElevatorWantedPosition.isPresent() || mElevatorState != commands.wantedElevatorState) {
+                mElevatorWantedPosition = Optional.of(mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
+            }
+            mElevatorState = commands.wantedElevatorState;
+        } else if(commands.wantedElevatorState == ElevatorState.CUSTOM_POSITIONING) {
+            //Assume bottom position is the bottom
+            if(!mElevatorWantedPosition.equals(Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get()))) {
+                mElevatorWantedPosition = Optional.of(commands.robotSetpoints.elevatorPositionSetpoint.get());
+                if(mElevatorWantedPosition.get() >= mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) {
+                    movingDown = false;
+                } else {
+                    movingDown = true;
+                }
+            }
+            mElevatorState = ElevatorState.CUSTOM_POSITIONING;
+        } else {
+            //For idle/manual positioning, just set it
+            mElevatorState = commands.wantedElevatorState;
+        }
+
+        //If custom positioning is finished, hold it
+        if(elevatorOnTarget()) {
+            //Hold it next cycle
+            commands.wantedElevatorState = ElevatorState.HOLD;
+        }
     }
 
     private void handleClimberState(Commands commands) {
@@ -381,10 +372,10 @@ public class Elevator extends Subsystem {
         if(mElevatorState != ElevatorState.CUSTOM_POSITIONING) {
             return false;
         }
-//        System.out.println("Elevator wanted position: " + mElevatorWantedPosition.get());
-//        System.out.println("Elevator position: " + mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
-//        System.out.println("Elevator velocity: " + mRobotState.elevatorVelocity*ElevatorConstants.kElevatorSpeedUnitConversion);
-//        System.out.println("");
+        System.out.println("Elevator wanted position: " + mElevatorWantedPosition.get());
+        System.out.println("Elevator position: " + mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch);
+        System.out.println("Elevator velocity: " + mRobotState.elevatorVelocity*ElevatorConstants.kElevatorSpeedUnitConversion);
+        System.out.println("");
         return (Math.abs(mElevatorWantedPosition.get() - mRobotState.elevatorPosition/ElevatorConstants.kElevatorRotationsPerInch) < ElevatorConstants.kAcceptablePositionError)
                 && (Math.abs(mRobotState.elevatorVelocity*ElevatorConstants.kElevatorSpeedUnitConversion) < ElevatorConstants.kAcceptableVelocityError);
     }
