@@ -40,9 +40,12 @@ public class ElevatorConstants {
     /**
      * Unit Conversions
      */
-    public static final double kElevatorRotationsPerInch = 1.0 / (2.00 * Math.PI) * (12.0/52.0) * (26.0/50.0) * (44.0/22.0);
+    public static final double kSpoolEffectiveDiameter = 1.912 + .125/10;
+    public static final double kElevatorRotationsPerInch = (1.0 / (kSpoolEffectiveDiameter * Math.PI)) * (52.0/12.0) * (50.0/26.0) * (22.0/44.0);
     public static final double kElevatorSpeedUnitConversion = (1.0 / kElevatorRotationsPerInch) / 60; // RPM -> in/s
 
-    public static final double kClimberRotationsPerInch = 1.0 / (2.00 * Math.PI) * (12.0/52.0) * (26.0/50.0) * (40.0/60.0) * (14.0/66.0);
+    public static final double kClimberRotationsPerInch = 1.0 / (kSpoolEffectiveDiameter * Math.PI) * (52.0/12.0) * (50.0/26.0) * (60.0/40.0) * (66.0/14.0);
     public static final double kClimberSpeedUnitConversion = (1.0 / kClimberRotationsPerInch) / 60.0; // RPM -> in/s
 }
+// 1.107
+//

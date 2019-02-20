@@ -536,6 +536,7 @@ class HardwareUpdater {
 	private void updatePusher() {
 //		System.out.println("update");
 	    updateSparkMax(HardwareAdapter.getInstance().getPusher().pusherSpark, mPusher.getPusherOutput());
+	    System.out.println(mPusher.getPusherOutput().getControlType());
 //	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
 //	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.getPIDController().getP());
 //	    System.out.println(HardwareAdapter.getInstance().getPusher().pusherSpark.)
@@ -639,6 +640,7 @@ class HardwareUpdater {
         if(output.getArbitraryFF() != 0.0 && output.getControlType().equals(ControlType.kPosition)) {
             spark.getPIDController().setReference(output.getSetpoint(), output.getControlType(), 0, output.getArbitraryFF());
         } else {
+        	updateSparkGains(spark, output);
             spark.getPIDController().setReference(output.getSetpoint(), output.getControlType());
         }
     }

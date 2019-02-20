@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.PusherConstants;
 import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.SynchronousPID;
@@ -46,36 +47,32 @@ public class Pusher extends Subsystem {
 
     @Override
     public void update(Commands commands, RobotState robotState) {
-        if(commands.elevatorMoving) {
-            mState = PusherState.IN;
-        } else {
-            mState = commands.wantedPusherInOutState;
-        }
         commands.hasPusherCargo = robotState.hasPusherCargo;
 
-        switch(mState) {
-            case IN:
-                target = PusherConstants.kVidarDistanceIn;
-                mOutput.setTargetPosition(target, Gains.pusherPosition);
-                break;
-            case COMPRESSION:
-                target = PusherConstants.kVidarDistanceCompress;
-                mOutput.setTargetPosition(target, Gains.pusherPosition);
-            case MIDDLE:
-                target = PusherConstants.kVidarDistanceMiddle;
-                mOutput.setTargetPosition(target, Gains.pusherPosition);
-                break;
-            case OUT:
-                target = PusherConstants.kVidarDistanceOut;
-                mOutput.setTargetPosition(target, Gains.pusherPosition);
-                break;
+        if (!onTarget() || commands.wantedPusherInOutState != mState) {
+            mState = commands.wantedPusherInOutState;
+            switch (mState) {
+                case IN:
+                    target = PusherConstants.kVidarDistanceIn;
+                    mOutput.setTargetPosition(target, Gains.pusherPosition);
+                    break;
+                case COMPRESSION:
+                    target = PusherConstants.kVidarDistanceCompress;
+                    mOutput.setTargetPosition(target, Gains.pusherPosition);
+                case MIDDLE:
+                    target = PusherConstants.kVidarDistanceMiddle;
+                    mOutput.setTargetPosition(target, Gains.pusherPosition);
+                    break;
+                case OUT:
+                    target = PusherConstants.kVidarDistanceOut;
+                    mOutput.setTargetPosition(target, Gains.pusherPosition);
+                    break;
+            }
         }
-
-        if (onTarget()) {
+        else {
+            mOutput.setGains(Gains.emptyGains);
             mOutput.setPercentOutput(0.0);
         }
-
-        mOutput.setTargetPosition(target, Gains.pusherPosition);
 
         mWriter.addData("pusherPos", robotState.pusherPosition);
         mWriter.addData("pusherEncVelocity", robotState.pusherEncVelocity);
@@ -86,7 +83,7 @@ public class Pusher extends Subsystem {
 
     public boolean onTarget() {
         return Math.abs((Robot.getRobotState().pusherPosition - target)) < PusherConstants.kAcceptablePositionError
-                && Math.abs(Robot.getRobotState().pusherVelocity) < 0.15;
+                && Math.abs(Robot.getRobotState().pusherVelocity) < .5;
     }
 
     public PusherState getPusherState() {

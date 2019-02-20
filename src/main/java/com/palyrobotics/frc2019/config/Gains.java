@@ -176,6 +176,8 @@ public class Gains {
             kVidarElevatorPositionkF, kVidarElevatorPositionkIzone, kVidarElevatorPositionkRampRate);
 
 
+    public static final Gains emptyGains = new Gains(0,0,0,0,0,0);
+
 	public static class TrajectoryGains {
 		public final double P, D, V, A, turnP, turnD;
 

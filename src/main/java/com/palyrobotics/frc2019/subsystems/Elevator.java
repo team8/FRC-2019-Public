@@ -211,6 +211,9 @@ public class Elevator extends Subsystem {
                     break;
             }
         }
+//        System.out.println("Elevator: ");
+//        System.out.println(mRobotState.elevatorPosition / ElevatorConstants.kElevatorRotationsPerInch);
+//        System.out.println(mOutput.getSetpoint());
 
         mWriter.addData("elevatorPosition", mRobotState.elevatorPosition);
         mWriter.addData("elevatorPositionInches", mRobotState.elevatorPosition / ElevatorConstants.kElevatorRotationsPerInch);
