@@ -49,6 +49,7 @@ public class Shovel extends Subsystem {
 
     @Override
     public void update(Commands commands, RobotState robotState) {
+        mWriter.addData("Current", robotState.shovelCurrentDraw);
         mWheelState = commands.wantedShovelWheelState;
         mUpDownOutput = commands.wantedShovelUpDownState;
         commands.intakeHFX = robotState.hatchIntakeUp;

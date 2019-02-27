@@ -19,7 +19,6 @@ public class ShovelUpRoutine extends Routine{
         alreadyRan = true;
         return commands;
     }
-
     @Override
     public Commands cancel(Commands commands) {
         return commands;
