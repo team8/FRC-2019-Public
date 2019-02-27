@@ -101,15 +101,24 @@ public class OperatorInterface {
 		/**
 		 * Hatch Ground Intake/Shovel Control
 		 */
-//		if(mOperatorXboxController.getButtonX()) {
-//			if(prevCommands.wantedShovelUpDownState == Shovel.UpDownState.UP) {
-//				newCommands.wantedShovelUpDownState = Shovel.UpDownState.DOWN;
-//				newCommands.cancelCurrentRoutines = true;
-//			} else if (prevCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
-//				newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
-//				newCommands.cancelCurrentRoutines = true;
-//			}
-//		}
+		if(mOperatorXboxController.getButtonX()) {
+			if(prevCommands.wantedShovelUpDownState == Shovel.UpDownState.UP) {
+				newCommands.wantedShovelUpDownState = Shovel.UpDownState.DOWN;
+				newCommands.cancelCurrentRoutines = true;
+			} else if (prevCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+				newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
+				newCommands.cancelCurrentRoutines = true;
+			}
+		}
+		if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP  && (lastCancelTime + 200) < System.currentTimeMillis()) {
+			intakeStartTime = System.currentTimeMillis();
+			newCommands.addWantedRoutine(new FullHatchIntakeCycle());
+		} else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 350 > OperatorInterface.intakeStartTime) && newCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+		    intakeStartTime = System.currentTimeMillis();
+		    newCommands.cancelCurrentRoutines = true;
+		    newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
+		    lastCancelTime = System.currentTimeMillis();
+        }
 
 //		if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP  && (lastCancelTime + 200) < System.currentTimeMillis()) {
 //			intakeStartTime = System.currentTimeMillis();
