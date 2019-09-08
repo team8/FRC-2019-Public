@@ -12,6 +12,7 @@ import com.palyrobotics.frc2019.util.loops.Looper;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
@@ -79,6 +80,8 @@ public class Robot extends TimedRobot {
         DriveTeam.configConstants();
 
         mCommandReceiver.start();
+
+        if (RobotBase.isSimulation()) robotState.matchStartTimeMs = System.currentTimeMillis();
 
 //        Logger.getInstance().logRobotThread(Level.INFO, "End robotInit()");
 
@@ -336,6 +339,9 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
 
         mCommandReceiver.update();
+
+        CSVWriter.addData("Bet", 0.2, 0.1);
+
         // System.out.println("intake_enc: " + HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition());
         // System.out.println("intake_pot: " + HardwareAdapter.getInstance().getIntake().potentiometer.get());
         // System.out.println("left ultrasonic: " + HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
