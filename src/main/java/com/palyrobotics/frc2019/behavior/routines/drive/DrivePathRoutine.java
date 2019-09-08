@@ -3,7 +3,6 @@ package com.palyrobotics.frc2019.behavior.routines.drive;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
-import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.logger.Logger;
@@ -171,7 +170,7 @@ public class DrivePathRoutine extends Routine {
 		final int offsetX = 0;
 		final int offsetY = 0;
 		String enumeratedPath = "";
-		List<Path.Waypoint> path = mPath.getWaypoints();
+		List<Path.Waypoint> path = mPath.getWayPoints();
 		enumeratedPath += "0,0,0\n";
 		for (int i = 0; i < path.size(); i++) {
 			enumeratedPath += (path.get(i).position.getX() +offsetX)  + "," + (path.get(i).position.getY() + offsetY) + "," + path.get(i).speed + "\n";

@@ -67,8 +67,6 @@ public class Drive extends Subsystem {
 	private DashboardValue leftEncoder;
 	private DashboardValue rightEncoder;
 
-	private CSVWriter mWriter = CSVWriter.getInstance();
-
 	protected Drive() {
 		super("Drive");
 		kWheelbaseWidth = 0;
@@ -201,16 +199,16 @@ public class Drive extends Subsystem {
 
 		DashboardManager.getInstance().publishKVPair(motors);
 
-		mWriter.addData("driveLeftEnc", state.drivePose.leftEnc);
-		mWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncVelocity);
-		mWriter.addData("driveRightEnc", state.drivePose.rightEnc);
-		mWriter.addData("driveRightEncVelocity", state.drivePose.rightEncVelocity);
-		mWriter.addData("driveHeading", state.drivePose.heading);
-		mWriter.addData("driveHeadingVelocity", state.drivePose.headingVelocity);
-		state.drivePose.leftError.ifPresent(integer -> mWriter.addData("driveLeftError", (double) integer));
-		state.drivePose.rightError.ifPresent(integer -> mWriter.addData("driveRightError", (double) integer));
-		mWriter.addData("driveLeftSetpoint", mSignal.leftMotor.getSetpoint());
-		mWriter.addData("driveRightSetpoint", mSignal.rightMotor.getSetpoint());
+		CSVWriter.addData("driveLeftEnc", state.drivePose.leftEnc);
+		CSVWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncVelocity);
+		CSVWriter.addData("driveRightEnc", state.drivePose.rightEnc);
+		CSVWriter.addData("driveRightEncVelocity", state.drivePose.rightEncVelocity);
+		CSVWriter.addData("driveHeading", state.drivePose.heading);
+		CSVWriter.addData("driveHeadingVelocity", state.drivePose.headingVelocity);
+		state.drivePose.leftError.ifPresent(integer -> CSVWriter.addData("driveLeftError", (double) integer));
+		state.drivePose.rightError.ifPresent(integer -> CSVWriter.addData("driveRightError", (double) integer));
+		CSVWriter.addData("driveLeftSetpoint", mSignal.leftMotor.getSetpoint());
+		CSVWriter.addData("driveRightSetpoint", mSignal.rightMotor.getSetpoint());
         // System.out.println("Left arbitrary demand: " + mSignal.leftMotor.getArbitraryFF());
         // System.out.println("Right arbitrary demand: " + mSignal.rightMotor.getArbitraryFF());
 	}

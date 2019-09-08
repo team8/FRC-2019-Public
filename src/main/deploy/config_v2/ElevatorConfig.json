@@ -1,0 +1,22 @@
+{
+  "holdVoltage" : -0.495,
+  "elevatorCargoHeight3Inches" : -71.5,
+  "manualMaxPercentOut" : 0.5,
+  "elevatorCargoHeight2Inches" : -43.5,
+  "elevatorCargoBallHeight" : -33.55,
+  "elevatorCargoHeight1Inches" : 0.0,
+  "handOffHeight" : 2.0,
+  "testHeight" : -15.0,
+  "secondStageCanStartMovingArm" : -29.0,
+  "acceptablePositionError" : 0.3,
+  "acceptableVelocityError" : 1.0,
+  "climberAcceptablePositionError" : 0.0,
+  "climberAcceptableVelocityError" : 0.0,
+  "a" : 0.0,
+  "v" : 0.0,
+  "p" : 0.0,
+  "i" : 0.0,
+  "d" : 0.0,
+  "f" : 0.0,
+  "ff" : 0.0
+}

@@ -7,11 +7,8 @@ import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 public abstract class Subsystem {
 	private String mName;
 
-	public CSVWriter mWriter;
-
 	public Subsystem(String name) {
 		this.mName = name;
-		this.mWriter = CSVWriter.getInstance();
 	}
 
 	//Updates the subsystem with current commands and state

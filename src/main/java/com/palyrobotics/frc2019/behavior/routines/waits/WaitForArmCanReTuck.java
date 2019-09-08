@@ -1,6 +1,5 @@
 package com.palyrobotics.frc2019.behavior.routines.waits;
 
-import com.palyrobotics.frc2019.config.Constants.ElevatorConstants;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class WaitForArmCanReTuck extends WaitRoutine {

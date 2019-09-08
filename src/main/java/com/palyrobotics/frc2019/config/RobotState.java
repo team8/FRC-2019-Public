@@ -24,7 +24,7 @@ public class RobotState {
 
 	private static RobotState instance = new RobotState();
 
-	public double matchStartTime;
+	public long matchStartTimeMs;
 
 	public static RobotState getInstance() {
 		return instance;

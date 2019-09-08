@@ -100,11 +100,12 @@ public class Gains {
 	public static final double kVidarIntakeSmartMotionkD = 0;
 	public static final double kVidarIntakeSmartMotionkF = 0.00346; // 1/(deg/s)
 	public static final int kVidarIntakeSmartMotionkIzone = 0;
-	public static final double kVidarIntakeSmartMotionkRampRate = 0;
+	public static final double kVidarIntakeSmartMotionkRampRate = 0.05;
 	public static final Gains intakeSmartMotion = new Gains(kVidarIntakeSmartMotionkP, kVidarIntakeSmartMotionkI, kVidarIntakeSmartMotionkD, kVidarIntakeSmartMotionkF,
 	kVidarIntakeSmartMotionkIzone, kVidarIntakeSmartMotionkRampRate);
 
 	//Elevator Gains
+	// region unused
     public static final double kVidarElevatorHoldkP = 2.0;//0.1;
     public static final double kVidarElevatorHoldkI = 0;//0.002 / 2;
     public static final double kVidarElevatorHoldkD = 35.0;//85 / 2;
@@ -140,6 +141,7 @@ public class Gains {
     public static final double kVidarElevatorDownPositionkRampRate = 0.0;
     public static final Gains elevatorDownwardsPosition = new Gains(kVidarElevatorDownPositionkP, kVidarElevatorDownPositionkI, kVidarElevatorDownPositionkD,
             kVidarElevatorDownPositionkF, kVidarElevatorDownPositionkIzone, kVidarElevatorDownPositionkRampRate);
+    //endregion
 
     public static final double kVidarElevatorPositionkP = .5; // .7;
     public static final double kVidarElevatorPositionkI = 0.0;
@@ -149,6 +151,9 @@ public class Gains {
     public static final double kVidarElevatorPositionkRampRate = 0.0;
     public static final Gains elevatorPosition = new Gains(kVidarElevatorPositionkP, kVidarElevatorPositionkI, kVidarElevatorPositionkD,
             kVidarElevatorPositionkF, kVidarElevatorPositionkIzone, kVidarElevatorPositionkRampRate);
+
+    public static final double kVidarElevatorSmartMotionMaxVel = 20, kVidarElevatorSmartMotionMaxAccel = 60;
+    public static final Gains elevatorSmartMotion = new Gains(0.0, 0, 0, 0.012, 0, 0.02);
 
 
     public static final Gains emptyGains = new Gains(0,0,0,0,0,0);
@@ -195,6 +200,11 @@ public class Gains {
 	public boolean equals(Object other) {
 		return ((Gains) other).P == this.P && ((Gains) other).I == this.I && ((Gains) other).D == this.D && ((Gains) other).F == this.F
 				&& ((Gains) other).izone == this.izone && ((Gains) other).rampRate == this.rampRate;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Gains{P=%s, I=%s, D=%s, F=%s, rampRate=%s, izone=%d}", P, I, D, F, rampRate, izone);
 	}
 
 	public static void initNetworkTableGains() {
