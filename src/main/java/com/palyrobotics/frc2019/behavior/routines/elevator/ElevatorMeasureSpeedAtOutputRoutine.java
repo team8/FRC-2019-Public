@@ -3,6 +3,7 @@ package com.palyrobotics.frc2019.behavior.routines.elevator;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -23,12 +24,12 @@ public class ElevatorMeasureSpeedAtOutputRoutine extends Routine {
 
     @Override
     public void start() {
-
+        HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.setOpenLoopRampRate(0.5);
     }
 
     @Override
     public Commands update(Commands commands) {
-        commands.wantedElevatorState = Elevator.ElevatorState.MANUAL_POSITIONING;
+        commands.wantedElevatorState = Elevator.ElevatorState.PERCENT_OUTPUT;
         commands.customElevatorPercentOutput = mPercentOutput + mFF;
         mVelocityMeasurements.add(RobotState.getInstance().elevatorVelocity);
         return commands;

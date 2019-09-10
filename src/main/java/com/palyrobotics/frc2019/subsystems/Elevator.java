@@ -95,6 +95,7 @@ public class Elevator extends Subsystem {
         }
 
         CSVWriter.addData("elevatorAppliedOutput", HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getAppliedOutput());
+        CSVWriter.addData("elevatorCurrent", HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getOutputCurrent());
         CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
         CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
         CSVWriter.addData("elevatorWantedPos", mElevatorWantedPosition);

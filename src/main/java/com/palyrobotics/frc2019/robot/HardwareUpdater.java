@@ -17,10 +17,7 @@ import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.TalonSRXOutput;
 import com.palyrobotics.frc2019.util.configv2.Configs;
 import com.palyrobotics.frc2019.util.logger.Logger;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
+import com.revrobotics.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -191,18 +188,18 @@ class HardwareUpdater {
 
     void configureElevatorHardware() {
 
-        HardwareAdapter.getInstance().getElevator().resetSensors();
-
         CANSparkMax masterSpark = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark;
         CANSparkMax slaveSpark = HardwareAdapter.getInstance().getElevator().elevatorSlaveSpark;
 
         masterSpark.restoreFactoryDefaults();
         slaveSpark.restoreFactoryDefaults();
 
+        HardwareAdapter.getInstance().getElevator().resetSensors();
+
         slaveSpark.follow(masterSpark);
 
-        masterSpark.enableVoltageCompensation(12);
-        slaveSpark.enableVoltageCompensation(12);
+        masterSpark.enableVoltageCompensation(11);
+        slaveSpark.enableVoltageCompensation(11);
 
         masterSpark.setInverted(false);
         slaveSpark.setInverted(false);
@@ -215,8 +212,8 @@ class HardwareUpdater {
 
         // TODO refactor into constants
 
-        masterSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
-        masterSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+        masterSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        masterSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
         masterSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0.0f);
         masterSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ElevatorConfig.kMaxHeightInches);
 
@@ -224,17 +221,19 @@ class HardwareUpdater {
         masterSpark.getEncoder().setVelocityConversionFactor(ElevatorConfig.kElevatorSpeedUnitConversion);
 //        masterSpark.getEncoder().setInverted(true);
 
-        masterSpark.getPIDController().setOutputRange(-0.6, 0.6, 1);
-//		masterSpark.getPIDController().setSmartMotionAccelStrategy(CANPIDController.AccelStrategy.kSCurve, 1);
-        masterSpark.getPIDController().setSmartMotionAllowedClosedLoopError(0.0, 1);
+        CANPIDController masterController = masterSpark.getPIDController();
+        masterController.setOutputRange(-0.9, 0.9, 1);
+        masterController.setSmartMotionAccelStrategy(CANPIDController.AccelStrategy.kTrapezoidal, 1);
+        masterController.setSmartMotionAllowedClosedLoopError(0.0, 1);
+        masterController.setSmartMotionMinOutputVelocity(0.0, 1);
 
         ElevatorConfig elevatorConfig = Configs.get(ElevatorConfig.class);
-        masterSpark.getPIDController().setSmartMotionMaxAccel(elevatorConfig.a, 1);
-        masterSpark.getPIDController().setSmartMotionMaxVelocity(elevatorConfig.v, 1);
+        masterController.setSmartMotionMaxAccel(elevatorConfig.a, 1);
+        masterController.setSmartMotionMaxVelocity(elevatorConfig.v, 1);
 
         updateSparkGains(masterSpark, Gains.elevatorPosition, 0);
 //        updateSparkGains(masterSpark, Gains.elevatorSmartMotion, 1);
-        Gains smartMotionGains = new Gains(elevatorConfig.p, elevatorConfig.i, elevatorConfig.f, elevatorConfig.ff, 0, 0.0);
+        Gains smartMotionGains = new Gains(elevatorConfig.p, elevatorConfig.i, elevatorConfig.d, elevatorConfig.f, 0, 0.0);
         System.out.println(smartMotionGains);
         updateSparkGains(masterSpark, smartMotionGains, 1);
     }
@@ -699,11 +698,13 @@ class HardwareUpdater {
     }
 
     private void updateSparkGains(CANSparkMax spark, Gains gains, int slotID) {
-        spark.getPIDController().setP(gains.P, slotID);
-        spark.getPIDController().setD(gains.D, slotID);
-        spark.getPIDController().setI(gains.I, slotID);
-        spark.getPIDController().setFF(gains.F, slotID);
-        spark.getPIDController().setIZone(gains.izone, slotID);
+        CANPIDController controller = spark.getPIDController();
+        controller.setP(gains.P, slotID);
+        controller.setD(gains.D, slotID);
+        controller.setI(gains.I, slotID);
+        controller.setFF(gains.F, slotID);
+        controller.setIZone(gains.izone, slotID);
+        controller.setIAccum(0.0);
         spark.setClosedLoopRampRate(gains.rampRate);
     }
 }

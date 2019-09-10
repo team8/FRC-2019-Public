@@ -70,9 +70,10 @@ public class ElevatorCustomPositioningRoutine extends Routine {
 //            }
 //        }
 
-        System.out.println("Cancelling");
+        System.out.println("Cancelling this");
 
-        return hasSetAllVars && elevator.elevatorOnTarget();
+//        return hasSetAllVars && elevator.elevatorOnTarget();
+        return false;
     }
 
     @Override
