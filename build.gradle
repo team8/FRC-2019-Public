@@ -74,7 +74,3 @@ jar {
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
-
-wrapper {
-    gradleVersion = '5.4.1'
-}
