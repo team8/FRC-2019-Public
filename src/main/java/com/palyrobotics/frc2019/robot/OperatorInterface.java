@@ -1,23 +1,12 @@
 package com.palyrobotics.frc2019.robot;
 
 import com.palyrobotics.frc2019.behavior.Routine;
-import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorMeasureSpeedAtOutputRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCloseRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeBeginCycleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeLevelOneRocketRoutine;
-import com.palyrobotics.frc2019.behavior.routines.intake.IntakeSetRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeUpRoutine;
-import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
-import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelDownRoutine;
-import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelUpRoutine;
-import com.palyrobotics.frc2019.behavior.routines.shovel.WaitForHatchIntakeCurrentSpike;
-import com.palyrobotics.frc2019.behavior.routines.waits.WaitForArmCanTuck;
-import com.palyrobotics.frc2019.behavior.routines.waits.WaitForElevatorCanMove;
-import com.palyrobotics.frc2019.behavior.routines.waits.WaitForHatchIntakeUp;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;

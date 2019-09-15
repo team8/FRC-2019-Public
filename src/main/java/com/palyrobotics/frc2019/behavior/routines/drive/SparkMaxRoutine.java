@@ -9,9 +9,6 @@ import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.subsystems.controllers.SparkMaxDriveController;
 import com.palyrobotics.frc2019.util.SparkSignal;
-import com.palyrobotics.frc2019.util.logger.Logger;
-
-import java.util.logging.Level;
 
 /**
  * Created by Nihar on 2/12/17.
@@ -58,7 +55,7 @@ public class SparkMaxRoutine extends Routine {
             }
         }
         drive.setSparkMaxController(mSignal);
-        Logger.getInstance().logRobotThread(Level.FINE, "Sent drivetrain signal", mSignal);
+//        Logger.getInstance().logRobotThread(Level.FINE, "Sent drivetrain signal", mSignal);
     }
 
     @Override

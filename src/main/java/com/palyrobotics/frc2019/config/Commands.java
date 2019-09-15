@@ -3,11 +3,9 @@ package com.palyrobotics.frc2019.config;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.SparkSignal;
-import com.palyrobotics.frc2019.util.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.logging.Level;
 
 /**
  * Commands represent the desired setpoints and subsystem states for the robot. <br />
@@ -65,7 +63,7 @@ public class Commands {
     public void addWantedRoutine(Routine wantedRoutine) {
         for (Routine routine : wantedRoutines) {
             if (routine.getClass().equals(wantedRoutine.getClass())) {
-                Logger.getInstance().logRobotThread(Level.WARNING, "tried to add duplicate routine", routine.getName());
+//                Logger.getInstance().logRobotThread(Level.WARNING, "tried to add duplicate routine", routine.getName());
                 return;
             }
         }

@@ -8,10 +8,7 @@ import com.palyrobotics.frc2019.config.dashboard.DashboardValue;
 import com.palyrobotics.frc2019.subsystems.controllers.*;
 import com.palyrobotics.frc2019.util.*;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
-import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.Path;
-
-import java.util.logging.Level;
 
 /**
  * Represents the drivetrain Uses controllers or cheesydrivehelper/proportionaldrivehelper to calculate DriveSignal
@@ -160,7 +157,7 @@ public class Drive extends Subsystem {
 				break;
 			case ON_BOARD_CONTROLLER:
 				if(mController == null) {
-					Logger.getInstance().logSubsystemThread(Level.WARNING, "No onboard controller to use!");
+//					Logger.getInstance().logSubsystemThread(Level.WARNING, "No onboard controller to use!");
 					commands.wantedDriveState = DriveState.NEUTRAL;
 				} else {
 					setDriveOutputs(mController.update(mCachedRobotState));
@@ -191,8 +188,8 @@ public class Drive extends Subsystem {
 		leftEncoder.updateValue(state.drivePose.leftEnc);
 		rightEncoder.updateValue(state.drivePose.rightEnc);
 
-		Logger.getInstance().logSubsystemThread(Level.FINEST, "Left drive encoder", leftEncoder);
-		Logger.getInstance().logSubsystemThread(Level.FINEST, "Right drive encoder", rightEncoder);
+//		Logger.getInstance().logSubsystemThread(Level.FINEST, "Left drive encoder", leftEncoder);
+//		Logger.getInstance().logSubsystemThread(Level.FINEST, "Right drive encoder", rightEncoder);
 
 		DashboardManager.getInstance().publishKVPair(leftEncoder);
 		DashboardManager.getInstance().publishKVPair(rightEncoder);

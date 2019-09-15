@@ -8,7 +8,6 @@ import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.commands.CommandReceiver;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
-import com.palyrobotics.frc2019.util.loops.Looper;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
@@ -52,8 +51,6 @@ public class Robot extends TimedRobot {
 
     private boolean breakoutTeleopInitCalled = false;
 
-    public Looper looper;
-
     private CommandReceiver mCommandReceiver = new CommandReceiver();
 
     @Override
@@ -72,8 +69,6 @@ public class Robot extends TimedRobot {
         mHardwareUpdater.initHardware();
 
         mElevator.resetWantedPosition();
-        this.looper = new Looper();
-//		looper.register(mHardwareUpdater.logLoop);
 
         CSVWriter.cleanFile();
 
@@ -188,8 +183,6 @@ public class Robot extends TimedRobot {
 //
 //        Logger.getInstance().logRobotThread(Level.INFO, "Start teleopInit()");
 
-        looper.start();
-
         robotState.gamePeriod = RobotState.GamePeriod.TELEOP;
         robotState.reset(0.0, new RigidTransform2d());
         mHardwareUpdater.updateState(robotState);
@@ -213,44 +206,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        long startTime = System.nanoTime();
-
-        long startCommands = System.nanoTime();
         commands = mRoutineManager.update(operatorInterface.updateCommands(commands));
-        double commandTime = (System.nanoTime() - startCommands) / 1e9;
-
-        long startUpdateState = System.nanoTime();
         mHardwareUpdater.updateState(robotState);
-        double updateStateTime = (System.nanoTime() - startUpdateState) / 1e9;
-
-        long startUpdateSubsystem = System.nanoTime();
         updateSubsystems();
-        double updateSubsystemTime = (System.nanoTime() - startUpdateSubsystem) / 1e9;
-
-        //Update the hardware
-        long startUpdateHardware = System.nanoTime();
         mHardwareUpdater.updateHardware();
-        double updateHardwareTime = (System.nanoTime() - startUpdateHardware) / 1e9;
-
-//        if (mWriter.getSize() > 2000) {
-//            mWriter.write();
-//        }
-
-//        DataLogger.getInstance().logData(Level.FINE, "loop_dt", (System.nanoTime() - start) / 1.0e6);
-//        DataLogger.getInstance().cycle();
-
-        long endTime = System.nanoTime();
-        double loopTimeSeconds = (endTime - startTime) / 1e9;
-        if (loopTimeSeconds >= 0.02) {
-            System.out.println("===== Overrun Report =====");
-            System.out.printf("Loop time: %f\n", loopTimeSeconds);
-            System.out.printf("Command time: %f\n", commandTime);
-            System.out.printf("Update State time: %f\n", updateStateTime);
-            System.out.printf("Update Subsystems time: %f\n", updateSubsystemTime);
-            System.out.printf("Update Hardware time: %f\n", updateHardwareTime);
-        }
-
-//		System.out.println("Limelight zdist: " + Limelight.getInstance().getCorrectedEstimatedDistanceZ());
     }
 
     @Override
@@ -263,8 +222,6 @@ public class Robot extends TimedRobot {
 //        DataLogger.getInstance().cleanup();
 
         mAutoStarted = false;
-
-        looper.stop();
 
         robotState.reset(0, new RigidTransform2d());
         //Stops updating routines
@@ -311,17 +268,17 @@ public class Robot extends TimedRobot {
         mShooter.start();
         mPusher.start();
         mFingers.start();
-//		mIntake.start();
+		mIntake.start();
     }
 
     private void updateSubsystems() {
-//        mDrive.update(commands, robotState);
+        mDrive.update(commands, robotState);
         mElevator.update(commands, robotState);
-//        mShooter.update(commands, robotState);
-//        mPusher.update(commands, robotState);
-//        mFingers.update(commands, robotState);
-//        mShovel.update(commands, robotState);
-//		mIntake.update(commands, robotState);
+        mShooter.update(commands, robotState);
+        mPusher.update(commands, robotState);
+        mFingers.update(commands, robotState);
+        mShovel.update(commands, robotState);
+        mIntake.update(commands, robotState);
     }
 
 
@@ -332,7 +289,7 @@ public class Robot extends TimedRobot {
         mPusher.stop();
         mFingers.stop();
         mShovel.stop();
-//		mIntake.stop();
+		mIntake.stop();
     }
 
     @Override

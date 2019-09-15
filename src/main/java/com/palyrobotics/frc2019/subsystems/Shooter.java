@@ -4,8 +4,8 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.Constants.ShooterConstants;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.util.configv2.Configs;
 import com.palyrobotics.frc2019.config.configv2.ElevatorConfig;
+import com.palyrobotics.frc2019.util.configv2.Configs;
 
 public class Shooter extends Subsystem {
     public static Shooter instance = new Shooter("Shooter");
@@ -63,7 +63,7 @@ public class Shooter extends Subsystem {
                 if (commands.customShooterSpeed) {
                     mOutput = robotState.operatorXboxControllerInput.leftTrigger; //TODO: change control?
                 } else {
-                    if (robotState.elevatorPosition < Configs.get(ElevatorConfig.class).elevatorCargoHeight3Inches + 8.0) { // up is negative
+                    if (robotState.elevatorPosition > Configs.get(ElevatorConfig.class).elevatorCargoHeight3Inches - 8.0) {
                         mOutput = ShooterConstants.kLevel3MotorVelocity;
                     } else {
                         mOutput = ShooterConstants.kExpellingMotorVelocity;

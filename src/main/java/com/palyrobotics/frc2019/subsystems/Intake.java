@@ -1,18 +1,14 @@
 package com.palyrobotics.frc2019.subsystems;
 
-import java.util.Optional;
-
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Gains;
-import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.Constants.IntakeConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.robot.HardwareAdapter;
+import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
-import com.palyrobotics.frc2019.util.logger.Logger;
 
-import java.util.logging.Level;
+import java.util.Optional;
 
 public class Intake extends Subsystem {
     public static Intake instance = new Intake();
@@ -136,7 +132,7 @@ public class Intake extends Subsystem {
         } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING && (this.mMacroState != IntakeMacroState.HOLDING || mIntakeWantedPosition.isEmpty())) {
             this.mMacroState = commands.wantedIntakeState;
             mIntakeWantedPosition = Optional.of(robotState.intakeAngle); // setpoint is current position
-            Logger.getInstance().logRobotThread(Level.INFO, "setting wanted intake pos to " + robotState.intakeAngle);
+//            Logger.getInstance().logRobotThread(Level.INFO, "setting wanted intake pos to " + robotState.intakeAngle);
         } else if (this.mMacroState != IntakeMacroState.DROPPING && !(this.mMacroState == IntakeMacroState.GROUND_INTAKING && commands.wantedIntakeState == IntakeMacroState.HOLDING_ROCKET)) {
             this.mMacroState = commands.wantedIntakeState;
         }
@@ -152,10 +148,9 @@ public class Intake extends Subsystem {
         // 2. Compensate for robot acceleration.  Derivation is similar to that for an inverted pendulum,
         // and can be found on slack.
         // 3. Compensate for centripetal acceleration on the arm.
-        double arb_ff = IntakeConstants.kGravityFF * Math.cos(Math.toRadians(robotState.intakeAngle - IntakeConstants.kAngleOffset))
-                + IntakeConstants.kAccelComp * robotState.robotAccel * Math.sin(Math.toRadians(robotState.intakeAngle - IntakeConstants.kAngleOffset))
-                + IntakeConstants.kCentripetalCoeff * robotState.drivePose.headingVelocity * robotState.drivePose.headingVelocity *
-                Math.sin(Math.toRadians(robotState.intakeAngle - IntakeConstants.kAngleOffset));
+        double arbitraryDemand = IntakeConstants.kGravityFF * Math.cos(Math.toRadians(robotState.intakeAngle - IntakeConstants.kAngleOffset))
+                + IntakeConstants.kAccelComp * robotState.robotAcceleration * Math.sin(Math.toRadians(robotState.intakeAngle - IntakeConstants.kAngleOffset))
+                + IntakeConstants.kCentripetalCoeff * robotState.drivePose.headingVelocity * robotState.drivePose.headingVelocity * Math.sin(Math.toRadians(robotState.intakeAngle - IntakeConstants.kAngleOffset));
 
         switch (mMacroState) {
             case STOWED:
@@ -256,14 +251,8 @@ public class Intake extends Subsystem {
                 mSparkOutput.setPercentOutput(0); //TODO: Fix this based on what control method wanted
                 break;
             case CUSTOM_POSITIONING:
-                // if (intakeOnTarget()) {
-//                    mSparkOutput.setGains(Gains.intakePosition);
-//                    mSparkOutput.setTargetPosition(mIntakeWantedPosition.get(), arb_ff, Gains.intakePosition);
-                // }
-                // else {
                 mSparkOutput.setGains(Gains.intakeSmartMotion);
-                mSparkOutput.setTargetPositionSmartMotion(mIntakeWantedPosition.get(), Gains.kVidarIntakeSmartMotionMaxVel, Gains.kVidarIntakeSmartMotionMaxAccel, 0.0, Gains.intakeSmartMotion);
-                // }
+                mSparkOutput.setTargetPositionSmartMotion(mIntakeWantedPosition.orElseThrow(), IntakeConstants.kArmDegreesPerRevolution, arbitraryDemand);
                 break;
             case IDLE:
                 if (mIntakeWantedPosition.isPresent()) {

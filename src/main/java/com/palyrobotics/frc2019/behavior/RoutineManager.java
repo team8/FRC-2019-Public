@@ -2,13 +2,11 @@ package com.palyrobotics.frc2019.behavior;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.*;
-import com.palyrobotics.frc2019.util.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Level;
 
 /**
  * Handles the updating of commands by passing them to each running routine. <br />
@@ -38,7 +36,7 @@ public class RoutineManager {
      */
     public void addNewRoutine(Routine newRoutine) {
         if (newRoutine == null) {
-            Logger.getInstance().logRobotThread(Level.WARNING, "Tried to add null routine to routine manager!");
+//            Logger.getInstance().logRobotThread(Level.WARNING, "Tried to add null routine to routine manager!");
             throw new NullPointerException();
         }
         routinesToAdd.add(newRoutine);
@@ -56,12 +54,12 @@ public class RoutineManager {
      * @return modified commands if needed
      */
     public Commands reset(Commands commands) {
-        Logger.getInstance().logRobotThread(Level.FINE, "Routine manager reset");
+//        Logger.getInstance().logRobotThread(Level.FINE, "Routine manager reset");
         Commands output = commands.copy();
         //Cancel all running routines
         if (runningRoutines.size() != 0) {
             for (Routine routine : runningRoutines) {
-                Logger.getInstance().logRobotThread(Level.FINE, "Canceling", routine.getName());
+//                Logger.getInstance().logRobotThread(Level.FINE, "Canceling", routine.getName());
                 output = routine.cancel(output);
             }
         }
@@ -84,7 +82,7 @@ public class RoutineManager {
         //Update all running routines
         for (Routine routine : runningRoutines) {
             if (routine.finished()) {
-                Logger.getInstance().logRobotThread(Level.FINE, "Routine: " + routine.getName() + " finished, canceled");
+//                Logger.getInstance().logRobotThread(Level.FINE, "Routine: " + routine.getName() + " finished, canceled");
                 output = routine.cancel(output);
                 routinesToRemove.add(routine);
             } else {
@@ -142,9 +140,9 @@ public class RoutineManager {
         ArrayList<HashSet<Subsystem>> routineSubsystemSets = new ArrayList<>();
         HashSet<Subsystem> subsystemsRequired = new HashSet<>(Arrays.asList(newRoutine.getRequiredSubsystems()));
 
-		for (Routine routine : routinesList) {
-			routineSubsystemSets.add(new HashSet<>(Arrays.asList(routine.getRequiredSubsystems())));
-		}
+        for (Routine routine : routinesList) {
+            routineSubsystemSets.add(new HashSet<>(Arrays.asList(routine.getRequiredSubsystems())));
+        }
 
         ArrayList<Routine> conflicts = new ArrayList<>();
         //Any existing routines that require the same subsystem are added to routine
@@ -154,7 +152,7 @@ public class RoutineManager {
             if (routineSubsystemSets.get(j).size() != 0) {
                 conflicts.add(routinesList.get(j));
                 //Move to next routine in the list
-			}
+            }
         }
         return conflicts;
     }

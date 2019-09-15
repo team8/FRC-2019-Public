@@ -5,12 +5,10 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
-import com.palyrobotics.frc2019.util.logger.Logger;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Created by Nihar on 4/5/17.
@@ -127,7 +125,7 @@ public class DrivePathRoutine extends Routine {
 
 			mPath = new Path(absoluteList);
 		}
-		Logger.getInstance().logSubsystemThread(Level.INFO, "Starting Drive Path Routine");
+//		Logger.getInstance().logSubsystemThread(Level.INFO, "Starting Drive Path Routine");
 		
 		drive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
 	}
@@ -140,7 +138,7 @@ public class DrivePathRoutine extends Routine {
 
 	@Override
 	public Commands cancel(Commands commands) {
-		Logger.getInstance().logSubsystemThread(Level.INFO, "Drive Path Routine finished");
+//		Logger.getInstance().logSubsystemThread(Level.INFO, "Drive Path Routine finished");
 		drive.setNeutral();
 		commands.wantedDriveState = Drive.DriveState.NEUTRAL;
 		return commands;

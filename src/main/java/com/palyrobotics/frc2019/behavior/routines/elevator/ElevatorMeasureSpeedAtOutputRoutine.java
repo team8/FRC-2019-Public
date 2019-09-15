@@ -3,7 +3,6 @@ package com.palyrobotics.frc2019.behavior.routines.elevator;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -24,7 +23,7 @@ public class ElevatorMeasureSpeedAtOutputRoutine extends Routine {
 
     @Override
     public void start() {
-        HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.setOpenLoopRampRate(0.5);
+        System.out.println("Starting to measure speed...");
     }
 
     @Override
@@ -40,14 +39,14 @@ public class ElevatorMeasureSpeedAtOutputRoutine extends Routine {
         commands.wantedElevatorState = Elevator.ElevatorState.IDLE;
         Collections.sort(mVelocityMeasurements);
         double medianVelocity = mVelocityMeasurements.get(mVelocityMeasurements.size() / 2);
-        System.out.printf("At Percent Output %f Median velocity inch/s: %f (with feed-forward %f) %n", mPercentOutput, medianVelocity, mFF);
+        System.out.printf("At Percent Output %f Median velocity inch/s: %f (with feed-forward %f)%n", mPercentOutput, medianVelocity, mFF);
         CSVWriter.addData("measureVelInchPerSec", mPercentOutput, medianVelocity);
         return commands;
     }
 
     @Override
     public boolean finished() {
-        return RobotState.getInstance().elevatorPosition < mEncoderCutoff; // TODO this depends upon elevator already being negative set points
+        return RobotState.getInstance().elevatorPosition > mEncoderCutoff;
     }
 
     @Override

@@ -7,8 +7,10 @@ import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.Constants.PortConstants;
 import com.palyrobotics.frc2019.util.XboxController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.*;
+
+import java.util.List;
 
 /**
  * Represents all hardware components of the robot. Singleton class. Should only be used in robot package, and 254lib. Subdivides hardware into subsystems.
@@ -29,34 +31,29 @@ public class HardwareAdapter {
             return instance;
         }
 
-        final CANSparkMax leftMasterSpark;
-        final CANSparkMax leftSlave1Spark;
-        final CANSparkMax leftSlave2Spark;
-        final CANSparkMax rightMasterSpark;
-        final CANSparkMax rightSlave1Spark;
-        final CANSparkMax rightSlave2Spark;
+        final CANSparkMax
+                leftMasterSpark, leftSlave1Spark, leftSlave2Spark,
+                rightMasterSpark, rightSlave1Spark, rightSlave2Spark;
+
+        final List<CANSparkMax> sparks;
 
         final PigeonIMU gyro;
 
         public void resetSensors() {
-            instance.gyro.setYaw(0, 0);
-            instance.gyro.setFusedHeading(0, 0);
-            instance.gyro.setAccumZAngle(0, 0);
-            instance.leftMasterSpark.getEncoder().setPosition(0);
-            instance.leftSlave1Spark.getEncoder().setPosition(0);
-            instance.leftSlave2Spark.getEncoder().setPosition(0);
-            instance.rightMasterSpark.getEncoder().setPosition(0);
-            instance.rightSlave1Spark.getEncoder().setPosition(0);
-            instance.rightSlave2Spark.getEncoder().setPosition(0);
+            gyro.setYaw(0, 0);
+            gyro.setFusedHeading(0, 0);
+            gyro.setAccumZAngle(0, 0);
+            sparks.forEach(spark -> spark.getEncoder().setPosition(0.0));
         }
 
         DrivetrainHardware() {
-            leftMasterSpark = new CANSparkMax(PortConstants.kVidarLeftDriveMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            leftSlave1Spark = new CANSparkMax(PortConstants.kVidarLeftDriveSlave1DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            leftSlave2Spark = new CANSparkMax(PortConstants.kVidarLeftDriveSlave2DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            rightMasterSpark = new CANSparkMax(PortConstants.kVidarRightDriveMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            rightSlave1Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave1DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            rightSlave2Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave2DeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            leftMasterSpark = new CANSparkMax(PortConstants.kVidarLeftDriveMasterDeviceID, MotorType.kBrushless);
+            leftSlave1Spark = new CANSparkMax(PortConstants.kVidarLeftDriveSlave1DeviceID, MotorType.kBrushless);
+            leftSlave2Spark = new CANSparkMax(PortConstants.kVidarLeftDriveSlave2DeviceID, MotorType.kBrushless);
+            rightMasterSpark = new CANSparkMax(PortConstants.kVidarRightDriveMasterDeviceID, MotorType.kBrushless);
+            rightSlave1Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave1DeviceID, MotorType.kBrushless);
+            rightSlave2Spark = new CANSparkMax(PortConstants.kVidarRightDriveSlave2DeviceID, MotorType.kBrushless);
+            sparks = List.of(leftMasterSpark, leftSlave1Spark, leftSlave2Spark, rightMasterSpark, rightSlave1Spark, rightSlave2Spark);
             gyro = new PigeonIMU(ShovelHardware.getInstance().shovelTalon);
         }
     }
@@ -81,9 +78,8 @@ public class HardwareAdapter {
         }
 
         ElevatorHardware() {
-
-            elevatorMasterSpark = new CANSparkMax(PortConstants.kVidarElevatorMasterSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            elevatorSlaveSpark = new CANSparkMax(PortConstants.kVidarElevatorSlaveSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            elevatorMasterSpark = new CANSparkMax(PortConstants.kVidarElevatorMasterSparkID, MotorType.kBrushless);
+            elevatorSlaveSpark = new CANSparkMax(PortConstants.kVidarElevatorSlaveSparkID, MotorType.kBrushless);
             elevatorShifter = new DoubleSolenoid(0, PortConstants.kVidarElevatorDoubleSolenoidForwardsID, PortConstants.kVidarElevatorDoubleSolenoidReverseID);
 //            elevatorHolderSolenoid = new Solenoid(1,PortConstants.kVidarElevatorHolderSolenoidID);
         }
@@ -112,15 +108,12 @@ public class HardwareAdapter {
         }
 
         IntakeHardware() {
-
-
             intakeTalon = new WPI_TalonSRX(PortConstants.kVidarIntakeTalonDeviceID);
-            intakeMasterSpark = new CANSparkMax(PortConstants.kVidarIntakeMasterDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
-            intakeSlaveSpark = new CANSparkMax(PortConstants.kVidarIntakeSlaveDeviceID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            intakeMasterSpark = new CANSparkMax(PortConstants.kVidarIntakeMasterDeviceID, MotorType.kBrushless);
+            intakeSlaveSpark = new CANSparkMax(PortConstants.kVidarIntakeSlaveDeviceID, MotorType.kBrushless);
             intakeUltrasonicLeft = new Ultrasonic(PortConstants.kVidarIntakeLeftUltrasonicPing, PortConstants.kVidarIntakeLeftUltrasonicEcho);
             intakeUltrasonicRight = new Ultrasonic(PortConstants.kVidarIntakeRightUltrasonicPing, PortConstants.kVidarIntakeRightUltrasonicEcho);
             potentiometer = new AnalogPotentiometer(PortConstants.kVidarAnalogPot);
-
         }
     }
 
@@ -144,12 +137,10 @@ public class HardwareAdapter {
         }
 
         PusherHardware() {
-
-            pusherSpark = new CANSparkMax(PortConstants.kVidarPusherSparkID, CANSparkMaxLowLevel.MotorType.kBrushless);
+            pusherSpark = new CANSparkMax(PortConstants.kVidarPusherSparkID, MotorType.kBrushless);
             pusherUltrasonic = new Ultrasonic(PortConstants.kVidarPusherUltrasonicPing, PortConstants.kVidarPusherUltrasonicEcho);
 //			pusherSecondaryUltrasonic = new Ultrasonic(PortConstants.kVidarBackupUltrasonicPing, PortConstants.kVidarBackupUltrasonicEcho);
 //			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
-
         }
     }
 
@@ -164,10 +155,8 @@ public class HardwareAdapter {
         final WPI_VictorSPX shooterSlaveVictor;
 
         ShooterHardware() {
-
             shooterMasterVictor = new WPI_VictorSPX(PortConstants.kVidarShooterMasterVictorDeviceID);
             shooterSlaveVictor = new WPI_VictorSPX(PortConstants.kVidarShooterSlaveVictorDeviceID);
-
         }
     }
 
@@ -186,7 +175,6 @@ public class HardwareAdapter {
         final DigitalInput upDownHFX;
 
         ShovelHardware() {
-
             shovelTalon = new WPI_TalonSRX(PortConstants.kVidarShovelDeviceID);
             upDownSolenoid = new DoubleSolenoid(0, PortConstants.kVidarShovelSolenoidUpDownID, PortConstants.kVidarShovelSolenoidUpDownID2);
             upDownHFX = new DigitalInput(PortConstants.kVidarShovelHFXPort);
@@ -207,7 +195,6 @@ public class HardwareAdapter {
             openCloseSolenoid = new DoubleSolenoid(0, PortConstants.kVidarOpenCloseSolenoidForwardID, PortConstants.kVidarOpenCloseSolenoidReverseID);
             pusherSolenoid = new DoubleSolenoid(0, PortConstants.kVidarExpelSolenoidForwardID, PortConstants.kVidarExpelSolenoidReverseID);
         }
-
     }
 
     //Joysticks for operator interface
@@ -218,10 +205,10 @@ public class HardwareAdapter {
             return instance;
         }
 
-        public final Joystick driveStick = new Joystick(0);
-        public final Joystick turnStick = new Joystick(1);
-        //		public final Joystick backupStick = new Joystick(3);
-		XboxController operatorXboxController = null;
+        final Joystick driveStick = new Joystick(0);
+        final Joystick turnStick = new Joystick(1);
+//        public final Joystick backupStick = new Joystick(3);
+        XboxController operatorXboxController = null;
 
         Joysticks() {
             if (OtherConstants.operatorXBoxController) {

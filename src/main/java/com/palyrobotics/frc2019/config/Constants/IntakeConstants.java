@@ -16,7 +16,7 @@ public class IntakeConstants {
 
     // FEED FORWARD CONSTANTS
 
-    public static final double kGravityFF = .315;
+    public static final double kGravityFF = 0.03;
     public static final double kAccelComp = 0;
     public static final double kCentripetalCoeff = 0;
     public static final double kAngleOffset = 11.89; // offset for center of mass
@@ -42,11 +42,11 @@ public class IntakeConstants {
     /**
      * Unit Conversions
      */
-    public static final double kArmPotentiometerTicksPerDegree = (4.5/1.0)*(0.2/360.0); // .2 comes from 1/5
+    public static final double kArmPotentiometerTicksPerDegree = (4.5 / 1.0) * (0.2 / 360.0); // .2 comes from 1/5
     // Using the NEO built in Encoder, so we must account for reduction.  ~= 42 / 360 * 118
-    public static final double kArmDegreesPerRevolution = (360.0) / ((68.0/14.0) * (38.0/18.0) * (36.0/14.0) * (54.0/12.0));
-    public static final double kArmEncoderSpeedUnitConversion = kArmDegreesPerRevolution / 60.0; // RPM -> Degrees per Second
+    public static final double
+            kArmDegreesPerRevolution = (360.0) / ((68.0 / 14.0) * (38.0 / 18.0) * (36.0 / 14.0) * (54.0 / 12.0)), // R → Degree
+            kArmDegreePerSecPerRpm = kArmDegreesPerRevolution / 60.0; // RPM → Degrees per Second
     //TODO: Fix below
     public static final double kIntakeTicksPerInch = 0;
-
 }

@@ -3,7 +3,6 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.configv2.ElevatorConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
@@ -20,7 +19,7 @@ public class Elevator extends Subsystem {
         return instance;
     }
 
-    private ElevatorConfig mConstants = Configs.get(ElevatorConfig.class);
+    private ElevatorConfig mConfig = Configs.get(ElevatorConfig.class);
 
     public enum ElevatorState {
         MANUAL_POSITIONING, //Moving the elevator with the joystick
@@ -72,18 +71,14 @@ public class Elevator extends Subsystem {
             case MANUAL_POSITIONING:
                 //Clear any existing wanted positions
                 if (OtherConstants.operatorXBoxController) {
-                    mOutput.setPercentOutput(mConstants.manualMaxPercentOut * mRobotState.operatorXboxControllerInput.getRightY());
+                    mOutput.setPercentOutput(mConfig.manualMaxPercentOut * mRobotState.operatorXboxControllerInput.getRightY());
                 } else {
-                    mOutput.setPercentOutput(mConstants.manualMaxPercentOut * mRobotState.operatorJoystickInput.getY());
+                    mOutput.setPercentOutput(mConfig.manualMaxPercentOut * mRobotState.operatorJoystickInput.getY());
                 }
                 break;
             case CUSTOM_POSITIONING:
                 //Control loop
-                mOutput.setTargetPositionSmartMotion(
-                        mElevatorWantedPosition,
-                        Gains.kVidarElevatorSmartMotionMaxVel, Gains.kVidarElevatorSmartMotionMaxAccel,
-                        mConstants.ff,
-                        Gains.elevatorSmartMotion);
+                mOutput.setTargetPositionSmartMotion(mElevatorWantedPosition, ElevatorConfig.kElevatorInchPerRevolution, mConfig.ff);
                 break;
             case IDLE:
                 //Clear any existing wanted positions
@@ -95,7 +90,6 @@ public class Elevator extends Subsystem {
         }
 
         CSVWriter.addData("elevatorAppliedOutput", HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getAppliedOutput());
-        CSVWriter.addData("elevatorCurrent", HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getOutputCurrent());
         CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
         CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
         CSVWriter.addData("elevatorWantedPos", mElevatorWantedPosition);
@@ -162,8 +156,8 @@ public class Elevator extends Subsystem {
      */
     public boolean elevatorOnTarget() {
         return mElevatorState == ElevatorState.CUSTOM_POSITIONING
-                && Math.abs(mElevatorWantedPosition - mRobotState.elevatorPosition) < mConstants.acceptablePositionError
-                && Math.abs(mRobotState.elevatorVelocity) < mConstants.acceptableVelocityError;
+                && Math.abs(mElevatorWantedPosition - mRobotState.elevatorPosition) < mConfig.acceptablePositionError
+                && Math.abs(mRobotState.elevatorVelocity) < mConfig.acceptableVelocityError;
     }
 
     public void resetWantedPosition() {
