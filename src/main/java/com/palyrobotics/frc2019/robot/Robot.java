@@ -205,6 +205,11 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void testInit() {
+        System.out.println(HardwareAdapter.getInstance().getIntake().potentiometer.get());
+    }
+
+    @Override
     public void teleopPeriodic() {
         commands = mRoutineManager.update(operatorInterface.updateCommands(commands));
         mHardwareUpdater.updateState(robotState);

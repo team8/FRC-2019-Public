@@ -20,8 +20,12 @@ public class SparkMaxOutput {
     private double mSmartMotionPositionConversion;
 
     public SparkMaxOutput() {
+        this(ControlType.kPosition);
+    }
+
+    public SparkMaxOutput(ControlType controlType) {
         mGains = new Gains(0, 0, 0, 0, 0, 0);
-        mSparkMode = ControlType.kPosition;
+        mSparkMode = controlType;
     }
 
     public SparkMaxOutput(SparkMaxOutput otherSpark) {

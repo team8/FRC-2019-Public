@@ -3,10 +3,10 @@ package com.palyrobotics.frc2019.subsystems;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.IntakeConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import com.revrobotics.ControlType;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class Intake extends Subsystem {
         instance = new Intake();
     }
 
-    private SparkMaxOutput mSparkOutput = new SparkMaxOutput();
+    private SparkMaxOutput mSparkOutput = new SparkMaxOutput(ControlType.kSmartMotion);
     private double mTalonOutput;
     private double mRumbleLength;
 
@@ -93,6 +93,8 @@ public class Intake extends Subsystem {
         mUpDownState = UpDownState.IDLE;
         mMacroState = IntakeMacroState.IDLE;
     }
+
+    public static long ticks = 0;
 
     @Override
     public void update(Commands commands, RobotState robotState) {
@@ -180,10 +182,6 @@ public class Intake extends Subsystem {
                 mIntakeWantedPosition = Optional.of(IntakeConstants.kHoldingPosition);
                 break;
             case HOLDING_ROCKET:
-                mWheelState = WheelState.SLOW;
-                mUpDownState = UpDownState.CUSTOM_POSITIONING;
-                mIntakeWantedPosition = Optional.of(IntakeConstants.kRocketExpelPosition);
-                break;
             case TUCK:
                 mWheelState = WheelState.SLOW;
                 mUpDownState = UpDownState.CUSTOM_POSITIONING;
@@ -251,7 +249,7 @@ public class Intake extends Subsystem {
                 mSparkOutput.setPercentOutput(0); //TODO: Fix this based on what control method wanted
                 break;
             case CUSTOM_POSITIONING:
-                mSparkOutput.setGains(Gains.intakeSmartMotion);
+//                System.out.printf("%f, %f%n", mIntakeWantedPosition.orElseThrow(), HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition() * IntakeConstants.kArmDegreesPerRevolution);
                 mSparkOutput.setTargetPositionSmartMotion(mIntakeWantedPosition.orElseThrow(), IntakeConstants.kArmDegreesPerRevolution, arbitraryDemand);
                 break;
             case IDLE:

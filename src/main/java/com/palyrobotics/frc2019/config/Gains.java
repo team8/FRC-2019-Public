@@ -91,13 +91,15 @@ public class Gains {
 
     //kF = (gear ratio) / (free speed)
     public static final double
-            kVidarIntakeSmartMotionMaxVelocity = 260.0, // deg/s
-            kVidarIntakeSmartMotionMaxAcceleration = 450.0; // deg/s^2
+//            kVidarIntakeSmartMotionMaxVelocity = 260.0, // deg/s
+//            kVidarIntakeSmartMotionMaxAcceleration = 450.0; // deg/s^2
+            kVidarIntakeSmartMotionMaxVelocity = 270, // deg/s
+            kVidarIntakeSmartMotionMaxAcceleration = 440; // deg/s^2
     private static final double
             kVidarIntakeSmartMotionP = 0.000015,
             kVidarIntakeSmartMotionI = 0,
             kVidarIntakeSmartMotionD = 0,
-            kVidarIntakeSmartMotionF = 0.00355,
+            kVidarIntakeSmartMotionF = 0.00335,
             kVidarIntakeSmartMotionRampRate = 0.1;
     private static final int kVidarIntakeSmartMotionIZone = 0;
     public static final Gains intakeSmartMotion = new Gains(

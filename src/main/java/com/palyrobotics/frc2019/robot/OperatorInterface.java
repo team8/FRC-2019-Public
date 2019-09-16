@@ -1,12 +1,22 @@
 package com.palyrobotics.frc2019.robot;
 
 import com.palyrobotics.frc2019.behavior.Routine;
+import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
-import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorMeasureSpeedAtOutputRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCloseRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeBeginCycleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeLevelOneRocketRoutine;
+import com.palyrobotics.frc2019.behavior.routines.intake.IntakeSetRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeUpRoutine;
+import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelDownRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.ShovelUpRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shovel.WaitForHatchIntakeCurrentSpike;
+import com.palyrobotics.frc2019.behavior.routines.waits.WaitForArmCanTuck;
+import com.palyrobotics.frc2019.behavior.routines.waits.WaitForElevatorCanMove;
+import com.palyrobotics.frc2019.behavior.routines.waits.WaitForHatchIntakeUp;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
@@ -134,21 +144,21 @@ public class OperatorInterface {
 //			}
 //		}
 
-//        if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP && (lastCancelTime + 200) < System.currentTimeMillis()) {
-//            intakeStartTime = System.currentTimeMillis();
-//            newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(),
-//                    new FingersCloseRoutine(),
-//                    new PusherInRoutine(),
-//                    new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
-//                    new ShovelUpRoutine(),
-//                    new WaitForHatchIntakeUp(),
-//                    new FingersOpenRoutine()));
-//        } else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 450 > OperatorInterface.intakeStartTime) && newCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
-//            intakeStartTime = System.currentTimeMillis();
-//            newCommands.cancelCurrentRoutines = true;
-//            newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
-//            lastCancelTime = System.currentTimeMillis();
-//        }
+        if (mOperatorXboxController.getButtonX() && newCommands.wantedShovelUpDownState == Shovel.UpDownState.UP && (lastCancelTime + 200) < System.currentTimeMillis()) {
+            intakeStartTime = System.currentTimeMillis();
+            newCommands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(),
+                    new FingersCloseRoutine(),
+                    new PusherInRoutine(),
+                    new WaitForHatchIntakeCurrentSpike(Shovel.WheelState.INTAKING),
+                    new ShovelUpRoutine(),
+                    new WaitForHatchIntakeUp(),
+                    new FingersOpenRoutine()));
+        } else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 450 > OperatorInterface.intakeStartTime) && newCommands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+            intakeStartTime = System.currentTimeMillis();
+            newCommands.cancelCurrentRoutines = true;
+            newCommands.wantedShovelUpDownState = Shovel.UpDownState.UP;
+            lastCancelTime = System.currentTimeMillis();
+        }
 
 //        if(mOperatorXboxController.getButtonB()) {
 //            Routine hatchCycle = new ShovelExpelCycle(FingerConstants.kFingersCycleTime);
@@ -162,33 +172,28 @@ public class OperatorInterface {
          * Elevator Control
          */
         if (mOperatorXboxController.getButtonA()) {
-//            Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorCargoHeight1Inches, .1);
-//            newCommands.cancelCurrentRoutines = false;
-////			newCommands.addWantedRoutine(elevatorLevel1);
-//            newCommands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel1));
-            newCommands.addWantedRoutine(new ElevatorMeasureSpeedAtOutputRoutine(-0.1, Configs.get(ElevatorConfig.class).ff, -14));
+            Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorCargoHeight1Inches, .1);
+            newCommands.cancelCurrentRoutines = false;
+//			newCommands.addWantedRoutine(elevatorLevel1);
+            newCommands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel1));
         } else if (mOperatorXboxController.getButtonB()) {
-            newCommands.addWantedRoutine(new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).testHeight, 0.1));
-//			double levelHeight;
-//			if (Robot.getRobotState().hasPusherCargoFar) {
-//				levelHeight = ElevatorConstants.kElevatorCargoBallHeight;
-//			}
-//			else {
-//				levelHeight = ElevatorConstants.kElevatorCargoHeight2Inches;
-//			}
-//			Routine elevatorLevel2 = new ElevatorCustomPositioningRoutine(levelHeight, .1);			newCommands.cancelCurrentRoutines = false;
-////			newCommands.addWantedRoutine(elevatorLevel2);
-////			newCommands.addWantedRoutine(new PusherInRoutine());
-//            newCommands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel2, new WaitForArmCanTuck(), new IntakeSetRoutine()));
+            double levelHeight;
+            if (Robot.getRobotState().hasPusherCargoFar) {
+                levelHeight = Configs.get(ElevatorConfig.class).elevatorCargoBallHeight;
+            } else {
+                levelHeight = Configs.get(ElevatorConfig.class).elevatorCargoHeight2Inches;
+            }
+            Routine elevatorLevel2 = new ElevatorCustomPositioningRoutine(levelHeight, .1);
+            newCommands.cancelCurrentRoutines = false;
+//			newCommands.addWantedRoutine(elevatorLevel2);
+//			newCommands.addWantedRoutine(new PusherInRoutine());
+            newCommands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel2, new WaitForArmCanTuck(), new IntakeSetRoutine()));
         } else if (mOperatorXboxController.getButtonY()) {
-//            Routine elevatorLevel3 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorCargoHeight3Inches, .1);
-//            newCommands.cancelCurrentRoutines = false;
-////			newCommands.addWantedRoutine(elevatorLevel3);
-////			newCommands.addWantedRoutine(new PusherInRoutine());
-//            newCommands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel3, new WaitForArmCanTuck(), new IntakeSetRoutine()));
-            newCommands.addWantedRoutine(new ElevatorMeasureSpeedAtOutputRoutine(-0.3, Configs.get(ElevatorConfig.class).ff, -14));
-        } else if (mOperatorXboxController.getButtonX()) {
-            newCommands.addWantedRoutine(new ElevatorCustomPositioningRoutine(0.0, 0.1));
+            Routine elevatorLevel3 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorCargoHeight3Inches, .1);
+            newCommands.cancelCurrentRoutines = false;
+//			newCommands.addWantedRoutine(elevatorLevel3);
+//			newCommands.addWantedRoutine(new PusherInRoutine());
+            newCommands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel3, new WaitForArmCanTuck(), new IntakeSetRoutine()));
         }
 
         /**\

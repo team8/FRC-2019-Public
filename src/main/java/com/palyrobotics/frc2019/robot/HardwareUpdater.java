@@ -214,6 +214,8 @@ class HardwareUpdater {
         intakeMasterSpark.enableVoltageCompensation(12);
         intakeSlaveSpark.enableVoltageCompensation(12);
 
+        intakeMasterSpark.setIdleMode(IdleMode.kBrake);
+
         // TODO fix when conversion is fixed from Spark
 //        intakeMasterSpark.getEncoder().setPositionConversionFactor(IntakeConstants.kArmDegreesPerRevolution);
 //        intakeMasterSpark.getEncoder().setVelocityConversionFactor(IntakeConstants.kArmDegreePerSecPerRpm);
@@ -407,8 +409,9 @@ class HardwareUpdater {
         Robot.getRobotState().intakeStartAngle = IntakeConstants.kMaxAngle -
                 1 / IntakeConstants.kArmPotentiometerTicksPerDegree * Math.abs(HardwareAdapter.getInstance().getIntake().potentiometer.get() -
                         IntakeConstants.kMaxAngleTicks);
-        HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().setPosition(Robot.getRobotState().intakeStartAngle);
-
+        HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().setPosition(
+                Robot.getRobotState().intakeStartAngle / IntakeConstants.kArmDegreesPerRevolution
+        );
     }
 
     private void updateUltrasonicSensors(RobotState robotState) {
@@ -437,6 +440,7 @@ class HardwareUpdater {
 
         //Cargo Distance from Pusher
         Ultrasonic mPusherUltrasonic = HardwareAdapter.getInstance().getPusher().pusherUltrasonic;
+        System.out.println(mPusherUltrasonic.getRangeInches());
         robotState.mPusherReadings.add(mPusherUltrasonic.getRangeInches());
         if (robotState.mPusherReadings.size() > 10) {
             robotState.mPusherReadings.remove(0);
@@ -491,12 +495,12 @@ class HardwareUpdater {
      * Checks if the compressor should compress and updates it accordingly
      */
     private void updateMiscellaneousHardware() {
-        HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.stop();
-//		if(shouldCompress()) {
-//	        HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.start();
-//        } else {
-//            HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.stop();
-//        }
+//        HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.stop();
+        if (shouldCompress()) {
+            HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.start();
+        } else {
+            HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.stop();
+        }
         HardwareAdapter.getInstance().getJoysticks().operatorXboxController.setRumble(shouldRumble());
     }
 
@@ -548,7 +552,7 @@ class HardwareUpdater {
     }
 
     private void updateFingers() {
-        HardwareAdapter.getInstance().getFingers().openCloseSolenoid.set(mFingers.getOpenCloseOutput());
+        HardwareAdapter.getInstance().getFingers().openCloseSolenoid.set(mFingers.getOpenCloseOutput() == DoubleSolenoid.Value.kReverse ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
         HardwareAdapter.getInstance().getFingers().pusherSolenoid.set(mFingers.getExpelOutput());
     }
 
@@ -591,10 +595,11 @@ class HardwareUpdater {
     }
 
     private void updateSparkMax(CANSparkMax spark, SparkMaxOutput output) {
+//        if (output.getControlType() == ControlType.kSmartMotion) System.out.println(output.getSetpoint());
         spark.getPIDController().setReference(
                 output.getControlType() == ControlType.kSmartMotion
-                        ? output.getSetpoint()
-                        : output.getSmartMotionSetpointAdjusted(),
+                        ? output.getSmartMotionSetpointAdjusted()
+                        : output.getSetpoint(),
                 output.getControlType(),
                 output.getControlType() == ControlType.kSmartMotion ? 1 : 0, // TODO named constants for PID slots
                 output.getArbitraryDemand(),
@@ -617,7 +622,7 @@ class HardwareUpdater {
         controller.setIAccum(0.0);
         controller.setSmartMotionMaxAccel(acceleration / velocityConversion, 1);
         controller.setSmartMotionMaxVelocity(velocity / velocityConversion, 1);
-        controller.setOutputRange(-1.0, 1.0, 1);
+        controller.setOutputRange(-0.7, 0.7, 1);
         controller.setSmartMotionAccelStrategy(AccelStrategy.kSCurve, 1);
         controller.setSmartMotionAllowedClosedLoopError(0.0, 1); // TODO zero?
         controller.setSmartMotionMinOutputVelocity(0.0, 1);

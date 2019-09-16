@@ -9,6 +9,7 @@ import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.configv2.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Elevator extends Subsystem {
@@ -37,7 +38,7 @@ public class Elevator extends Subsystem {
     //Used to store the robot state for use in methods other than update()
     private RobotState mRobotState;
 
-    private SparkMaxOutput mOutput = new SparkMaxOutput();
+    private SparkMaxOutput mOutput = new SparkMaxOutput(ControlType.kSmartMotion);
     private boolean mHolderSolenoidOutput = false;
 
     /**
