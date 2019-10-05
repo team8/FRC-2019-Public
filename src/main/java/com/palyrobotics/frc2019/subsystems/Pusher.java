@@ -66,8 +66,10 @@ public class Pusher extends Subsystem {
                         } else {
                             mOutput.setTargetPositionSmartMotion(mConfig.vidarDistanceIn);
                         }
+                    } else if (currentTimeMs - mSlamStartTimeMs > mConfig.slamTimeMs / 2) {
+                        mOutput.setPercentOutput(-0.35);
                     } else {
-                        mOutput.setPercentOutput(percentOutput);
+                        mOutput.setPercentOutput(-0.45);
                     }
                 } else {
                     mOutput.setTargetPositionSmartMotion(mConfig.vidarDistanceIn);
