@@ -268,7 +268,7 @@ public class Robot extends TimedRobot {
 
         mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER);
         mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
-        
+
         HardwareAdapter.getInstance().getJoysticks().operatorXboxController.setRumble(false);
         mHardwareUpdater.setIdleMode(mConfig.disabledUseCoast ? IdleMode.kCoast : IdleMode.kBrake);
 
