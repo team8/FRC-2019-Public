@@ -193,10 +193,8 @@ class HardwareUpdater {
         masterElevatorSpark.getEncoder().setVelocityConversionFactor(ElevatorConfig.kElevatorInchesPerMinutePerRpm);
 
         updateSparkGains(masterElevatorSpark, Gains.elevatorPosition, 0);
-        Configs.listen(ElevatorConfig.class, config -> {
-            updateSmartMotionGains(masterElevatorSpark, config.gains, 1);
-            updateSmartMotionGains(masterElevatorSpark, config.gains, 2);
-        });
+        Configs.listen(ElevatorConfig.class,
+                config -> updateSmartMotionGains(masterElevatorSpark, config.gains, 1));
     }
 
     private void configureIntakeHardware() {

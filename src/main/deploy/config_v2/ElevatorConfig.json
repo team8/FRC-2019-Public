@@ -1,5 +1,5 @@
 {
-    "manualPowerMultiplier": 0.4,
+    "manualMaxPercentOut": 0.5,
     "elevatorHeight1": 0.0,
     "elevatorHatchHeight2": 25.0,
     "elevatorCargoHeight2": 25.0,

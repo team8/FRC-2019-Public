@@ -183,9 +183,6 @@ public class OperatorInterface {
         /*
          * Elevator Control
          */
-        if (Math.abs(mOperatorXboxController.getRightY()) > 0.1) {
-            newCommands.wantedElevatorState = Elevator.ElevatorState.MANUAL_POSITIONING;
-        }
         if (mOperatorXboxController.getButtonA()) { // Level 1
             Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorHeight1, .1);
             newCommands.cancelCurrentRoutines = false;
