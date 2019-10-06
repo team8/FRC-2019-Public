@@ -10,7 +10,7 @@
     "acceptableVelocityError": 20,
     "slamPercentOutput": -0.35,
     "slamHoldMultiplier": 0.2,
-    "slamTimeMs": 500,
+    "slamTimeMs": 550,
     "useSlam": true,
     "gains": {
         "p": 0.0,

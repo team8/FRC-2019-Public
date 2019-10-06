@@ -32,6 +32,8 @@ public class Elevator extends Subsystem {
 
     private Double mElevatorWantedPosition;
 
+    private Double mWantedVelocity;
+
     private RobotState mRobotState;
 
     private SparkMaxOutput mOutput;
@@ -66,9 +68,11 @@ public class Elevator extends Subsystem {
         // Does not switch between states, only performs actions
         switch (mElevatorState) {
             case MANUAL_POSITIONING:
-                mOutput.setPercentOutput(mConfig.manualMaxPercentOut * (OtherConstants.operatorXBoxController
-                        ? mRobotState.operatorXboxControllerInput.getRightY()
-                        : mRobotState.operatorJoystickInput.getY()));
+                mWantedVelocity = mConfig.gains.velocity * (OtherConstants.operatorXBoxController
+                        ? -mRobotState.operatorXboxControllerInput.getRightY()
+                        : mRobotState.operatorJoystickInput.getY());
+                mOutput.setTargetSmartVelocity(mWantedVelocity * mConfig.manualPowerMultiplier, mConfig.feedForward); // what is arbitrarydemand
+                CSVWriter.addData("WantedSmartVelocity", mWantedVelocity);
                 break;
             case CUSTOM_POSITIONING:
                 long currentTimeMs = System.currentTimeMillis();
