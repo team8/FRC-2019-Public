@@ -12,6 +12,14 @@ public class PhysicalConstants {
     public static double kLowerPlatformLength = 48.0;
     public static double kCargoLineGap = 21.5;
 
+    public static double kCargoShipFrontHeading = 0.0;
+    public static double kCargoShipRightHeading = -90.0;
+    public static double kCargoShipLeftHeading = 90.0;
+    public static double kLeftRocketCloseHeading = -29.0;
+    public static double kLeftRocketFarHeading = -151.0;
+    public static double kRightRocketCloseHeading = 29.0;
+    public static double kRightRocketFarHeading = 151.0;
+
     /**
      * Physical robot Constants
      */
