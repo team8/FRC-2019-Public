@@ -2,14 +2,14 @@
     "enabledServices": [
         "commandReceiver"
     ],
+    "disabledUseCoast": true,
     "enabledSubsystems": [
         "drive",
-        "intake",
         "shovel",
         "pusher",
         "fingers",
         "shooter",
         "elevator"
     ],
-    "sendMultiplier": 1.0
+    "sendMultiplier": 0.6
 }

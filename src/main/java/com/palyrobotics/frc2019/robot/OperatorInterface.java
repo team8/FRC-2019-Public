@@ -2,6 +2,7 @@ package com.palyrobotics.frc2019.robot;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
+import com.palyrobotics.frc2019.behavior.routines.drive.VisionDrivePathRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
 import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCloseRoutine;
 import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
@@ -137,6 +138,21 @@ public class OperatorInterface {
             if (!mTurnStick.getButtonPressed(3)) {
                 RobotState.getInstance().atVisionTargetThreshold = false;
             }
+            if (System.currentTimeMillis() - visionStartTimeMs > OtherConstants.kVisionLEDTimeoutMillis) {
+                mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off
+                mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
+            }
+        }
+
+        if (mTurnStick.getButtonPressed(5)) {
+            visionStartTimeMs = System.currentTimeMillis();
+            // Limelight vision tracking on
+            if (mLimelight.getCamMode() != LimelightControlMode.CamMode.VISION) {
+                mLimelight.setCamMode(LimelightControlMode.CamMode.VISION);
+                mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_ON); // Limelight LED on
+            }
+            addWantedRoutine(newCommands, new VisionDrivePathRoutine());
+        } else {
             if (System.currentTimeMillis() - visionStartTimeMs > OtherConstants.kVisionLEDTimeoutMillis) {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off
                 mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);

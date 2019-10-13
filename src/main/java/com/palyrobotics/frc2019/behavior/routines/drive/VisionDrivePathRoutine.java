@@ -8,6 +8,7 @@ import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
+import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import com.palyrobotics.frc2019.vision.Limelight;
@@ -55,8 +56,10 @@ public class VisionDrivePathRoutine extends Routine {
             case LOOKING:
                 if (Limelight.getInstance().isTargetFound()) {
                     makePath();
-                    drive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
-                    mState = State.FOLLOW;
+                    System.out.println("target heading: " + mTargetHeading);
+                    mState = State.DONE; //for testing target selection
+//                    drive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
+//                    mState = State.FOLLOW;
                 }
                 break;
             case FOLLOW: // I think this is right controller
@@ -67,8 +70,8 @@ public class VisionDrivePathRoutine extends Routine {
                 break;
             case DONE:
                 drive.resetController();
-
         }
+
         return commands;
     }
 
@@ -82,12 +85,12 @@ public class VisionDrivePathRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return false;
+        return mState == State.DONE;
     }
 
     private void makePath() {
         double robotHeading = RobotState.getInstance().drivePose.heading;
-        double yawToTarget = Limelight.getInstance().getYawToTarget();
+        double yawToTarget = -Limelight.getInstance().getYawToTarget();
         double xDist;
         double yDist;
         double xDistShort;
@@ -101,10 +104,11 @@ public class VisionDrivePathRoutine extends Routine {
         if (Math.abs(robotHeading) > 180) {
             robotHeading = ((robotHeading < 0) ? 180 + (robotHeading % 180) : -180 + (robotHeading % 180));
         }
+        System.out.println("robot heading: " + robotHeading);
 
         selectTarget(robotHeading);
 
-        //Converting to radians
+        //Converting to radians for math stuff
         robotHeading *= Math.PI / 180;
         yawToTarget *= Math.PI / 180;
         mTargetHeading *= Math.PI / 180;
@@ -124,14 +128,14 @@ public class VisionDrivePathRoutine extends Routine {
         absXDistShort = xDistShort * Math.cos(robotHeading) - yDist * Math.sin(robotHeading);
         absYDistShort = ((robotHeading + yawToTarget > 0) ? yDist: -yDist) * Math.cos(robotHeading) + xDistShort * Math.sin(robotHeading);
         double distToPoint = Math.sqrt(Math.pow(absXDistShort, 2) + Math.pow(absYDistShort, 2));
-        absXDistShort = distToPoint * Math.cos(mTargetHeading);
-        absYDistShort = distToPoint * Math.sin(mTargetHeading);
+        absXDistShort = distToPoint * Math.cos(robotHeading - yawToTarget);
+        absYDistShort = distToPoint * Math.sin(robotHeading - yawToTarget);
 
         absYDist = ((robotHeading + yawToTarget > 0) ? yDist: -yDist) * Math.cos(robotHeading) + xDist * Math.sin(robotHeading);
         absXDist = xDist * Math.cos(robotHeading) - yDist * Math.sin(robotHeading);
         double distToTarget = Math.sqrt(Math.pow(absXDist, 2) + Math.pow(absYDist, 2));
-        absYDist = distToTarget * Math.sin(mTargetHeading);
-        absXDist = distToTarget * Math.cos(mTargetHeading);
+        absYDist = distToTarget * Math.sin(robotHeading - yawToTarget);
+        absXDist = distToTarget * Math.cos(robotHeading - yawToTarget);
 
 
         //TODO: tune speed and how far the first point should be from target
@@ -147,23 +151,26 @@ public class VisionDrivePathRoutine extends Routine {
 
     /**
      * Finds which target is being detected based on current heading
+     * DOES NOT WORK
      */
-    private void selectTarget(double robotHeading) {
+    private void selectTarget(double robotHeading) { //TODO: use robot x and y position to make it work
         double[] targetHeadings = new double[] {
-                PhysicalConstants.kCargoShipFrontHeading, 
-                PhysicalConstants.kCargoShipLeftHeading, 
-                PhysicalConstants.kCargoShipRightHeading, 
-                PhysicalConstants.kLeftRocketCloseHeading, 
-                PhysicalConstants.kLeftRocketFarHeading, 
-                PhysicalConstants.kRightRocketCloseHeading, 
-                PhysicalConstants.kRightRocketFarHeading
+                PhysicalConstants.kCargoShipFrontHeading
+                PhysicalConstants.kCargoShipLeftHeading,
+                PhysicalConstants.kCargoShipRightHeading,
+                PhysicalConstants.kLeftRocketCloseHeading,
+                PhysicalConstants.kLeftRocketFarHeading,
+                PhysicalConstants.kRightRocketCloseHeading,
+                PhysicalConstants.kRightRocketFarHeading,
+                PhysicalConstants.kLoadingStationHeading
         };
 
         for (double targetHeading : targetHeadings) { // check which target heading is being detected
-            if (Math.abs(targetHeading - robotHeading - Limelight.getInstance().getYawToTarget()) < 0.5) { //TODO: tune threshold, check if works
+            System.out.println(Math.abs(targetHeading - robotHeading - Limelight.getInstance().getYawToTarget()));
+//            if (Math.abs(targetHeading - robotHeading - Limelight.getInstance().getYawToTarget()) < 10) { //TODO: tune threshold, check if works
                 mTargetHeading = targetHeading;
                 break;
-            }
+//            }
         }
     }
 
