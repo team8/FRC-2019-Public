@@ -13,7 +13,7 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 public class EncoderDriveRoutine extends Routine {
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 
     /*
@@ -99,7 +99,7 @@ public class EncoderDriveRoutine extends Routine {
                 newState = EncoderDriveRoutineStates.DRIVING;
                 break;
             case DRIVING:
-                if (drive.controllerOnTarget()) {
+                if (mDrive.controllerOnTarget()) {
                     newState = EncoderDriveRoutineStates.DONE;
                 }
                 if ((System.currentTimeMillis() - mStartTime) > mTimeout * 1000) {
@@ -107,7 +107,7 @@ public class EncoderDriveRoutine extends Routine {
                 }
                 break;
             case DONE:
-                drive.resetController();
+                mDrive.resetController();
                 break;
         }
 
@@ -124,13 +124,13 @@ public class EncoderDriveRoutine extends Routine {
     public Commands cancel(Commands commands) {
         state = EncoderDriveRoutineStates.DONE;
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
-        drive.resetController();
+        mDrive.resetController();
         return commands;
     }
 
     @Override
     public void start() {
-        drive.resetController();
+        mDrive.resetController();
         mStartTime = System.currentTimeMillis();
     }
 

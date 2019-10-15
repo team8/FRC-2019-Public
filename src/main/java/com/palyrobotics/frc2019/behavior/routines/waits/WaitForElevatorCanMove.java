@@ -8,12 +8,12 @@ public class WaitForElevatorCanMove extends WaitRoutine {
 
     @Override
     public boolean isCompleted() {
-        return robotState.intakeAngle <= (Configs.get(IntakeConfig.class).holdAngle + Configs.get(IntakeConfig.class).holdTolerance);
+        return mRobotState.intakeAngle <= (Configs.get(IntakeConfig.class).holdAngle + Configs.get(IntakeConfig.class).holdTolerance);
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{elevator};
+        return new Subsystem[]{mElevator};
     }
 
     @Override

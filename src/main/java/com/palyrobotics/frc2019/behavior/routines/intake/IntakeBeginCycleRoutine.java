@@ -34,7 +34,7 @@ public class IntakeBeginCycleRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { intake };
+        return new Subsystem[] {mIntake};
     }
 
     @Override

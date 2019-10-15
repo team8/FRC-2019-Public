@@ -15,7 +15,7 @@ public class PusherMiddleRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-        if(robotState.hasPusherCargo) {
+        if(mRobotState.hasPusherCargo) {
             commands.wantedPusherInOutState = Pusher.PusherState.MIDDLE;
         }
         alreadyRan = true;
@@ -34,7 +34,7 @@ public class PusherMiddleRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { pusher };
+        return new Subsystem[] {mPusher};
     }
 
     @Override

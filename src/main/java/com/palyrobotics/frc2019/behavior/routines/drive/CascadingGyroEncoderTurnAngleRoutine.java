@@ -15,7 +15,7 @@ public class CascadingGyroEncoderTurnAngleRoutine extends Routine {
 
     @Override
     public void start() {
-        drive.setCascadingGyroEncoderTurnAngleController(angle);
+        mDrive.setCascadingGyroEncoderTurnAngleController(angle);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class CascadingGyroEncoderTurnAngleRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return drive.controllerOnTarget();
+        return mDrive.controllerOnTarget();
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {drive};
+        return new Subsystem[] {mDrive};
     }
 
     @Override

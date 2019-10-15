@@ -17,7 +17,7 @@ public class TimedDriveRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 
     /*
@@ -31,32 +31,31 @@ public class TimedDriveRoutine extends Routine {
 
     @Override
     public void start() {
-        drive.setNeutral();
+        mDrive.setNeutral();
         state = DriveStraightRoutineState.START;
     }
 
     @Override
     public Commands update(Commands commands) {
-        Commands output = commands.copy();
         switch (state) {
             case START:
-                drive.setTimedDrive(voltage, time);
-                output.wantedDriveState = Drive.DriveState.ON_BOARD_CONTROLLER;
+                mDrive.setTimedDrive(voltage, time);
+                commands.wantedDriveState = Drive.DriveState.ON_BOARD_CONTROLLER;
                 state = DriveStraightRoutineState.DRIVING;
                 break;
             case DRIVING:
-                output.wantedDriveState = Drive.DriveState.ON_BOARD_CONTROLLER;
-                if (drive.controllerOnTarget() && drive.hasController()) {
+                commands.wantedDriveState = Drive.DriveState.ON_BOARD_CONTROLLER;
+                if (mDrive.controllerOnTarget() && mDrive.hasController()) {
                     state = DriveStraightRoutineState.DONE;
                 }
                 break;
             case DONE:
-                drive.resetController();
+                mDrive.resetController();
                 break;
             default:
                 break;
         }
-        return output;
+        return commands;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class TimedDriveRoutine extends Routine {
 //		Logger.getInstance().logRobotThread(Level.FINE, "Cancelling TimedDriveRoutine");
         state = DriveStraightRoutineState.DONE;
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
-        drive.resetController();
+        mDrive.resetController();
         return commands;
     }
 

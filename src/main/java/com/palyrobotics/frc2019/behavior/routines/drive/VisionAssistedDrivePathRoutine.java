@@ -44,9 +44,9 @@ public class VisionAssistedDrivePathRoutine extends Routine {
             for (Path.Waypoint point : pathList) {
                 if (point.isRelative) {
                     if (point.marker.isPresent()) {
-                        absoluteList.add(new Path.Waypoint(robotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, point.marker.get(), false));
+                        absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, point.marker.get(), false));
                     } else {
-                        absoluteList.add(new Path.Waypoint(robotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, false));
+                        absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, false));
                     }
                 } else {
                     absoluteList.add(point);
@@ -63,7 +63,7 @@ public class VisionAssistedDrivePathRoutine extends Routine {
         }
 //        Logger.getInstance().logSubsystemThread(Level.INFO, "Starting Drive Path Routine");
 
-        drive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
+        mDrive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class VisionAssistedDrivePathRoutine extends Routine {
     @Override
     public Commands cancel(Commands commands) {
 //        Logger.getInstance().logSubsystemThread(Level.INFO, "Drive Path Routine finished");
-        drive.setNeutral();
+        mDrive.setNeutral();
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
         return commands;
     }
@@ -99,12 +99,12 @@ public class VisionAssistedDrivePathRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return drive.controllerOnTarget();
+        return mDrive.controllerOnTarget();
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 
     @Override

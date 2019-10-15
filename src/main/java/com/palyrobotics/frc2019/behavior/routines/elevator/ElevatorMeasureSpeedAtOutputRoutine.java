@@ -51,7 +51,7 @@ public class ElevatorMeasureSpeedAtOutputRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{elevator};
+        return new Subsystem[]{mElevator};
     }
 
     @Override

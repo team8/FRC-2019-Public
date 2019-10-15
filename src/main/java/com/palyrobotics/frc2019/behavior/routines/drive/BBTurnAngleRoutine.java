@@ -9,7 +9,7 @@ public class BBTurnAngleRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 
     private double mAngle;
@@ -27,7 +27,7 @@ public class BBTurnAngleRoutine extends Routine {
 
     @Override
     public void start() {
-        drive.setNeutral();
+        mDrive.setNeutral();
         mState = GyroBBState.START;
         startTime = System.currentTimeMillis();
     }
@@ -41,20 +41,20 @@ public class BBTurnAngleRoutine extends Routine {
         switch (mState) {
             case START:
 //				Logger.getInstance().logRobotThread(Level.FINE, "Set set point", mAngle);
-                drive.setTurnAngleSetPoint(mAngle);
+                mDrive.setTurnAngleSetPoint(mAngle);
                 commands.wantedDriveState = Drive.DriveState.ON_BOARD_CONTROLLER;
                 mState = GyroBBState.TURNING;
                 break;
             case TURNING:
-                if (drive.controllerOnTarget()) {
+                if (mDrive.controllerOnTarget()) {
                     mState = GyroBBState.DONE;
                 }
                 break;
             case TIMED_OUT:
-                drive.setNeutral();
+                mDrive.setNeutral();
                 break;
             case DONE:
-                drive.resetController();
+                mDrive.resetController();
                 break;
         }
 
@@ -65,7 +65,7 @@ public class BBTurnAngleRoutine extends Routine {
     public Commands cancel(Commands commands) {
         mState = GyroBBState.DONE;
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
-        drive.setNeutral();
+        mDrive.setNeutral();
         return commands;
     }
 

@@ -33,7 +33,7 @@ public class PusherInRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { pusher };
+        return new Subsystem[] {mPusher};
     }
 
     @Override

@@ -11,7 +11,7 @@ public class VisionClosedDriveRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 
     private double mAngle;
@@ -28,7 +28,7 @@ public class VisionClosedDriveRoutine extends Routine {
 
     @Override
     public void start() {
-        drive.setNeutral();
+        mDrive.setNeutral();
         mState = State.START;
         startTime = System.currentTimeMillis();
         Limelight.getInstance().setCamMode(LimelightControlMode.CamMode.VISION);
@@ -43,20 +43,20 @@ public class VisionClosedDriveRoutine extends Routine {
         }
         switch (mState) {
             case START:
-                drive.setVisionClosedDriveController();
+                mDrive.setVisionClosedDriveController();
                 commands.wantedDriveState = Drive.DriveState.CLOSED_VISION_ASSIST;
                 mState = State.DRIVING;
                 break;
             case DRIVING:
-                if (drive.controllerOnTarget()) {
+                if (mDrive.controllerOnTarget()) {
                     mState = State.DONE;
                 }
                 break;
             case TIMED_OUT:
-                drive.setNeutral();
+                mDrive.setNeutral();
                 break;
             case DONE:
-                drive.resetController();
+                mDrive.resetController();
                 break;
         }
 
@@ -67,7 +67,7 @@ public class VisionClosedDriveRoutine extends Routine {
     public Commands cancel(Commands commands) {
         mState = State.DONE;
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
-        drive.setNeutral();
+        mDrive.setNeutral();
         return commands;
     }
 

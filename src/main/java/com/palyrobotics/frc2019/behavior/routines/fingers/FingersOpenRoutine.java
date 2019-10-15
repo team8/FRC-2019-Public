@@ -35,7 +35,7 @@ public class FingersOpenRoutine  extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { fingers };
+        return new Subsystem[] {mFingers};
     }
 
     @Override

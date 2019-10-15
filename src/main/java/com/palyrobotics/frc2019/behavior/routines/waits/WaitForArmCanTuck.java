@@ -7,12 +7,12 @@ import com.palyrobotics.frc2019.util.config.Configs;
 public class WaitForArmCanTuck extends WaitRoutine {
     @Override
     public boolean isCompleted() {
-        return robotState.elevatorPosition > Configs.get(ElevatorConfig.class).secondStageCanStartMovingArm;
+        return mRobotState.elevatorPosition > Configs.get(ElevatorConfig.class).secondStageCanStartMovingArm;
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{intake};
+        return new Subsystem[]{mIntake};
     }
 
     @Override

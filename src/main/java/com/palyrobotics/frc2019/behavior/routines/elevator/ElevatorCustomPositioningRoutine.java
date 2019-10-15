@@ -41,7 +41,7 @@ public class ElevatorCustomPositioningRoutine extends Routine {
             if (mStartTime == null) mStartTime = System.currentTimeMillis();
             hasSetAllVars = true;
             commands.wantedElevatorState = Elevator.ElevatorState.CUSTOM_POSITIONING;
-            commands.robotSetPoints.elevatorPositionSetpoint = mPosition;
+            commands.robotSetPoints.elevatorPositionSetPoint = mPosition;
         }
         return commands;
     }
@@ -59,12 +59,12 @@ public class ElevatorCustomPositioningRoutine extends Routine {
                 return true;
             }
         }
-        return hasSetAllVars && elevator.elevatorOnTarget();
+        return hasSetAllVars && mElevator.elevatorOnTarget();
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{elevator};
+        return new Subsystem[]{mElevator};
     }
 
     @Override

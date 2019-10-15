@@ -9,7 +9,7 @@ import com.palyrobotics.frc2019.vision.Limelight;
 public class VisionAlignRoutine extends Routine {
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 
     private double mAngle;
@@ -27,7 +27,7 @@ public class VisionAlignRoutine extends Routine {
 
     @Override
     public void start() {
-        drive.setNeutral();
+        mDrive.setNeutral();
         mState = VisionAlignRoutine.GyroBBState.START;
         startTime = System.currentTimeMillis();
     }
@@ -41,20 +41,20 @@ public class VisionAlignRoutine extends Routine {
         switch (mState) {
             case START:
 //                Logger.getInstance().logRobotThread(Level.FINE, "Set set point", mAngle);
-                drive.setVisionClosedDriveController();
+                mDrive.setVisionClosedDriveController();
                 commands.wantedDriveState = Drive.DriveState.CLOSED_VISION_ASSIST;
                 mState = VisionAlignRoutine.GyroBBState.TURNING;
                 break;
             case TURNING:
-                if (drive.controllerOnTarget()) {
+                if (mDrive.controllerOnTarget()) {
                     mState = VisionAlignRoutine.GyroBBState.DONE;
                 }
                 break;
             case TIMED_OUT:
-                drive.setNeutral();
+                mDrive.setNeutral();
                 break;
             case DONE:
-                drive.resetController();
+                mDrive.resetController();
                 break;
         }
 
@@ -65,7 +65,7 @@ public class VisionAlignRoutine extends Routine {
     public Commands cancel(Commands commands) {
         mState = VisionAlignRoutine.GyroBBState.DONE;
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
-        drive.setNeutral();
+        mDrive.setNeutral();
         return commands;
     }
 

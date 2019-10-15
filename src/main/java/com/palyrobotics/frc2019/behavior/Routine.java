@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Abstract superclass for a routine, which specifies an autonomous series of actions <br />
- * Each routine takes in Commands and returns modified Setpoints Requires the specific subsystems
+ * Each routine takes in Commands and returns modified set points Requires the specific subsystems
  * 
  * @author Nihar; Team 254
  *
@@ -17,14 +17,14 @@ public abstract class Routine {
 	/**
 	 * Keeps access to all subsystems to modify their output and read their status
 	 */
-	protected final Drive drive = Drive.getInstance();
-	protected final Shovel shovel = Shovel.getInstance();
-	protected final Shooter shooter = Shooter.getInstance();
-	protected final Pusher pusher = Pusher.getsInstance();
-	protected final Elevator elevator = Elevator.getInstance();
-	protected final Fingers fingers = Fingers.getInstance();
-	protected final Intake intake = Intake.getInstance();
-	protected final RobotState robotState = RobotState.getInstance();
+	protected final Drive mDrive = Drive.getInstance();
+	protected final Shovel mShovel = Shovel.getInstance();
+	protected final Shooter mShooter = Shooter.getInstance();
+	protected final Pusher mPusher = Pusher.getsInstance();
+	protected final Elevator mElevator = Elevator.getInstance();
+	protected final Fingers mFingers = Fingers.getInstance();
+	protected final Intake mIntake = Intake.getInstance();
+	protected final RobotState mRobotState = RobotState.getInstance();
 
 	//Called to start a routine
 	public abstract void start();

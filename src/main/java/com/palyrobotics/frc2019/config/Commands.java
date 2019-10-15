@@ -75,24 +75,24 @@ public class Commands {
      * @author Nihar
      */
     public static class SetPoints {
-        public SparkDriveSignal drivePowerSetpoint;
+        public SparkDriveSignal drivePowerSetPoint;
         public Double
-                elevatorPositionSetpoint,
-                climberPositionSetpoint,
-                pusherPositionSetpoint,
-                intakePositionSetpoint,
-                climbRateSetpoint;
+                elevatorPositionSetPoint,
+                climberPositionSetPoint,
+                pusherPositionSetPoint,
+                intakePositionSetPoint,
+                climbRateSetPoint;
 
         /**
          * Resets all the set points
          */
         public void reset() {
-            drivePowerSetpoint = null;
-            elevatorPositionSetpoint = null;
-            climberPositionSetpoint = null;
-            pusherPositionSetpoint = null;
-            intakePositionSetpoint = null;
-            climbRateSetpoint = null;
+            drivePowerSetPoint = null;
+            elevatorPositionSetPoint = null;
+            climberPositionSetPoint = null;
+            pusherPositionSetPoint = null;
+            intakePositionSetPoint = null;
+            climbRateSetPoint = null;
         }
     }
 
@@ -102,41 +102,34 @@ public class Commands {
     // Allows you to cancel all running routines
     public boolean cancelCurrentRoutines;
 
-    /**
-     * @return a copy of these commands
-     */
-    public Commands copy() {
-        Commands copy = new Commands();
-        copy.wantedDriveState = this.wantedDriveState;
-        copy.wantedShooterState = this.wantedShooterState;
-        copy.wantedElevatorState = this.wantedElevatorState;
-        copy.cancelCurrentRoutines = this.cancelCurrentRoutines;
-        copy.wantedPusherInOutState = this.wantedPusherInOutState;
-        copy.wantedShovelWheelState = this.wantedShovelWheelState;
-        copy.wantedShovelUpDownState = this.wantedShovelUpDownState;
-        copy.wantedFingersOpenCloseState = this.wantedFingersOpenCloseState;
-        copy.wantedFingersExpelState = this.wantedFingersExpelState;
-        copy.customShooterSpeed = this.customShooterSpeed;
-        copy.customIntakeSpeed = this.customIntakeSpeed;
-        copy.customShovelSpeed = this.customShovelSpeed;
-        copy.autoPlacerOutput = this.autoPlacerOutput;
-        copy.wantedIntakeState = this.wantedIntakeState;
-        copy.disableIntakeScaling = this.disableIntakeScaling;
-        copy.hasPusherCargo = this.hasPusherCargo;
-        copy.shooterSpinning = this.shooterSpinning;
+    public void copyTo(Commands other) {
+        other.wantedDriveState = this.wantedDriveState;
+        other.wantedShooterState = this.wantedShooterState;
+        other.wantedElevatorState = this.wantedElevatorState;
+        other.cancelCurrentRoutines = this.cancelCurrentRoutines;
+        other.wantedPusherInOutState = this.wantedPusherInOutState;
+        other.wantedShovelWheelState = this.wantedShovelWheelState;
+        other.wantedShovelUpDownState = this.wantedShovelUpDownState;
+        other.wantedFingersOpenCloseState = this.wantedFingersOpenCloseState;
+        other.wantedFingersExpelState = this.wantedFingersExpelState;
+        other.customShooterSpeed = this.customShooterSpeed;
+        other.customIntakeSpeed = this.customIntakeSpeed;
+        other.customShovelSpeed = this.customShovelSpeed;
+        other.autoPlacerOutput = this.autoPlacerOutput;
+        other.wantedIntakeState = this.wantedIntakeState;
+        other.disableIntakeScaling = this.disableIntakeScaling;
+        other.hasPusherCargo = this.hasPusherCargo;
+        other.shooterSpinning = this.shooterSpinning;
 
-        copy.wantedRoutines.addAll(this.wantedRoutines);
+        other.wantedRoutines.addAll(this.wantedRoutines);
 
-        // Copy robot set points
-        copy.robotSetPoints = new SetPoints();
         // Copy optionals that are present
-        copy.robotSetPoints.drivePowerSetpoint = robotSetPoints.drivePowerSetpoint;
-        copy.robotSetPoints.elevatorPositionSetpoint = robotSetPoints.elevatorPositionSetpoint;
-        copy.robotSetPoints.climberPositionSetpoint = robotSetPoints.climberPositionSetpoint;
-        copy.robotSetPoints.intakePositionSetpoint = robotSetPoints.intakePositionSetpoint;
-        copy.robotSetPoints.pusherPositionSetpoint = robotSetPoints.pusherPositionSetpoint;
-        copy.robotSetPoints.climbRateSetpoint = robotSetPoints.climbRateSetpoint;
-        return copy;
+        other.robotSetPoints.drivePowerSetPoint = robotSetPoints.drivePowerSetPoint;
+        other.robotSetPoints.elevatorPositionSetPoint = robotSetPoints.elevatorPositionSetPoint;
+        other.robotSetPoints.climberPositionSetPoint = robotSetPoints.climberPositionSetPoint;
+        other.robotSetPoints.intakePositionSetPoint = robotSetPoints.intakePositionSetPoint;
+        other.robotSetPoints.pusherPositionSetPoint = robotSetPoints.pusherPositionSetPoint;
+        other.robotSetPoints.climbRateSetPoint = robotSetPoints.climbRateSetPoint;
     }
 
     @Override

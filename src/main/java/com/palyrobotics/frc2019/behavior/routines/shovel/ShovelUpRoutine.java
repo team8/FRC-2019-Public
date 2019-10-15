@@ -32,7 +32,7 @@ public class ShovelUpRoutine extends Routine{
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { shovel };
+        return new Subsystem[] {mShovel};
     }
 
     @Override

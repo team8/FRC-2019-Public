@@ -25,12 +25,12 @@ public class WaitForHatchIntakeUp extends Routine {
 
     @Override
     public boolean finished() {
-        return robotState.hatchIntakeUp;
+        return mRobotState.hatchIntakeUp;
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{shovel, fingers};
+        return new Subsystem[]{mShovel, mFingers};
     }
 
     @Override

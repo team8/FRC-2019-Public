@@ -31,7 +31,7 @@ public class ShovelCycleRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { shovel };
+        return new Subsystem[] {mShovel};
     }
 
     @Override

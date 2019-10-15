@@ -32,7 +32,7 @@ public class IntakeSetRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { intake };
+        return new Subsystem[] {mIntake};
     }
 
     @Override

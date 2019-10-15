@@ -5,7 +5,6 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -117,7 +116,7 @@ public class Elevator extends Subsystem {
     private void handleElevatorState(Commands commands) {
         switch (commands.wantedElevatorState) {
             case CUSTOM_POSITIONING:
-                mElevatorWantedPosition = commands.robotSetPoints.elevatorPositionSetpoint;
+                mElevatorWantedPosition = commands.robotSetPoints.elevatorPositionSetPoint;
                 mElevatorState = ElevatorState.CUSTOM_POSITIONING;
                 break;
             default:

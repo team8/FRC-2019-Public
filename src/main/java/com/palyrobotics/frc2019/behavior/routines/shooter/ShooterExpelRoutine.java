@@ -53,7 +53,7 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { shooter };
+        return new Subsystem[] {mShooter};
     }
 
     @Override

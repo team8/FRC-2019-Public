@@ -37,12 +37,12 @@ public class WaitForHatchIntakeCurrentSpike extends Routine {
 
     @Override
     public boolean finished() {
-        return (done && (System.currentTimeMillis() - 500) > startTime) || shovel.getUpDownOutput();
+        return (done && (System.currentTimeMillis() - 500) > startTime) || mShovel.getUpDownOutput();
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] { pusher };
+        return new Subsystem[] {mPusher};
     }
 
     @Override

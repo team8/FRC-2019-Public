@@ -152,8 +152,8 @@ public class Drive extends Subsystem {
                 }
                 break;
             case OPEN_LOOP:
-                if (commands.robotSetPoints.drivePowerSetpoint != null) {
-                    setDriveOutputs(commands.robotSetPoints.drivePowerSetpoint);
+                if (commands.robotSetPoints.drivePowerSetPoint != null) {
+                    setDriveOutputs(commands.robotSetPoints.drivePowerSetPoint);
                 }
                 break;
             case NEUTRAL:

@@ -24,7 +24,7 @@ public class DriveTimeRoutine extends Routine {
 
     @Override
     public void start() {
-        drive.resetController();
+        mDrive.resetController();
         //mEndTime already has the desired drive time
         mEndTime += System.currentTimeMillis();
     }
@@ -33,7 +33,7 @@ public class DriveTimeRoutine extends Routine {
     @Override
     public Commands update(Commands commands) {
         commands.wantedDriveState = Drive.DriveState.OPEN_LOOP;
-        commands.robotSetPoints.drivePowerSetpoint = mDrivePower;
+        commands.robotSetPoints.drivePowerSetPoint = mDrivePower;
         return commands;
     }
 
@@ -41,8 +41,8 @@ public class DriveTimeRoutine extends Routine {
     public Commands cancel(Commands commands) {
 //		Logger.getInstance().logRobotThread(Level.FINE, "Cancelling");
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
-        drive.resetController();
-        drive.setNeutral();
+        mDrive.resetController();
+        mDrive.setNeutral();
         return commands;
     }
 
@@ -59,6 +59,6 @@ public class DriveTimeRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{drive};
+        return new Subsystem[]{mDrive};
     }
 }
