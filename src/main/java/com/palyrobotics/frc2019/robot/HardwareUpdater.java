@@ -246,8 +246,10 @@ class HardwareUpdater {
         pusherSpark.setInverted(true);
         pusherSpark.setIdleMode(IdleMode.kBrake);
 
-        updateSparkGains(pusherSpark, Gains.pusherPosition, 0);
-        Configs.listen(PusherConfig.class, config -> updateSmartMotionGains(pusherSpark, config.gains, 1));
+        Configs.listen(PusherConfig.class, config -> {
+            updateSparkGains(pusherSpark, config.positionGains, 0);
+            updateSmartMotionGains(pusherSpark, config.smartGain, 1);
+        });
     }
 
     private void startUltrasonics() {
@@ -393,8 +395,8 @@ class HardwareUpdater {
             robotState.mPusherReadings.remove(0);
         }
 
-        int pusherTotalClose = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).vidarCargoTolerance).count();
-        int pusherTotalFar = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).vidarCargoToleranceFar).count();
+        int pusherTotalClose = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).cargoTolerance).count();
+        int pusherTotalFar = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).cargoToleranceFar).count();
 
         boolean lastHasPusherCargoFar = robotState.hasPusherCargoFar;
         robotState.hasPusherCargo = (pusherTotalClose > OtherConstants.kRequiredUltrasonicCount + 1);

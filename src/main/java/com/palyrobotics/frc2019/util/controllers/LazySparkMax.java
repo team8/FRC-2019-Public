@@ -1,5 +1,6 @@
 package com.palyrobotics.frc2019.util.controllers;
 
+import com.revrobotics.CANPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
@@ -27,7 +28,7 @@ public class LazySparkMax extends CANSparkMax {
             mLastControlType = type;
             mLastReference = reference;
             mLastArbitraryPercentOutput = arbitraryPercentOutput;
-            super.getPIDController().setReference(reference, type);
+            getPIDController().setReference(reference, type, slot, arbitraryPercentOutput, ArbFFUnits.kPercentOut);
         }
     }
 }

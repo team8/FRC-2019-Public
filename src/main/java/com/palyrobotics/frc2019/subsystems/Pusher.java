@@ -49,7 +49,7 @@ public class Pusher extends Subsystem {
         mState = commands.wantedPusherInOutState;
         switch (mState) {
             case START:
-                mOutput.setTargetPosition(mConfig.vidarDistanceIn);
+                mOutput.setTargetPosition(mConfig.distanceIn);
                 break;
             case IN:
                 if (mConfig.useSlam) {
@@ -57,7 +57,6 @@ public class Pusher extends Subsystem {
                     if (mSlamStartTimeMs == null) {
                         mSlamStartTimeMs = (double) currentTimeMs;
                     }
-                    double percentOutput = mConfig.slamPercentOutput;
                     boolean afterSlamTime = currentTimeMs - mSlamStartTimeMs > mConfig.slamTimeMs;
                     if (afterSlamTime) {
                         if (mIsFirstTickForSlamResetEncoder) {
@@ -66,31 +65,17 @@ public class Pusher extends Subsystem {
                         } else {
                             mOutput.setPercentOutput(-0.05);
                         }
-                    } else if (robotState.pusherPosition > mConfig.vidarDistanceOut - 0.4) {
-                        mOutput.setPercentOutput(-0.55);
+                    } else if (robotState.pusherPosition > mConfig.distanceOut - 0.4) {
+                        mOutput.setPercentOutput(-0.55); // Sticky at fully extended
                     } else {
                         mOutput.setPercentOutput(-0.28);
                     }
                 } else {
-                    mOutput.setTargetPositionSmartMotion(mConfig.vidarDistanceIn);
+                    mOutput.setTargetPosition(mConfig.distanceIn);
                 }
                 break;
             case OUT:
-                if (robotState.hasPusherCargo) {
-                    double arbitraryDemand;
-                    if (robotState.pusherPosition < mConfig.vidarDistanceOut / 4.0) {
-                        arbitraryDemand =  robotState.pusherPosition * 0.08;
-                    } else if (robotState.pusherPosition < mConfig.vidarDistanceOut / 2.0) {
-                        arbitraryDemand = (robotState.pusherPosition - mConfig.vidarDistanceOut / 2.0) * -0.08;
-                    } else {
-                        arbitraryDemand = 0.0;
-                    }
-                    arbitraryDemand = Math.max(Math.min(arbitraryDemand, 0.3), 0.0); // Clamp addition percent output between [0.0, 0.3]
-                    CSVWriter.addData("pusherArbFF", arbitraryDemand);
-                    mOutput.setTargetPositionSmartMotion(mConfig.vidarDistanceOut, arbitraryDemand);
-                } else {
-                    mOutput.setTargetPositionSmartMotion(mConfig.vidarDistanceOut);
-                }
+                mOutput.setTargetPosition(mConfig.distanceOut);
                 mIsFirstTickForSlamResetEncoder = true;
                 mSlamStartTimeMs = null;
                 break;

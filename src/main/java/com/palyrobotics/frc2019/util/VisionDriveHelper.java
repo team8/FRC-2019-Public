@@ -12,12 +12,11 @@ import com.palyrobotics.frc2019.vision.Limelight;
  */
 public class VisionDriveHelper {
 
-    private static final double kMaxAngularPower = 0.75;
+    private static final double kMaxAngularPower = 0.6;
 
     private final Limelight mLimelight = Limelight.getInstance();
-    private final VisionConfig mConfig = Configs.get(VisionConfig.class);
     private final SparkDriveSignal mSignal = new SparkDriveSignal();
-    private final SynchronousPID mPidController = new SynchronousPID(mConfig.p, mConfig.i, mConfig.d);
+    private final SynchronousPID mPidController = new SynchronousPID(Configs.get(VisionConfig.class).gains);
     private final CheesyDriveHelper mCDH = new CheesyDriveHelper();
     private boolean mInitialBrake;
     private double mLastThrottle, mBrakeRate;

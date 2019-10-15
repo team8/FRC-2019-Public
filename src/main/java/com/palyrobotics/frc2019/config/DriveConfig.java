@@ -11,4 +11,6 @@ public class DriveConfig extends AbstractSubsystemConfig {
     // presentation has a typo for kA, should be wheel radius because T = Fr
 
     public Gains.TrajectoryGains trajectoryGains;
+
+    public Gains cascadingTurnGains = new Gains(65, 0, 5, 0, 0, 0);
 }

@@ -1,5 +1,7 @@
 package com.palyrobotics.frc2019.util;
 
+import com.palyrobotics.frc2019.config.Gains;
+
 /**
  * Class implements a PID Control SubsystemLoop.
  * <p>
@@ -24,7 +26,8 @@ public class SynchronousPID {
             mResult,
             mLastInput = Double.NaN;
 
-    public SynchronousPID() {
+    public SynchronousPID(Gains gains) {
+        this(gains.p, gains.i, gains.d, gains.iZone);
     }
 
     /**

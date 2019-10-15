@@ -26,7 +26,7 @@ public abstract class AutoModeBase {
     public static AllianceDistances sDistances;
 
     private static void loadDistances() {
-        sDistances = Configs.get(AllianceDistances.class);
+        sDistances = Configs.get(AllianceDistances.class, "Team8Field");
     }
 
     public abstract Routine getRoutine();

@@ -36,7 +36,7 @@ public class Configs {
         return sMapper;
     }
 
-    public static final String CONFIG_FOLDER_NAME = "config";
+    private static final String CONFIG_FOLDER_NAME = "config";
     private static final Path CONFIG_FOLDER = (RobotBase.isReal()
             ? Paths.get(Filesystem.getDeployDirectory().toString(), CONFIG_FOLDER_NAME)
             : Paths.get(Filesystem.getOperatingDirectory().toString(), "src", "main", "deploy", CONFIG_FOLDER_NAME)).toAbsolutePath();
@@ -68,6 +68,17 @@ public class Configs {
         return config;
     }
 
+    public static <T extends AbstractConfig> T get(Class<T> configClass, String name) {
+        Path custom = resolveConfigPath(name);
+        try {
+            T value = sMapper.readValue(custom.toFile(), configClass);
+            value.onLoad();
+            return value;
+        } catch (IOException parseException) {
+            throw handleParseError(parseException, configClass);
+        }
+    }
+
     /**
      * Listen for changes in a configuration file. An on-changed event is fired once when this function is invoked for initial setup.
      *
@@ -85,8 +96,8 @@ public class Configs {
         try {
             saveOrThrow(configClass);
             return true;
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException saveException) {
+            saveException.printStackTrace();
             return false;
         }
     }
@@ -250,8 +261,12 @@ public class Configs {
         return new RuntimeException(errorMessage, readException);
     }
 
+    private static Path resolveConfigPath(String name) {
+        return CONFIG_FOLDER.resolve(String.format("%s.json", name));
+    }
+
     private static Path getFileForConfig(Class<? extends AbstractConfig> configClass) {
-        return CONFIG_FOLDER.resolve(String.format("%s.json", configClass.getSimpleName()));
+        return resolveConfigPath(configClass.getSimpleName());
     }
 
     private static <T extends AbstractConfig> void writeConfig(T newConfig) throws IOException {

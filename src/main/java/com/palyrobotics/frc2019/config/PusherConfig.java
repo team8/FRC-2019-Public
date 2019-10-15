@@ -5,19 +5,16 @@ import com.palyrobotics.frc2019.util.config.AbstractSubsystemConfig;
 
 public class PusherConfig extends AbstractSubsystemConfig {
 
-    /* Pusher */
-    public int vidarRequiredUltrasonicCount;
     public double
-            vidarDistanceIn,
-            vidarDistanceMiddle,
-            vidarDistanceOut,
-            vidarCargoTolerance,
-            vidarCargoToleranceFar,
-            vidarDistanceCompress;
+            distanceIn,
+            distanceOut,
+            cargoTolerance,
+            cargoToleranceFar;
     public boolean useSlam;
     public double slamPercentOutput, slamHoldMultiplier, slamTimeMs;
 
-    public SmartGains gains = SmartGains.emptyGains;
+    public SmartGains smartGain;
+    public Gains positionGains;
 
     /* Tolerances */
     public double acceptablePositionError, acceptableVelocityError;

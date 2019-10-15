@@ -25,12 +25,11 @@ public class VisionClosedController implements Drive.DriveController {
             DISTANCE_POW_CONST = 2 * Configs.get(DriveConfig.class).trajectoryGains.v;
 
     private final Limelight mLimelight = Limelight.getInstance();
-    private final VisionConfig mConfig = Configs.get(VisionConfig.class);
 
     private int mUpdateCyclesForward;
 
     private SparkDriveSignal mSignal = new SparkDriveSignal();
-    private SynchronousPID mPidController = new SynchronousPID(mConfig.p, mConfig.i, mConfig.d);
+    private SynchronousPID mPidController = new SynchronousPID(Configs.get(VisionConfig.class).gains);
 
     @Override
     public SparkDriveSignal update(RobotState robotState) {

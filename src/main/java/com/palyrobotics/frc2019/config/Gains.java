@@ -1,5 +1,7 @@
 package com.palyrobotics.frc2019.config;
 
+import com.palyrobotics.frc2019.util.trajectory.Trajectory;
+
 import java.util.Objects;
 
 public class Gains {
@@ -51,23 +53,6 @@ public class Gains {
     public static final Gains vidarTurnMotionMagicGains = new Gains(kVidarTurnMotionMagickP, kVidarTurnMotionMagickI, kVidarTurnMotionMagickD,
             kVidarTurnMotionMagickF, kVidarTurnMotionMagickIzone, kVidarTurnMotionMagickRampRate);
 
-    // Drive cascading turn angle gains
-    public static final double kVidarCascadingTurnP = 65;
-    public static final double kVidarCascadingTurnD = 5;
-
-    // Pusher Constants
-    private static final double
-            kVidarPusherPositionP = 0.18,
-            kVidarPusherPositionI = 0.0,
-            kVidarPusherPositionD = 1.0,
-            kVidarPusherPositionF = 0.0;
-    private static final int kVidarPusherPositionIZone = 0;
-    private static final double kVidarPusherPositionRampRate = 0.0;
-    public static final Gains pusherPosition = new Gains(
-            kVidarPusherPositionP, kVidarPusherPositionI, kVidarPusherPositionD,
-            kVidarPusherPositionF, kVidarPusherPositionIZone, kVidarPusherPositionRampRate
-    );
-
     private static final double
             kVidarIntakePositionP = 0.27, // 0.3;
             kVidarIntakePositionI = 0.0,
@@ -96,28 +81,15 @@ public class Gains {
 
     public static class TrajectoryGains {
 
-        final public double v, a, s, p, i, d, turnP, turnD;
+        public double v, a, s, p, i, d;
 
-        public TrajectoryGains(double v, double a, double s, double p, double i, double d, double turnP, double turnD) {
-            this.v = v;
-            this.a = a;
-            this.s = s;
-            this.p = p;
-            this.i = i;
-            this.d = d;
-            this.turnP = turnP;
-            this.turnD = turnD;
+        public TrajectoryGains() {
+
         }
 
-        TrajectoryGains(double v, double a, double s, double p, double d) {
-            this.v = v;
-            this.a = a;
-            this.s = s;
-            this.p = p;
-            this.i = 0;
-            this.d = d;
-            this.turnP = 0;
-            this.turnD = 0;
+        @Override
+        public String toString() { // Auto-generated
+            return String.format("TrajectoryGains{v=%f, a=%f, s=%f, p=%f, i=%f, d=%f}", v, a, s, p, i, d);
         }
     }
 
@@ -155,6 +127,6 @@ public class Gains {
 
     @Override // Auto-generated
     public String toString() {
-        return String.format("Gains{p=%s, i=%s, d=%s, f=%s, rampRate=%s, iZone=%d}", p, i, d, f, rampRate, iZone);
+        return String.format("Gains{p=%f, i=%f, d=%f, f=%f, rampRate=%f, iZone=%f}", p, i, d, f, rampRate, iZone);
     }
 }
