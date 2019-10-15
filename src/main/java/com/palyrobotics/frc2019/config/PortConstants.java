@@ -1,6 +1,6 @@
-package com.palyrobotics.frc2019.config.configv2;
+package com.palyrobotics.frc2019.config;
 
-import com.palyrobotics.frc2019.util.configv2.AbstractConfig;
+import com.palyrobotics.frc2019.util.config.AbstractConfig;
 
 public class PortConstants extends AbstractConfig {
     

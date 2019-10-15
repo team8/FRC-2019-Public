@@ -29,11 +29,11 @@ public class DriveSensorResetRoutine extends Routine {
 		HardwareAdapter.getInstance().getDrivetrain().resetSensors();
 		robotState.reset(0, new RigidTransform2d());
 		robotState.drivePose.heading = 0.0;
-        robotState.drivePose.leftEnc = 0.0;
-        robotState.drivePose.rightEnc = 0.0;
+        robotState.drivePose.leftEncoderPosition = 0.0;
+        robotState.drivePose.rightEncoderPosition = 0.0;
         robotState.drivePose.lastHeading = 0.0;
-		robotState.drivePose.lastLeftEnc = 0.0;
-		robotState.drivePose.lastRightEnc = 0.0;
+		robotState.drivePose.lastLeftEncoderPosition = 0.0;
+		robotState.drivePose.lastRightEncoderPosition = 0.0;
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class DriveSensorResetRoutine extends Routine {
 		if(System.currentTimeMillis() - mStartTime > mTimeout * 1000) {
 //			Logger.getInstance().logRobotThread(Level.WARNING, "Drive sensor reset routine timed out!");
 			return true;
-		} else if(Math.abs(drive.getPose().leftEnc) <= DrivetrainConstants.kAcceptableEncoderZeroError
-				&& Math.abs(drive.getPose().rightEnc) <= DrivetrainConstants.kAcceptableEncoderZeroError
+		} else if(Math.abs(drive.getPose().leftEncoderPosition) <= DrivetrainConstants.kAcceptableEncoderZeroError
+				&& Math.abs(drive.getPose().rightEncoderPosition) <= DrivetrainConstants.kAcceptableEncoderZeroError
 				&& Math.abs(drive.getPose().heading) <= DrivetrainConstants.kAcceptableGyroZeroError) {
 			return true;
 		}

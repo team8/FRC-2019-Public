@@ -1,13 +1,14 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
-import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.config.DriveConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive;
-import com.palyrobotics.frc2019.subsystems.controllers.OnboardDriveController.OnboardControlType;
-import com.palyrobotics.frc2019.subsystems.controllers.OnboardDriveController.TrajectorySegment;
+import com.palyrobotics.frc2019.subsystems.controllers.OnBoardDriveController.OnBoardControlType;
+import com.palyrobotics.frc2019.subsystems.controllers.OnBoardDriveController.TrajectorySegment;
 import com.palyrobotics.frc2019.util.Pose;
 import com.palyrobotics.frc2019.util.SparkDriveSignal;
+import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.trajectory.*;
 import edu.wpi.first.wpilibj.Timer;
@@ -35,7 +36,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
     private boolean mReversed;
     private double mPathCompletionTolerance;
 
-    private OnboardDriveController mOnboardController;
+    private OnBoardDriveController mOnBoardController;
 
     public AdaptivePurePursuitController(double fixed_lookahead, double max_accel, double nominal_dt, Path path, boolean reversed,
                                          double path_completion_tolerance) {
@@ -46,7 +47,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
         mLastCommand = null;
         mReversed = reversed;
         mPathCompletionTolerance = path_completion_tolerance;
-        mOnboardController = new OnboardDriveController(OnboardControlType.kVelArbFF, Gains.vidarTrajectory);
+        mOnBoardController = new OnBoardDriveController(OnBoardControlType.kVelocityWithArbitraryDemand, Configs.get(DriveConfig.class).trajectoryGains);
     }
 
     /**
@@ -79,7 +80,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
         double now = Timer.getFPGATimestamp();
         double dt = now - mLastTime;
         if (mLastDriveVelocity == null || mLastCommand == null) {
-            mLastDriveVelocity = new Kinematics.DriveVelocity(state.drivePose.leftEncVelocity, state.drivePose.rightEncVelocity);
+            mLastDriveVelocity = new Kinematics.DriveVelocity(state.drivePose.leftEncoderVelocity, state.drivePose.rightEncoderVelocity);
             mLastCommand = Kinematics.forwardKinematics(mLastDriveVelocity);
             dt = mDt;
         }
@@ -129,7 +130,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
         TrajectorySegment left_segment = new TrajectorySegment(setPoint.left, leftAcc, dt);
         TrajectorySegment right_segment = new TrajectorySegment(setPoint.right, rightAcc, dt);
         try {
-            mOnboardController.updateSetpoint(left_segment, right_segment, this);
+            mOnBoardController.updateSetPoint(left_segment, right_segment, this);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -138,7 +139,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
         mLastCommand = command;
         mLastDriveVelocity = setPoint;
 
-        return mOnboardController.update(state);
+        return mOnBoardController.update(state);
 
     }
 
@@ -204,7 +205,7 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
     //HOPING THIS METHOD NEVER GETS CALLED
     @Override
     public Pose getSetPoint() {
-        return new Pose(0, 0, 0, 0, 0, 0, 0, 0);
+        return new Pose();
     }
 
     // Really only used for checking point injection, ignore otherwise

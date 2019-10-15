@@ -2,11 +2,11 @@ package com.palyrobotics.frc2019.behavior.routines.pusher;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.config.PusherConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.configv2.PusherConfig;
 import com.palyrobotics.frc2019.subsystems.Pusher;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 
 public class PusherInRoutine extends Routine {
 

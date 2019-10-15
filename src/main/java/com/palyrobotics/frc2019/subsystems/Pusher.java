@@ -1,12 +1,12 @@
 package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.config.PusherConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.configv2.PusherConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 
 public class Pusher extends Subsystem {
@@ -32,7 +32,7 @@ public class Pusher extends Subsystem {
 
     @Override
     public void reset() {
-        mOutput = SparkMaxOutput.getIdle();
+        mOutput = new SparkMaxOutput();
         mSlamStartTimeMs = null;
         mState = PusherState.START;
         mIsFirstTickForSlamResetEncoder = true;
@@ -49,7 +49,7 @@ public class Pusher extends Subsystem {
         mState = commands.wantedPusherInOutState;
         switch (mState) {
             case START:
-                mOutput.setTargetPositionSmartMotion(mConfig.vidarDistanceIn);
+                mOutput.setTargetPosition(mConfig.vidarDistanceIn);
                 break;
             case IN:
                 if (mConfig.useSlam) {
@@ -96,7 +96,7 @@ public class Pusher extends Subsystem {
                 break;
         }
 
-        CSVWriter.addData("pusherOutput", HardwareAdapter.getInstance().getPusher().pusherSpark.getAppliedOutput());
+        CSVWriter.addData("pusherOutput", robotState.pusherAppliedOutput);
         CSVWriter.addData("pusherPos", robotState.pusherPosition);
         CSVWriter.addData("pusherSetPoint", mOutput.getReference());
         CSVWriter.addData("pusherVelocity", robotState.pusherVelocity);

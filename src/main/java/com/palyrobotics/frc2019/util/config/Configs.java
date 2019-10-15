@@ -1,4 +1,4 @@
-package com.palyrobotics.frc2019.util.configv2;
+package com.palyrobotics.frc2019.util.config;
 
 
 import edu.wpi.first.wpilibj.Filesystem;
@@ -36,7 +36,7 @@ public class Configs {
         return sMapper;
     }
 
-    private static final String CONFIG_FOLDER_NAME = "config_v2";
+    public static final String CONFIG_FOLDER_NAME = "config";
     private static final Path CONFIG_FOLDER = (RobotBase.isReal()
             ? Paths.get(Filesystem.getDeployDirectory().toString(), CONFIG_FOLDER_NAME)
             : Paths.get(Filesystem.getOperatingDirectory().toString(), "src", "main", "deploy", CONFIG_FOLDER_NAME)).toAbsolutePath();
@@ -214,11 +214,16 @@ public class Configs {
         Path configFile = getFileForConfig(configClass);
         String configClassName = configClass.getSimpleName();
         if (!Files.exists(configFile)) {
-            String errorMessage = String.format("A config file was not found for %s. Critical error, aborting.%n", configClassName);
+            String errorMessage = String.format(
+                    "A config file was not found for %s. Critical error, aborting.%n%n%s%n",
+                    configClassName, getDefaultJson(configClass)
+            );
             throw new RuntimeException(errorMessage);
         }
         try {
-            return sMapper.readValue(configFile.toFile(), configClass);
+            T value = sMapper.readValue(configFile.toFile(), configClass);
+            value.onLoad();
+            return value;
         } catch (IOException readException) {
             RuntimeException exception = handleParseError(readException, configClass);
             exception.printStackTrace();
@@ -226,16 +231,22 @@ public class Configs {
         }
     }
 
-    private static RuntimeException handleParseError(IOException readException, Class<? extends AbstractConfig> configClass) {
-        String errorMessage = String.format("An error occurred trying to read config for class %s%n", configClass.getSimpleName());
+    private static String getDefaultJson(Class<? extends AbstractConfig> configClass) {
         try {
-            System.out.printf("%sSee here for a default JSON file and double-check yours:%n%s%n",
-                    errorMessage,
-                    sMapper.defaultPrettyPrintingWriter().writeValueAsString(configClass.getConstructor().newInstance())
-            );
+            return String.format("See here for a default JSON file:%n%s%n",
+                    sMapper.defaultPrettyPrintingWriter().writeValueAsString(configClass.getConstructor().newInstance()));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException exception) {
+            System.err.println("Could not show default JSON representation. Something is wrong with the config class definition.");
             exception.printStackTrace();
+            return "Invalid";
         }
+    }
+
+    private static RuntimeException handleParseError(IOException readException, Class<? extends AbstractConfig> configClass) {
+        String errorMessage = String.format(
+                "An error occurred trying to read config for class %s%n%nSee here for default JSON: %s%n",
+                configClass.getSimpleName(), getDefaultJson(configClass)
+        );
         return new RuntimeException(errorMessage, readException);
     }
 

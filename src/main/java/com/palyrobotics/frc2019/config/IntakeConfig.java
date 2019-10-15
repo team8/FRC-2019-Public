@@ -1,7 +1,6 @@
-package com.palyrobotics.frc2019.config.configv2;
+package com.palyrobotics.frc2019.config;
 
-import com.palyrobotics.frc2019.config.SmartGains;
-import com.palyrobotics.frc2019.util.configv2.AbstractSubsystemConfig;
+import com.palyrobotics.frc2019.util.config.AbstractSubsystemConfig;
 
 public class IntakeConfig extends AbstractSubsystemConfig {
 
@@ -42,7 +41,7 @@ public class IntakeConfig extends AbstractSubsystemConfig {
             cargoInchTolerance,
             cargoCountRequired;
 
-    public SmartGains gains = SmartGains.emptyGains, holdGains = SmartGains.emptyGains;
+    public SmartGains gains, holdGains;
 
     public boolean useBrokenPotFix;
 

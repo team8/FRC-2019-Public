@@ -2,11 +2,11 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
+import com.palyrobotics.frc2019.config.IntakeConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.configv2.IntakeConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 
 public class Intake extends Subsystem {
@@ -19,7 +19,7 @@ public class Intake extends Subsystem {
 
     private IntakeConfig mConfig = Configs.get(IntakeConfig.class);
 
-    private SparkMaxOutput mOutput = SparkMaxOutput.getIdle();
+    private SparkMaxOutput mOutput = new SparkMaxOutput();
     private double mTalonOutput, mRumbleLength;
 
     private Double mIntakeWantedAngle;
@@ -75,7 +75,7 @@ public class Intake extends Subsystem {
     @Override
     public void reset() {
         mMacroState = IntakeMacroState.IDLE;
-        mOutput = SparkMaxOutput.getIdle();
+        mOutput = new SparkMaxOutput();
     }
 
     @Override
@@ -257,7 +257,7 @@ public class Intake extends Subsystem {
         cachedCargoState = robotState.hasCargo;
 
         CSVWriter.addData("intakeAngle", mRobotState.intakeAngle);
-        CSVWriter.addData("intakeOutput", HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getAppliedOutput());
+        CSVWriter.addData("intakeOutput", mRobotState.intakeAppliedOutput);
         if (mIntakeWantedAngle != null) CSVWriter.addData("intakeWantedAngle", mIntakeWantedAngle);
         CSVWriter.addData("intakeTargetAngle", mOutput.getReference());
     }

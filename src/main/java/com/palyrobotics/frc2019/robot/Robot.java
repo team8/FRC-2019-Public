@@ -2,13 +2,13 @@ package com.palyrobotics.frc2019.robot;
 
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.configv2.RobotConfig;
 import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.commands.CommandReceiver;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.service.RobotService;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
@@ -17,6 +17,7 @@ import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class Robot extends TimedRobot {
 
     private List<RobotService> mEnabledServices;
 
-    int count = 0;
+    private int mTick;
 
     @Override
     public void robotInit() {
@@ -82,10 +83,10 @@ public class Robot extends TimedRobot {
 
         mEnabledServices.forEach(RobotService::start);
 
-        if (RobotBase.isSimulation()) sRobotState.matchStartTimeMs = System.currentTimeMillis();
+        if (RobotBase.isSimulation()) sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
 
         Configs.listen(RobotConfig.class, config -> {
-            if (isDisabled()) mHardwareUpdater.setIdleMode(config.disabledUseCoast ? IdleMode.kCoast : IdleMode.kBrake);
+            if (isDisabled()) mHardwareUpdater.setIdleMode(config.ifDisabledCoast ? IdleMode.kCoast : IdleMode.kBrake);
         });
 
 //        Logger.getInstance().logRobotThread(Level.INFO, "End robotInit()");
@@ -188,13 +189,13 @@ public class Robot extends TimedRobot {
 //        System.out.printf("Potentiometer Arm: %s%n", HardwareAdapter.getInstance().getIntake().potentiometer.get());
         mEnabledSubsystems.forEach(Subsystem::reset);
         mHardwareUpdater.updateHardware();
-        count = 0;
+        mTick = 0;
     }
 
     @Override
     public void testPeriodic() {
-        count++;
-        if (count % 50 == 0) {
+        mTick++;
+        if (mTick % 50 == 0) {
             System.out.println("Left Ultrasonic: " + HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
             System.out.println("Right Ultrasonic: " + HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight.getRangeInches());
             System.out.println("Pusher Ultrasonic: " + HardwareAdapter.getInstance().getPusher().pusherUltrasonic.getRangeInches());
@@ -218,7 +219,7 @@ public class Robot extends TimedRobot {
         CSVWriter.cleanFile();
         mEnabledSubsystems.forEach(Subsystem::start);
         mHardwareUpdater.setIdleMode(IdleMode.kBrake);
-        sRobotState.matchStartTimeMs = System.currentTimeMillis();
+        sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
 
         // Set limelight to driver camera mode - redundancy for testing purposes
         mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER);
@@ -270,7 +271,7 @@ public class Robot extends TimedRobot {
         mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
 
         HardwareAdapter.getInstance().getJoysticks().operatorXboxController.setRumble(false);
-        mHardwareUpdater.setIdleMode(mConfig.disabledUseCoast ? IdleMode.kCoast : IdleMode.kBrake);
+        mHardwareUpdater.setIdleMode(mConfig.ifDisabledCoast ? IdleMode.kCoast : IdleMode.kBrake);
 
         CSVWriter.write();
 

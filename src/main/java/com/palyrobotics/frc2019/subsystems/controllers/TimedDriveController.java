@@ -30,6 +30,6 @@ public class TimedDriveController implements DriveController {
 
     @Override
     public Pose getSetPoint() {
-        return new Pose(0, 0, 0, 0, 0, 0, 0, 0);
+        return new Pose();
     }
 }

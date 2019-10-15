@@ -1,4 +1,4 @@
-package com.palyrobotics.frc2019.util.configv2;
+package com.palyrobotics.frc2019.util.config;
 
 import java.io.IOException;
 
@@ -12,4 +12,6 @@ public abstract class AbstractConfig {
             return "Invalid";
         }
     }
+
+    public void onLoad() {}
 }

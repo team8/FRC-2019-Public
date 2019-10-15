@@ -1,21 +1,16 @@
 package com.palyrobotics.frc2019.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.Gains;
-import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.SmartGains;
-import com.palyrobotics.frc2019.config.configv2.*;
+import com.palyrobotics.frc2019.config.*;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
-import com.palyrobotics.frc2019.util.TalonSRXOutput;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.controllers.LazySparkMax;
 import com.palyrobotics.frc2019.util.trajectory.Kinematics;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.util.trajectory.Rotation2d;
@@ -30,8 +25,6 @@ import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
-
-import java.util.Map;
 
 /**
  * Should only be used in robot package.
@@ -62,31 +55,6 @@ class HardwareUpdater {
 //        Logger.getInstance().logRobotThread(Level.INFO, "Init hardware");
         configureHardware();
         startUltrasonics();
-    }
-
-    void disableSpeedControllers() {
-//        Logger.getInstance().logRobotThread(Level.INFO, "Disabling sparks");
-
-        //Disable drivetrain sparks
-        HardwareAdapter.getInstance().getDrivetrain().sparks.forEach(CANSparkMax::disable);
-
-        //Disable elevator sparks
-        HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.disable();
-        HardwareAdapter.getInstance().getElevator().elevatorSlaveSpark.disable();
-
-        //Disable intake sparks
-        HardwareAdapter.getInstance().getIntake().intakeMasterSpark.disable();
-        HardwareAdapter.getInstance().getIntake().intakeSlaveSpark.disable();
-        HardwareAdapter.getInstance().getIntake().intakeTalon.set(ControlMode.Disabled, 0);
-
-        //Disable pusher sparks
-        HardwareAdapter.getInstance().getPusher().pusherSpark.disable();
-
-//        Logger.getInstance().logRobotThread(Level.INFO, "Disabling victors");
-
-        // Disable shooter victors
-        HardwareAdapter.getInstance().getShooter().shooterMasterVictor.set(ControlMode.Disabled, 0);
-        HardwareAdapter.getInstance().getShooter().shooterSlaveVictor.set(ControlMode.Disabled, 0);
     }
 
     private void configureHardware() {
@@ -278,7 +246,7 @@ class HardwareUpdater {
         pusherSpark.setInverted(true);
         pusherSpark.setIdleMode(IdleMode.kBrake);
 
-        updateSparkGains(pusherSpark, Gains.pusherPosition);
+        updateSparkGains(pusherSpark, Gains.pusherPosition, 0);
         Configs.listen(PusherConfig.class, config -> updateSmartMotionGains(pusherSpark, config.gains, 1));
     }
 
@@ -332,37 +300,35 @@ class HardwareUpdater {
         robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(Configs.get(PortConstants.class).vidarShovelPDPPort);
         robotState.hasHatch = (robotState.shovelCurrentDraw > Configs.get(ShovelConfig.class).maxShovelCurrentDraw);
 
-        CANEncoder elevatorEncoder = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getEncoder();
+        final var elevatorSpark = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark;
+        CANEncoder elevatorEncoder = elevatorSpark.getEncoder();
         robotState.elevatorPosition = elevatorEncoder.getPosition();
         robotState.elevatorVelocity = elevatorEncoder.getVelocity();
+        robotState.elevatorAppliedOutput = elevatorSpark.getAppliedOutput();
 
         PigeonIMU gyro = HardwareAdapter.getInstance().getDrivetrain().gyro;
-        if (gyro != null) {
-            robotState.drivePose.lastHeading = robotState.drivePose.heading;
-            robotState.drivePose.heading = gyro.getFusedHeading();
-            robotState.drivePose.headingVelocity = (robotState.drivePose.heading - robotState.drivePose.lastHeading) /
-                    DrivetrainConstants.kNormalLoopsDt;
-        } else {
-            robotState.drivePose.heading = -0;
-            robotState.drivePose.headingVelocity = -0;
-        }
+        robotState.drivePose.lastHeading = robotState.drivePose.heading;
+        robotState.drivePose.heading = gyro.getFusedHeading();
+        robotState.drivePose.headingVelocity = (robotState.drivePose.heading - robotState.drivePose.lastHeading) / DrivetrainConstants.kNormalLoopsDt;
 
-        robotState.drivePose.lastLeftEnc = robotState.drivePose.leftEnc;
-        robotState.drivePose.leftEnc = leftMasterSpark.getEncoder().getPosition();
-        robotState.drivePose.leftEncVelocity = leftMasterSpark.getEncoder().getVelocity();
-        robotState.drivePose.lastRightEnc = robotState.drivePose.rightEnc;
-        robotState.drivePose.rightEnc = rightMasterSpark.getEncoder().getPosition();
-        robotState.drivePose.rightEncVelocity = rightMasterSpark.getEncoder().getVelocity();
+        robotState.drivePose.lastLeftEncoderPosition = robotState.drivePose.leftEncoderPosition;
+        robotState.drivePose.leftEncoderPosition = leftMasterSpark.getEncoder().getPosition();
+        robotState.drivePose.leftEncoderVelocity = leftMasterSpark.getEncoder().getVelocity();
+        robotState.drivePose.lastRightEncoderPosition = robotState.drivePose.rightEncoderPosition;
+        robotState.drivePose.rightEncoderPosition = rightMasterSpark.getEncoder().getPosition();
+        robotState.drivePose.rightEncoderVelocity = rightMasterSpark.getEncoder().getVelocity();
 
-        double robotVelocity = (robotState.drivePose.leftEncVelocity + robotState.drivePose.rightEncVelocity) / 2;
+        double robotVelocity = (robotState.drivePose.leftEncoderVelocity + robotState.drivePose.rightEncoderVelocity) / 2;
 
         HardwareAdapter.getInstance().getDrivetrain().gyro.getAccelerometerAngles(mAccelerometerAngles);
         robotState.robotAcceleration = mAccelerometerAngles[0];
         robotState.robotVelocity = robotVelocity;
 
-        CANEncoder armEncoder = HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder();
+        LazySparkMax intakeSpark = HardwareAdapter.getInstance().getIntake().intakeMasterSpark;
+        CANEncoder armEncoder = intakeSpark.getEncoder();
         robotState.intakeAngle = armEncoder.getPosition();
         robotState.intakeVelocity = armEncoder.getVelocity();
+        robotState.intakeAppliedOutput = intakeSpark.getAppliedOutput();
 
         double time = Timer.getFPGATimestamp();
 
@@ -375,63 +341,59 @@ class HardwareUpdater {
         Rotation2d
                 gyroAngle = Rotation2d.fromDegrees(robotState.drivePose.heading),
                 gyroVelocity = Rotation2d.fromDegrees(robotState.drivePose.headingVelocity);
-
         RigidTransform2d odometry = robotState.generateOdometryFromSensors(
-                robotState.drivePose.leftEnc - robotState.drivePose.lastLeftEnc,
-                robotState.drivePose.rightEnc - robotState.drivePose.lastRightEnc,
+                robotState.drivePose.leftEncoderPosition - robotState.drivePose.lastLeftEncoderPosition,
+                robotState.drivePose.rightEncoderPosition - robotState.drivePose.lastRightEncoderPosition,
                 gyroAngle
         );
-
         RigidTransform2d.Delta velocity = Kinematics.forwardKinematics(
-                robotState.drivePose.leftEncVelocity,
-                robotState.drivePose.rightEncVelocity,
+                robotState.drivePose.leftEncoderVelocity,
+                robotState.drivePose.rightEncoderVelocity,
                 gyroVelocity.getRadians()
         );
 
         robotState.addObservations(time, odometry, velocity);
 
-        CANEncoder pusherEncoder = HardwareAdapter.getInstance().getPusher().pusherSpark.getEncoder();
+        LazySparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
+        CANEncoder pusherEncoder = pusherSpark.getEncoder();
         robotState.pusherPosition = pusherEncoder.getPosition();
         robotState.pusherVelocity = pusherEncoder.getVelocity();
+        robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
 
         updateUltrasonicSensors(robotState);
     }
 
     private void updateUltrasonicSensors(RobotState robotState) {
-        // HAS CARGO IN INTAKE
+        /* Test for cargo in intake */
 
-        // left side
         Ultrasonic mUltrasonicLeft = HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft;
-        robotState.mLeftReadings.add(mUltrasonicLeft.getRangeInches());
-        if (robotState.mLeftReadings.size() > 10) {
-            robotState.mLeftReadings.remove(0);
+        robotState.leftReadings.add(mUltrasonicLeft.getRangeInches());
+        while (robotState.leftReadings.size() > 10) {
+            robotState.leftReadings.remove(0);
         }
-        // right side
         Ultrasonic mUltrasonicRight = HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight;
-        robotState.mRightReadings.add(mUltrasonicRight.getRangeInches());
-        if (robotState.mRightReadings.size() > 10) {
-            robotState.mRightReadings.remove(0);
+        robotState.rightReadings.add(mUltrasonicRight.getRangeInches());
+        while (robotState.rightReadings.size() > 10) {
+            robotState.rightReadings.remove(0);
         }
 
         IntakeConfig intakeConfig = Configs.get(IntakeConfig.class);
-        int leftTotal = (int) robotState.mLeftReadings.stream().filter(i -> (i < intakeConfig.cargoInchTolerance)).count();
-        int rightTotal = (int) robotState.mRightReadings.stream().filter(i -> (i < intakeConfig.cargoInchTolerance)).count();
+        int leftTotal = (int) robotState.leftReadings.stream().filter(i -> (i < intakeConfig.cargoInchTolerance)).count();
+        int rightTotal = (int) robotState.rightReadings.stream().filter(i -> (i < intakeConfig.cargoInchTolerance)).count();
         robotState.hasCargo = (leftTotal >= intakeConfig.cargoCountRequired || rightTotal >= intakeConfig.cargoCountRequired);
 
         robotState.cargoDistance = Math.min(mUltrasonicLeft.getRangeInches(), mUltrasonicRight.getRangeInches());
 
-        // HAS CARGO IN CARRIAGE
+        /* Test for cargo in carriage */
 
-        //Cargo Distance from Pusher
+        // Cargo Distance from Pusher
         Ultrasonic mPusherUltrasonic = HardwareAdapter.getInstance().getPusher().pusherUltrasonic;
         robotState.mPusherReadings.add(mPusherUltrasonic.getRangeInches());
         if (robotState.mPusherReadings.size() > 10) {
             robotState.mPusherReadings.remove(0);
         }
 
-
         int pusherTotalClose = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).vidarCargoTolerance).count();
-
         int pusherTotalFar = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).vidarCargoToleranceFar).count();
 
         boolean lastHasPusherCargoFar = robotState.hasPusherCargoFar;
@@ -560,52 +522,36 @@ class HardwareUpdater {
         HardwareAdapter.getInstance().getElevator().elevatorSlaveSpark.setIdleMode(idleMode);
     }
 
-    private void updateTalonSRX(WPI_TalonSRX talon, TalonSRXOutput output) {
-        if (output.getControlMode().equals(ControlMode.Position) || output.getControlMode().equals(ControlMode.Velocity)
-                || output.getControlMode().equals(ControlMode.MotionMagic)) {
-            talon.config_kP(output.profile, output.gains.p, 0);
-            talon.config_kI(output.profile, output.gains.i, 0);
-            talon.config_kD(output.profile, output.gains.d, 0);
-            talon.config_kF(output.profile, output.gains.f, 0);
-            talon.config_IntegralZone(output.profile, output.gains.iZone, 0);
-            talon.configClosedloopRamp(output.gains.rampRate, 0);
-        }
-        if (output.getControlMode().equals(ControlMode.MotionMagic)) {
-            talon.configMotionAcceleration(output.acceleration, 0);
-            talon.configMotionCruiseVelocity(output.cruiseVelocity, 0);
-        }
-        if (output.getControlMode().equals(ControlMode.Velocity)) {
-            talon.configAllowableClosedloopError(output.profile, 0, 0);
-        }
-        if (output.getArbitraryFF() != 0.0 && output.getControlMode().equals(ControlMode.Position)) {
-            talon.set(output.getControlMode(), output.getSetPoint(), DemandType.ArbitraryFeedForward, output.getArbitraryFF());
-        } else {
-            talon.set(output.getControlMode(), output.getSetPoint(), DemandType.Neutral, 0.0);
-        }
-    }
+//    private void updateTalonSRX(WPI_TalonSRX talon, TalonSRXOutput output) {
+//        if (output.getControlMode().equals(ControlMode.Position) || output.getControlMode().equals(ControlMode.Velocity)
+//                || output.getControlMode().equals(ControlMode.MotionMagic)) {
+//            talon.config_kP(output.profile, output.gains.p, 0);
+//            talon.config_kI(output.profile, output.gains.i, 0);
+//            talon.config_kD(output.profile, output.gains.d, 0);
+//            talon.config_kF(output.profile, output.gains.f, 0);
+//            talon.config_IntegralZone(output.profile, (int) Math.round(output.gains.iZone), 0);
+//            talon.configClosedloopRamp(output.gains.rampRate, 0);
+//        }
+//        if (output.getControlMode().equals(ControlMode.MotionMagic)) {
+//            talon.configMotionAcceleration(output.acceleration, 0);
+//            talon.configMotionCruiseVelocity(output.cruiseVelocity, 0);
+//        }
+//        if (output.getControlMode().equals(ControlMode.Velocity)) {
+//            talon.configAllowableClosedloopError(output.profile, 0, 0);
+//        }
+//        if (output.getArbitraryFF() != 0.0 && output.getControlMode().equals(ControlMode.Position)) {
+//            talon.set(output.getControlMode(), output.getSetPoint(), DemandType.ArbitraryFeedForward, output.getArbitraryFF());
+//        } else {
+//            talon.set(output.getControlMode(), output.getSetPoint(), DemandType.Neutral, 0.0);
+//        }
+//    }
 
-    private Map<ControlType, Integer> controlTypeToSlot = Map.of(
-            ControlType.kSmartMotion, 1,
-            ControlType.kSmartVelocity, 2
-    );
-
-    private void updateSparkMax(CANSparkMax spark, SparkMaxOutput output) {
+    private void updateSparkMax(LazySparkMax spark, SparkMaxOutput output) {
         ControlType controlType = output.getControlType();
-        boolean isSmart = controlType == ControlType.kSmartMotion || controlType == ControlType.kSmartVelocity;
-        if (Configs.get(RobotConfig.class).disableSparkOutput) return;
-        spark.getPIDController().setReference(
-                output.getReference(),
-                controlType,
-                controlTypeToSlot.getOrDefault(controlType, 0),
-                output.getArbitraryDemand(),
-                isSmart // TODO make both use percent out
-                        ? CANPIDController.ArbFFUnits.kPercentOut
-                        : CANPIDController.ArbFFUnits.kVoltage);
-//        System.out.printf("%s,%s%n", output.getControlType(), output.getReference());
-    }
-
-    private void updateSparkGains(CANSparkMax spark, Gains gains) {
-        updateSparkGains(spark, gains, 0);
+        if (!Configs.get(RobotConfig.class).disableSparkOutput) {
+            spark.set(controlType, output.getReference(), output.getArbitraryDemand());
+//            System.out.printf("%s,%s%n", output.getControlType(), output.getReference());
+        }
     }
 
     private void updateSmartMotionGains(CANSparkMax spark, SmartGains gains, int slot) {

@@ -11,25 +11,16 @@ import com.palyrobotics.frc2019.subsystems.Drive;
 public class CheesyDriveHelper {
     private double mOldWheel, mQuickStopAccumulator;
     private boolean mInitialBrake;
-    private double mOldThrottle = 0.0, mBrakeRate;
+    private double mBrakeRate;
+    private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
-        double throttle = -robotState.leftStickInput.getY();
-        double wheel = robotState.rightStickInput.getX();
+        double throttle = -robotState.leftStickInput.getY(), wheel = robotState.rightStickInput.getX();
 
         if (commands.wantedDriveState == Drive.DriveState.CHEZY) {
-            wheel = wheel * .75;
+            wheel *= 0.75;
         }
-//
-//		SparkMaxOutput c = new SparkMaxOutput();
-//		c.setPercentOutput(throttle);
-//
-////		mSignal.leftMotor.setPercentOutput(throttle);
-////		mSignal.rightMotor.setPercentOutput(throttle);
-//
-//		return new SparkSignal(c,c);
-
-        //Quickturn if right trigger is pressed
+        // Quick-turn if right trigger is pressed
         boolean isQuickTurn = robotState.rightStickInput.getTriggerPressed();
         robotState.isQuickTurning = isQuickTurn;
 
@@ -38,18 +29,17 @@ public class CheesyDriveHelper {
 
         double wheelNonLinearity;
 
-        wheel = ChezyMath.handleDeadband(wheel, DrivetrainConstants.kDeadband);
-        throttle = ChezyMath.handleDeadband(throttle, DrivetrainConstants.kDeadband);
+        wheel = MathUtil.handleDeadBand(wheel, DrivetrainConstants.kDeadband);
+        throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
 
         double negInertia = wheel - mOldWheel;
         mOldWheel = wheel;
 
         wheelNonLinearity = 0.5;
 
-        //Applies a sin function that is scaled
-        wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-        wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-        wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
+        // Map linear wheel input onto a sin wave, three passes
+        for (int i = 0; i < 3; i++)
+            wheel = applyWheelNonLinearPass(wheel, wheelNonLinearity);
 
         double leftPower, rightPower, overPower;
         double sensitivity;
@@ -73,8 +63,6 @@ public class CheesyDriveHelper {
             }
         }
 
-        sensitivity = DrivetrainConstants.kDriveSensitivity;
-
         //neginertia is difference in wheel
         double negInertiaPower = negInertia * negInertiaScalar;
         negInertiaAccumulator += negInertiaPower;
@@ -82,50 +70,43 @@ public class CheesyDriveHelper {
         //possible source of occasional overturn
         wheel = wheel + negInertiaAccumulator;
 
-        // //Handle braking
-        // if(isBraking) {
-        // 	//Set up braking rates for linear deceleration in a set amount of time
-        // 	if(mInitialBrake) {
-        // 		mInitialBrake = false;
-        // 		//Old throttle initially set to throttle
-        // 		mOldThrottle = linearPower;
-        // 		//Braking rate set
-        // 		mBrakeRate = mOldThrottle / DrivetrainConstants.kCyclesUntilStop;
-        // 	}
+//        // Handle braking
+//        if (isBraking) {
+//            //Set up braking rates for linear deceleration in a set amount of time
+//            if (mInitialBrake) {
+//                mInitialBrake = false;
+//                //Old throttle initially set to throttle
+//                mOldThrottle = linearPower;
+//                //Braking rate set
+//                mBrakeRate = mOldThrottle / DrivetrainConstants.kCyclesUntilStop;
+//            }
+//
+//            //If braking is not complete, decrease by the brake rate
+//            if (Math.abs(mOldThrottle) >= Math.abs(mBrakeRate)) {
+//                //reduce throttle
+//                mOldThrottle -= mBrakeRate;
+//                linearPower = mOldThrottle;
+//            } else {
+//                linearPower = 0;
+//            }
+//        } else {
+//            mInitialBrake = true;
+//        }
 
-        // 	//If braking is not complete, decrease by the brake rate
-        // 	if(Math.abs(mOldThrottle) >= Math.abs(mBrakeRate)) {
-        // 		//reduce throttle
-        // 		mOldThrottle -= mBrakeRate;
-        // 		linearPower = mOldThrottle;
-        // 	} else {
-        // 		linearPower = 0;
-        // 	}
-        // } else {
-        // 	mInitialBrake = true;
-        // }
-
-        //Quickturn
+        // Quick-turn
         if (isQuickTurn) {
             if (Math.abs(robotState.rightStickInput.getX()) < DrivetrainConstants.kQuickTurnSensitivityThreshold) {
                 sensitivity = DrivetrainConstants.kPreciseQuickTurnSensitivity;
             } else {
                 sensitivity = DrivetrainConstants.kQuickTurnSensitivity;
             }
-
             angularPower = wheel * sensitivity;
-
-            //Can be tuned
-            double alpha = DrivetrainConstants.kAlpha;
-            mQuickStopAccumulator = (1 - alpha) * mQuickStopAccumulator + alpha * angularPower * 6.5;
-
+            mQuickStopAccumulator = (1 - DrivetrainConstants.kAlpha) * mQuickStopAccumulator + DrivetrainConstants.kAlpha * angularPower * 6.5;
             overPower = 1.0;
         } else {
             overPower = 0.0;
-
-            //Sets turn amount
+            // Sets turn amount
             angularPower = Math.abs(throttle) * wheel - mQuickStopAccumulator;
-
             if (mQuickStopAccumulator > DrivetrainConstants.kQuickStopAccumulatorDecreaseThreshold) {
                 mQuickStopAccumulator -= DrivetrainConstants.kQuickStopAccumulatorDecreaseRate;
             } else if (mQuickStopAccumulator < -DrivetrainConstants.kQuickStopAccumulatorDecreaseThreshold) {
@@ -135,7 +116,7 @@ public class CheesyDriveHelper {
             }
         }
 
-        rightPower = leftPower = mOldThrottle = linearPower;
+        rightPower = leftPower = linearPower;
         leftPower += angularPower;
         rightPower -= angularPower;
 
@@ -153,11 +134,13 @@ public class CheesyDriveHelper {
             rightPower = -1.0;
         }
 
-        SparkDriveSignal mSignal = new SparkDriveSignal();
-
         mSignal.leftOutput.setPercentOutput(leftPower);
         mSignal.rightOutput.setPercentOutput(rightPower);
         return mSignal;
+    }
+
+    private double applyWheelNonLinearPass(double wheel, double wheelNonLinearity) {
+        return Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
     }
 
 //    /**

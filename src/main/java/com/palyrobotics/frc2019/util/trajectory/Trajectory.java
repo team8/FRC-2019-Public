@@ -1,6 +1,6 @@
 package com.palyrobotics.frc2019.util.trajectory;
 
-import com.palyrobotics.frc2019.util.ChezyMath;
+import com.palyrobotics.frc2019.util.MathUtil;
 
 /**
  * Implementation of a Trajectory using arrays as the underlying storage mechanism.
@@ -82,7 +82,7 @@ public class Trajectory {
 			} else {
 				Segment segment = new Segment(segments_[index]);
 				segment.y *= -1.0;
-				segment.heading = ChezyMath.boundAngle0to2PiRadians(2 * Math.PI - segment.heading);
+				segment.heading = MathUtil.boundAngle0to2PiRadians(2 * Math.PI - segment.heading);
 				return segment;
 			}
 		} else {

@@ -5,7 +5,10 @@ import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.DashboardValue;
 import com.palyrobotics.frc2019.subsystems.controllers.*;
-import com.palyrobotics.frc2019.util.*;
+import com.palyrobotics.frc2019.util.CheesyDriveHelper;
+import com.palyrobotics.frc2019.util.Pose;
+import com.palyrobotics.frc2019.util.SparkDriveSignal;
+import com.palyrobotics.frc2019.util.VisionDriveHelper;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 
@@ -52,7 +55,7 @@ public class Drive extends Subsystem {
 //    private final double kTurnSlipFactor; //Measure empirically
 
     // Cache poses to not be allocating at 200Hz
-    private Pose mCachedPose = new Pose(0, 0, 0, 0, 0, 0, 0, 0);
+    private Pose mCachedPose = new Pose();
     private RobotState mRobotState;
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
@@ -126,11 +129,9 @@ public class Drive extends Subsystem {
     @Override
     public void update(Commands commands, RobotState state) {
         mRobotState = state;
-        mCachedPose = state.drivePose.copy(); // TODO make copyTo function instead, this creates new instance every time
-        boolean mIsNewState = !(mState == commands.wantedDriveState);
+        state.drivePose.copyTo(mCachedPose);
+        boolean mIsNewState = mState != commands.wantedDriveState;
         mState = commands.wantedDriveState;
-
-//		System.out.println(mState);
         switch (mState) {
             case CHEZY:
                 setDriveOutputs(mCDH.cheesyDrive(commands, mRobotState));
@@ -160,7 +161,6 @@ public class Drive extends Subsystem {
                     resetController();
                 }
                 setDriveOutputs(new SparkDriveSignal());
-
                 if (mRobotState.gamePeriod.equals(RobotState.GamePeriod.TELEOP)) {
                     if (mIsNewState) {
                         resetController();
@@ -172,29 +172,17 @@ public class Drive extends Subsystem {
 
         mState = commands.wantedDriveState;
 
-        leftEncoder.updateValue(state.drivePose.leftEnc);
-        rightEncoder.updateValue(state.drivePose.rightEnc);
+        leftEncoder.updateValue(state.drivePose.leftEncoderPosition);
+        rightEncoder.updateValue(state.drivePose.rightEncoderPosition);
 
-//		Logger.getInstance().logSubsystemThread(Level.FINEST, "Left drive encoder", leftEncoder);
-//		Logger.getInstance().logSubsystemThread(Level.FINEST, "Right drive encoder", rightEncoder);
-
-//		DashboardManager.getInstance().publishKVPair(leftEncoder);
-//		DashboardManager.getInstance().publishKVPair(rightEncoder);
-//
-//		DashboardManager.getInstance().publishKVPair(motors);
-
-        CSVWriter.addData("driveLeftEnc", state.drivePose.leftEnc);
-        CSVWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncVelocity);
-        CSVWriter.addData("driveRightEnc", state.drivePose.rightEnc);
-        CSVWriter.addData("driveRightEncVelocity", state.drivePose.rightEncVelocity);
+        CSVWriter.addData("driveLeftEnc", state.drivePose.leftEncoderPosition);
+        CSVWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncoderVelocity);
+        CSVWriter.addData("driveRightEnc", state.drivePose.rightEncoderPosition);
+        CSVWriter.addData("driveRightEncVelocity", state.drivePose.rightEncoderVelocity);
         CSVWriter.addData("driveHeading", state.drivePose.heading);
         CSVWriter.addData("driveHeadingVelocity", state.drivePose.headingVelocity);
-        state.drivePose.leftError.ifPresent(integer -> CSVWriter.addData("driveLeftError", (double) integer));
-        state.drivePose.rightError.ifPresent(integer -> CSVWriter.addData("driveRightError", (double) integer));
-        CSVWriter.addData("driveLeftSetpoint", mSignal.leftOutput.getReference());
-        CSVWriter.addData("driveRightSetpoint", mSignal.rightOutput.getReference());
-        // System.out.println("Left arbitrary demand: " + mSignal.leftMotor.getArbitraryFF());
-        // System.out.println("Right arbitrary demand: " + mSignal.rightMotor.getArbitraryFF());
+        CSVWriter.addData("driveLeftSetPoint", mSignal.leftOutput.getReference());
+        CSVWriter.addData("driveRightSetPoint", mSignal.rightOutput.getReference());
     }
 
     private void setDriveOutputs(SparkDriveSignal signal) {
@@ -208,11 +196,6 @@ public class Drive extends Subsystem {
         mController = null;
         mState = DriveState.NEUTRAL;
         setDriveOutputs(new SparkDriveSignal());
-    }
-
-    public void setSparkMaxController(SparkDriveSignal signal) {
-        mController = new SparkMaxDriveController(signal);
-        newController = true;
     }
 
     public void setVisionAngleSetPoint() {
@@ -283,10 +266,9 @@ public class Drive extends Subsystem {
      */
     public Pose getPose() {
         //If drivetrain has not had first update yet, return initial robot pose of 0,0,0,0,0,0
-        if (mRobotState == null) {
-            return new Pose(0, 0, 0, 0, 0, 0, 0, 0);
-        }
-        return mCachedPose;
+        return mRobotState == null
+                ? new Pose()
+                : mCachedPose;
     }
 
     public Drive.DriveController getController() {
@@ -316,7 +298,6 @@ public class Drive extends Subsystem {
 
     @Override
     public String getStatus() {
-        return String.format("Drive State: %s%nOutput Control Mode: %s%nLeft Setpoint: %s%nRight Setpoint: %s%nLeft Enc: %s%nRight Enc: %s%nGyro: %s%n", mState, mSignal.leftOutput.getControlType(), mSignal.leftOutput.getReference(), mSignal.rightOutput.getReference(), mCachedPose.leftEnc, mCachedPose.rightEnc, mCachedPose.heading);
+        return String.format("Drive State: %s%nOutput Control Mode: %s%nLeft Set Point: %s%nRight Set Point: %s%nLeft Position: %s%nRight Position: %s%nGyro: %s%n", mState, mSignal.leftOutput.getControlType(), mSignal.leftOutput.getReference(), mSignal.rightOutput.getReference(), mCachedPose.leftEncoderPosition, mCachedPose.rightEncoderPosition, mCachedPose.heading);
     }
-
 }

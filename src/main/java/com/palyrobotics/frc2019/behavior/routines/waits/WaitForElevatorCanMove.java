@@ -1,8 +1,8 @@
 package com.palyrobotics.frc2019.behavior.routines.waits;
 
-import com.palyrobotics.frc2019.config.configv2.IntakeConfig;
+import com.palyrobotics.frc2019.config.IntakeConfig;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 
 public class WaitForElevatorCanMove extends WaitRoutine {
 

@@ -1,8 +1,7 @@
-package com.palyrobotics.frc2019.config.configv2;
+package com.palyrobotics.frc2019.config;
 
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.SmartGains;
-import com.palyrobotics.frc2019.util.configv2.AbstractSubsystemConfig;
+import com.palyrobotics.frc2019.util.config.AbstractSubsystemConfig;
 
 public class PusherConfig extends AbstractSubsystemConfig {
 

@@ -3,11 +3,11 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
+import com.palyrobotics.frc2019.config.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.configv2.ElevatorConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -46,7 +46,7 @@ public class Elevator extends Subsystem {
     public void reset() {
         mElevatorState = ElevatorState.IDLE;
         mElevatorWantedPosition = null;
-        mOutput = SparkMaxOutput.getIdle();
+        mOutput = new SparkMaxOutput();
     }
 
     /**
@@ -90,7 +90,7 @@ public class Elevator extends Subsystem {
                 break;
         }
 
-        CSVWriter.addData("elevatorAppliedOutput", HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.getAppliedOutput());
+        CSVWriter.addData("elevatorAppliedOutput", mRobotState.elevatorAppliedOutput);
         CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
         CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
         CSVWriter.addData("elevatorWantedPos", mElevatorWantedPosition);

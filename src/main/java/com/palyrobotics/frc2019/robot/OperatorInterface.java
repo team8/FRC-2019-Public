@@ -20,14 +20,14 @@ import com.palyrobotics.frc2019.behavior.routines.waits.WaitForHatchIntakeUp;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
+import com.palyrobotics.frc2019.config.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.configv2.ElevatorConfig;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.subsystems.Intake.IntakeMacroState;
-import com.palyrobotics.frc2019.util.ChezyMath;
 import com.palyrobotics.frc2019.util.JoystickInput;
+import com.palyrobotics.frc2019.util.MathUtil;
 import com.palyrobotics.frc2019.util.XboxInput;
-import com.palyrobotics.frc2019.util.configv2.Configs;
+import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
 
@@ -100,8 +100,8 @@ public class OperatorInterface {
         }
 
         //More safety
-        if (Math.abs(ChezyMath.handleDeadband(mDriveStick.getY(), DrivetrainConstants.kDeadband)) > 0.0
-                || Math.abs(ChezyMath.handleDeadband(mTurnStick.getX(), DrivetrainConstants.kDeadband)) > 0.0) {
+        if (Math.abs(MathUtil.handleDeadBand(mDriveStick.getY(), DrivetrainConstants.kDeadband)) > 0.0
+                || Math.abs(MathUtil.handleDeadBand(mTurnStick.getX(), DrivetrainConstants.kDeadband)) > 0.0) {
             newCommands.wantedDriveState = Drive.DriveState.CHEZY;
         }
 

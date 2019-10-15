@@ -18,7 +18,7 @@ class DriverProfiles {
 
                 DrivetrainConstants.kDriveSensitivity = 0.85;
 
-                DrivetrainConstants.kQuickTurnSensitivity = .7;//0.8;
+                DrivetrainConstants.kQuickTurnSensitivity = 0.7;//0.8;
                 DrivetrainConstants.kPreciseQuickTurnSensitivity = 0.4;//0.35;
 
                 DrivetrainConstants.kQuickTurnSensitivityThreshold = 1.01;

@@ -3,10 +3,7 @@ package com.palyrobotics.frc2019.behavior;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Handles the updating of commands by passing them to each running routine. <br />
@@ -14,10 +11,10 @@ import java.util.HashSet;
  * @author Nihar, Ailyn
  */
 public class RoutineManager {
-    private static RoutineManager instance = new RoutineManager();
+    private static RoutineManager sInstance = new RoutineManager();
 
     public static RoutineManager getInstance() {
-        return instance;
+        return sInstance;
     }
 
     //Routines that are being run
@@ -29,15 +26,9 @@ public class RoutineManager {
     /**
      * Stores the new routine to be added in next update cycle <br />
      * Will automatically cancel any existing routines with the same subsystems
-     *
-     * @param newRoutine
      */
     public void addNewRoutine(Routine newRoutine) {
-        if (newRoutine == null) {
-//            Logger.getInstance().logRobotThread(Level.WARNING, "Tried to add null routine to routine manager!");
-            throw new NullPointerException();
-        }
-        routinesToAdd.add(newRoutine);
+        routinesToAdd.add(Objects.requireNonNull(newRoutine));
     }
 
     public ArrayList<Routine> getCurrentRoutines() {
@@ -133,7 +124,7 @@ public class RoutineManager {
      * @param newRoutine   The new routine
      * @return Array of routines that require subsystems the newRoutine needs
      */
-    public ArrayList<Routine> conflictingRoutines(ArrayList<Routine> routinesList, Routine newRoutine) {
+    private ArrayList<Routine> conflictingRoutines(ArrayList<Routine> routinesList, Routine newRoutine) {
         //Get hash sets of required subsystems for existing routines
         ArrayList<HashSet<Subsystem>> routineSubsystemSets = new ArrayList<>();
         HashSet<Subsystem> subsystemsRequired = new HashSet<>(Arrays.asList(newRoutine.getRequiredSubsystems()));
@@ -170,7 +161,7 @@ public class RoutineManager {
     /**
      * Finds overlapping subsystems Not optimized
      */
-    public static Subsystem[] sharedSubsystems(ArrayList<Routine> routines) {
+    static Subsystem[] sharedSubsystems(ArrayList<Routine> routines) {
         HashMap<Subsystem, Integer> counter = new HashMap<>();
         counter.put(null, 0); //for SampleRoutine
         counter.put(Drive.getInstance(), 0);
@@ -186,7 +177,7 @@ public class RoutineManager {
                 counter.put(subsystem, counter.get(subsystem) + 1);
             }
         }
-        //Add all subsystems that appear multiple times to return list
+        // Add all subsystems that appear multiple times to return list
         HashSet<Subsystem> conflicts = new HashSet<>();
         for (Subsystem subsystem : counter.keySet()) {
             if (counter.get(subsystem) > 1 && subsystem != null) {
