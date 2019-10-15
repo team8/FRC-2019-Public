@@ -4,7 +4,7 @@ import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.dashboard.DashboardManager;
+import com.palyrobotics.frc2019.config.dashboard.LiveGraph;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.commands.CommandReceiver;
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
         if (RobotBase.isSimulation()) sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
 
         Configs.listen(RobotConfig.class, config -> {
-            if (isDisabled()) mHardwareUpdater.setIdleMode(config.ifDisabledCoast ? IdleMode.kCoast : IdleMode.kBrake);
+            if (isDisabled()) mHardwareUpdater.setIdleMode(config.coastIfDisabled ? IdleMode.kCoast : IdleMode.kBrake);
         });
 
 //        Logger.getInstance().logRobotThread(Level.INFO, "End robotInit()");
@@ -271,7 +271,7 @@ public class Robot extends TimedRobot {
         mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
 
         HardwareAdapter.getInstance().getJoysticks().operatorXboxController.setRumble(false);
-        mHardwareUpdater.setIdleMode(mConfig.ifDisabledCoast ? IdleMode.kCoast : IdleMode.kBrake);
+        mHardwareUpdater.setIdleMode(mConfig.coastIfDisabled ? IdleMode.kCoast : IdleMode.kBrake);
 
         CSVWriter.write();
 
@@ -297,7 +297,7 @@ public class Robot extends TimedRobot {
         // TODO meh
         Map<String, Supplier<RobotService>> configToService = Map.of(
                 "commandReceiver", CommandReceiver::new,
-                "dashboardManager", DashboardManager::new
+                "dashboardManager", LiveGraph::new
         );
         mEnabledServices = mConfig.enabledServices.stream()
                 .map(serviceName -> configToService.get(serviceName).get())

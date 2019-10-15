@@ -1,6 +1,7 @@
 {
     "enabledServices": [
-        "commandReceiver"
+        "commandReceiver",
+        "liveGraph"
     ],
     "enabledSubsystems": [
         "drive",
@@ -11,7 +12,7 @@
         "shooter",
         "elevator"
     ],
-    "ifDisabledCoast": true,
+    "coastIfDisabled": false,
     "disableSparkOutput": false,
     "sendMultiplier": 1.0
 }

@@ -3,7 +3,6 @@ package com.palyrobotics.frc2019.subsystems;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.dashboard.DashboardValue;
 import com.palyrobotics.frc2019.subsystems.controllers.*;
 import com.palyrobotics.frc2019.util.CheesyDriveHelper;
 import com.palyrobotics.frc2019.util.Pose;
@@ -59,19 +58,8 @@ public class Drive extends Subsystem {
     private RobotState mRobotState;
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
-//    private DashboardValue motors;
-
-    private DashboardValue leftEncoder, rightEncoder;
-
     protected Drive() {
         super("drive");
-//        kWheelbaseWidth = 0;
-//        kTurnSlipFactor = 0;
-
-//        motors = new DashboardValue("driveSpeedUpdate");
-
-        leftEncoder = new DashboardValue("leftDriveEncoder");
-        rightEncoder = new DashboardValue("rightDriveEncoder");
     }
 
     /**
@@ -88,7 +76,7 @@ public class Drive extends Subsystem {
     }
 
     /**
-     * <h1>Updates the drivetrain and its {@link DriveSignal}</h1>
+     * <h1>Updates the drivetrain and its {@link SparkDriveSignal}</h1>
      *
      * <br>
      * Contains a state machine that switches. based on {@link DriveState} and updates the
@@ -100,7 +88,7 @@ public class Drive extends Subsystem {
      * <ul>
      * 	<li>
      *        {@link DriveState#CHEZY}:
-     * 		Sets drive outputs using a {@link DriveSignal} from a {@link CheesyDriveHelper}.
+     * 		Sets drive outputs using a {@link SparkDriveSignal} from a {@link CheesyDriveHelper}.
      * 	</li>
      * 	<li>
      *        {@link DriveState#OFF_BOARD_CONTROLLER}:
@@ -117,7 +105,7 @@ public class Drive extends Subsystem {
      * 	</li>
      * 	<li>
      *        {@link DriveState#NEUTRAL}:
-     * 		Sets drive outputs to {@link DriveSignal#getNeutralSignal()}. Will also
+     * 		Sets drive outputs to a blank {@link SparkDriveSignal}. Will also
      *        {@link Drive#resetController} if in a new state and set {@link DriveState#CHEZY} if in
      *        {@code TELEOP}.
      * 	</li>
@@ -171,9 +159,6 @@ public class Drive extends Subsystem {
         }
 
         mState = commands.wantedDriveState;
-
-        leftEncoder.updateValue(state.drivePose.leftEncoderPosition);
-        rightEncoder.updateValue(state.drivePose.rightEncoderPosition);
 
         CSVWriter.addData("driveLeftEnc", state.drivePose.leftEncoderPosition);
         CSVWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncoderVelocity);
@@ -286,7 +271,7 @@ public class Drive extends Subsystem {
     /**
      * <h1>Interface for drive controllers</h1>
      * <p>
-     * Contains an {@code update} method that takes a {@link RobotState} and generates a {@link DriveSignal}.
+     * Contains an {@code update} method that takes a {@link RobotState} and generates a {@link SparkDriveSignal}.
      */
     public interface DriveController {
         SparkDriveSignal update(RobotState state);
