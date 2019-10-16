@@ -6,7 +6,9 @@ import java.util.List;
 
 public class RobotConfig extends AbstractConfig {
 
-    public boolean coastIfDisabled, disableSparkOutput;
+    public boolean
+            coastDriveIfDisabled, coastElevatorIfDisabled, coastArmIfDisabled,
+            disableSparkOutput;
     public double sendMultiplier;
     public List<String> enabledServices, enabledSubsystems;
 }

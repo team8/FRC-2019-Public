@@ -63,7 +63,7 @@ public class OtherConstants {
     public static final double kVisionAlignDistanceTolerance = 1.0;
     public static final double kVisionAlignSpeedyTolerance = 1.0;
 
-    public static final double kVisionLEDTimeoutMillis = 10; // How long after the last vision command should we turn off LEDs
+    public static final double kVisionLEDTimeoutSeconds = 0.1; // How long after the last vision command should we turn off LEDs
 
 
     public static final int kRequiredUltrasonicCount = 4;

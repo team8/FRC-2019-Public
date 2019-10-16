@@ -12,7 +12,9 @@
         "shooter",
         "elevator"
     ],
-    "coastIfDisabled": false,
+    "coastDriveIfDisabled": false,
+    "coastElevatorIfDisabled": false,
+    "coastArmIfDisabled": false,
     "disableSparkOutput": false,
     "sendMultiplier": 1.0
 }

@@ -83,9 +83,6 @@ class HardwareUpdater {
 
         driveHardware.resetSensors();
 
-        // leftMasterSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 3);
-        // rightMasterSpark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 3);
-
         // Invert right side
         driveHardware.leftMasterSpark.setInverted(false);
         driveHardware.leftSlave1Spark.setInverted(false);
@@ -470,12 +467,18 @@ class HardwareUpdater {
 //		System.out.println(HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getAppliedOutput());
     }
 
-    void setIdleMode(IdleMode idleMode) {
+    void setDriveIdleMode(IdleMode idleMode) {
         HardwareAdapter.getInstance().getDrivetrain().sparks.forEach(spark -> spark.setIdleMode(idleMode));
-        HardwareAdapter.getInstance().getIntake().intakeMasterSpark.setIdleMode(idleMode);
-        HardwareAdapter.getInstance().getIntake().intakeSlaveSpark.setIdleMode(idleMode);
+    }
+
+    void setElevatorIdleMode(IdleMode idleMode) {
         HardwareAdapter.getInstance().getElevator().elevatorMasterSpark.setIdleMode(idleMode);
         HardwareAdapter.getInstance().getElevator().elevatorSlaveSpark.setIdleMode(idleMode);
+    }
+
+    void setArmIdleMode(IdleMode idleMode) {
+        HardwareAdapter.getInstance().getIntake().intakeMasterSpark.setIdleMode(idleMode);
+        HardwareAdapter.getInstance().getIntake().intakeSlaveSpark.setIdleMode(idleMode);
     }
 
 //    private void updateTalonSRX(WPI_TalonSRX talon, TalonSRXOutput output) {
