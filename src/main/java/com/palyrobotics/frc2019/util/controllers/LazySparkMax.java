@@ -12,6 +12,12 @@ import com.revrobotics.ControlType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A wrapper around a Spark Max that only updates inputs when they have changed.
+ * This also supports updating gains smartly.
+ *
+ * @author Quintin Dwight
+ */
 public class LazySparkMax extends CANSparkMax {
 
     private static Map<ControlType, Integer> sControlTypeToSlot = Map.of(

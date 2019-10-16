@@ -1,5 +1,7 @@
 package com.palyrobotics.frc2019.util;
 
+import edu.wpi.first.wpilibj.Timer;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -19,31 +21,31 @@ public class TimeDebugger {
     }
 
     private String m_Name;
-    private long m_ReferenceNs, m_RunningTimeNs;
+    private double m_ReferenceSeconds, m_RunningTimeSeconds;
     private Double m_PrintDuration;
     private ArrayList<Measurement> m_Measurements = new ArrayList<>(8);
 
     public TimeDebugger(String name) {
         m_Name = name;
-        m_ReferenceNs = System.nanoTime();
+        m_ReferenceSeconds = System.nanoTime();
     }
 
-    public TimeDebugger(String name, double printDuration) {
+    public TimeDebugger(String name, double printDurationSeconds) {
         this(name);
-        m_PrintDuration = printDuration;
+        m_PrintDuration = printDurationSeconds;
     }
 
     public void addPoint(String name) {
-        long now = System.nanoTime();
-        m_RunningTimeNs += now - m_ReferenceNs;
-        double deltaSeconds = (now - m_ReferenceNs) / 1e9;
-        m_ReferenceNs = now;
+        double now = Timer.getFPGATimestamp();
+        double deltaSeconds = now - m_ReferenceSeconds;
+        m_RunningTimeSeconds += deltaSeconds;
+        m_ReferenceSeconds = now;
         m_Measurements.add(new Measurement(name, deltaSeconds));
     }
 
     public void finish() {
         Optional.ofNullable(m_PrintDuration)
-                .filter(duration -> m_RunningTimeNs > duration)
+                .filter(duration -> m_RunningTimeSeconds > duration)
                 .ifPresent(duration -> printSummary());
     }
 

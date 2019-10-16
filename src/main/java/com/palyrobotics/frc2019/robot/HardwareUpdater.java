@@ -9,6 +9,7 @@ import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.*;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
+import com.palyrobotics.frc2019.util.TimeDebugger;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.controllers.LazySparkMax;
 import com.palyrobotics.frc2019.util.trajectory.Kinematics;
@@ -31,7 +32,6 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 
 class HardwareUpdater {
 
-    /* Subsystems */
     private Drive mDrive;
     private Intake mIntake;
     private Elevator mElevator;
@@ -240,6 +240,8 @@ class HardwareUpdater {
      * Takes all of the sensor data from the hardware, and unwraps it into the current {@link RobotState}.
      */
     void updateState(RobotState robotState) {
+        TimeDebugger timeDebugger = new TimeDebugger("UpdateState", 0.02);
+
         CANSparkMax
                 leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark,
                 rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
@@ -289,8 +291,6 @@ class HardwareUpdater {
             robotState.cancelAuto = true;
         }
 
-        //Rotation2d gyro_angle = Rotation2d.fromRadians((right_distance - left_distance) * Constants.kTrackScrubFactor
-        ///Constants.kTrackEffectiveDiameter);
         Rotation2d
                 gyroAngle = Rotation2d.fromDegrees(robotState.drivePose.heading),
                 gyroVelocity = Rotation2d.fromDegrees(robotState.drivePose.headingVelocity);
@@ -314,6 +314,8 @@ class HardwareUpdater {
         robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
 
         updateUltrasonicSensors(robotState);
+
+        timeDebugger.finish();
     }
 
     private void updateUltrasonicSensors(RobotState robotState) {
@@ -382,24 +384,12 @@ class HardwareUpdater {
     private void updateDrivetrain() {
         updateSparkMax(HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark, mDrive.getDriveSignal().leftOutput);
         updateSparkMax(HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark, mDrive.getDriveSignal().rightOutput);
-
-//		SparkMaxOutput c = new SparkMaxOutput();
-//		c.setPercentOutput(HardwareAdapter.getInstance().getJoysticks().driveStick.getY());
-//
-////		c.setPercentOutput(throttle);
-//
-//		updateSparkMax(HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark, c);
-//		updateSparkMax(HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark, c);
-
-//		mSignal.leftMotor.setPercentOutput(throttle);
-//		mSignal.rightMotor.setPercentOutput(throttle);
     }
 
     /**
      * Checks if the compressor should compress and updates it accordingly
      */
     private void updateMiscellaneousHardware() {
-//        HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.stop();
         if (shouldCompress()) {
             HardwareAdapter.getInstance().getMiscellaneousHardware().compressor.start();
         } else {
@@ -421,7 +411,6 @@ class HardwareUpdater {
                 intakeRumbleLength = mIntake.getRumbleLength(),
                 shovelRumbleLength = mShovel.getRumbleLength(),
                 shooterRumbleLength = mShooter.getRumbleLength();
-
         if (intakeRumbleLength > 0) {
             rumble = true;
             mIntake.decreaseRumbleLength();
@@ -434,7 +423,6 @@ class HardwareUpdater {
         } else {
             rumble = false;
         }
-
         return rumble;
     }
 
@@ -464,7 +452,6 @@ class HardwareUpdater {
     private void updateIntake() {
         updateSparkMax(HardwareAdapter.getInstance().getIntake().intakeMasterSpark, mIntake.getSparkOutput());
         HardwareAdapter.getInstance().getIntake().intakeTalon.set(mIntake.getTalonOutput());
-//		System.out.println(HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getAppliedOutput());
     }
 
     void setDriveIdleMode(IdleMode idleMode) {
