@@ -17,34 +17,29 @@ import java.util.List;
  */
 public class VisionAssistedDrivePathRoutine extends Routine {
     private Path mPath;
-    private ArrayList<Path.Waypoint> pathList;
+    private ArrayList<Path.Waypoint> mPathList;
     private double mLookAhead;
-    private double mStartSpeed;
-    private boolean mInverted;
-    private double mTolerance = DrivetrainConstants.kPathFollowingTolerance;
-    private boolean mRelative;
-    private String enableVisionMarker;
+    private boolean mInverted, mRelative;
+    private String mEnableVisionMarker;
     private boolean startedRoutine;
 
     public VisionAssistedDrivePathRoutine(ArrayList<Path.Waypoint> pathList, boolean inverted, boolean relative, String enableVisionMarker) {
-        this.mPath = new Path(pathList);
-        this.pathList = pathList;
-        this.mInverted = inverted;
-        this.mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
-        this.mStartSpeed = 0.0;
-        this.mRelative = relative;
-        this.enableVisionMarker = enableVisionMarker;
+        mPath = new Path(pathList);
+        mPathList = pathList;
+        mInverted = inverted;
+        mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
+        mRelative = relative;
+        mEnableVisionMarker = enableVisionMarker;
     }
 
     @Override
     public void start() {
-
         if (mRelative) {
             ArrayList<Path.Waypoint> absoluteList = new ArrayList<>();
-            for (Path.Waypoint point : pathList) {
+            for (Path.Waypoint point : mPathList) {
                 if (point.isRelative) {
-                    if (point.marker.isPresent()) {
-                        absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, point.marker.get(), false));
+                    if (point.marker != null) {
+                        absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, point.marker, false));
                     } else {
                         absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, false));
                     }
@@ -52,31 +47,20 @@ public class VisionAssistedDrivePathRoutine extends Routine {
                     absoluteList.add(point);
                 }
             }
-
-            int counter = 0;
-
-            for (Path.Waypoint point : absoluteList) {
-                counter++;
-            }
-
             mPath = new Path(absoluteList);
         }
-//        Logger.getInstance().logSubsystemThread(Level.INFO, "Starting Drive Path Routine");
-
-        mDrive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
+        mDrive.setTrajectoryController(mPath, mLookAhead, mInverted, DrivetrainConstants.kPathFollowingTolerance);
     }
 
     @Override
     public Commands update(Commands commands) {
         commands.wantedDriveState = Drive.DriveState.ON_BOARD_CONTROLLER;
-        this.mPath = this.getPath();
-        System.out.println(mPath.getMarkersCrossed().toString());
-        if (mPath.getMarkersCrossed().contains(enableVisionMarker) && !startedRoutine) {
+        mPath = getPath();
+        if (mPath.getMarkersCrossed().contains(mEnableVisionMarker) && !startedRoutine) {
             startedRoutine = true;
             Drive.getInstance().setVisionClosedDriveController();
         }
         if (startedRoutine) {
-//            System.out.println("Vision Assist Mode");
             Limelight.getInstance().setCamMode(LimelightControlMode.CamMode.VISION);
             Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_ON); // Limelight LED on
             commands.wantedDriveState = Drive.DriveState.CLOSED_VISION_ASSIST;
@@ -87,7 +71,6 @@ public class VisionAssistedDrivePathRoutine extends Routine {
 
     @Override
     public Commands cancel(Commands commands) {
-//        Logger.getInstance().logSubsystemThread(Level.INFO, "Drive Path Routine finished");
         mDrive.setNeutral();
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
         return commands;
@@ -109,19 +92,17 @@ public class VisionAssistedDrivePathRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "Vision DrivePathRoutine";
+        return "Vision Drive Path Routine";
     }
 
     @Override
     public String toString() {
-        final int offsetX = 0;
-        final int offsetY = 0;
-        String enumeratedPath = "";
+        var enumeratedPath = new StringBuilder();
         List<Path.Waypoint> path = mPath.getWayPoints();
-        enumeratedPath += "0,0,0\n";
-        for (int i = 0; i < path.size(); i++) {
-            enumeratedPath += (path.get(i).position.getX() + offsetX) + "," + (path.get(i).position.getY() + offsetY) + "," + path.get(i).speed + "\n";
+        enumeratedPath.append("0,0,0\n");
+        for (Path.Waypoint waypoint : path) {
+            enumeratedPath.append(waypoint.position.getX()).append(",").append(waypoint.position.getY()).append(",").append(waypoint.speed).append("\n");
         }
-        return enumeratedPath;
+        return enumeratedPath.toString();
     }
 }

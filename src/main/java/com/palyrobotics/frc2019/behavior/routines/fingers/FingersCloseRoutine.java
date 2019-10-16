@@ -7,19 +7,17 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class FingersCloseRoutine extends Routine {
 
-    private Fingers.FingersState wantedFingersOpenCloseState;
-
-    private boolean alreadyRan;
+    private boolean mAlreadyRan;
 
     @Override
     public void start() {
-        alreadyRan = false;
+        mAlreadyRan = false;
     }
 
     @Override
     public Commands update(Commands commands) {
         commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
-        alreadyRan = true;
+        mAlreadyRan = true;
         return commands;
     }
 
@@ -30,7 +28,7 @@ public class FingersCloseRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return alreadyRan;
+        return mAlreadyRan;
     }
 
     @Override
@@ -40,6 +38,6 @@ public class FingersCloseRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "FingersCloseRoutine";
+        return "Fingers Close Routine";
     }
 }

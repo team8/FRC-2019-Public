@@ -75,7 +75,6 @@ public class BBTurnAngleRoutineRequireVision extends Routine {
 
     @Override
     public boolean finished() {
-        System.out.println(Limelight.getInstance().isTargetFound());
         return mState == GyroBBState.DONE || ((System.currentTimeMillis() - mStartTime > 450) && Limelight.getInstance().isTargetFound());
     }
 

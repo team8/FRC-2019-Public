@@ -75,10 +75,10 @@ public class RobotState {
     // Vision drive data
     public boolean atVisionTargetThreshold;
 
-    //Robot position
+    // Robot position
     private final int kObservationBufferSize = 100;
 
-    //FPGATimestamp -> RigidTransform2d or Rotation2d
+    // FPGATimestamp -> RigidTransform2d or Rotation2d
     private RigidTransform2d.Delta vehicleVelocity;
     private InterpolatingTreeMap<InterpolatingDouble, RigidTransform2d> fieldToVehicle;
 
@@ -103,7 +103,7 @@ public class RobotState {
 
     public synchronized RigidTransform2d getPredictedFieldToVehicle(double lookAheadTime) {
         return getLatestFieldToVehicle().getValue().transformBy(
-                RigidTransform2d.fromVelocity(new RigidTransform2d.Delta(vehicleVelocity.dx * lookAheadTime, vehicleVelocity.dy * lookAheadTime, vehicleVelocity.dtheta * lookAheadTime)));
+                RigidTransform2d.fromVelocity(new RigidTransform2d.Delta(vehicleVelocity.dX * lookAheadTime, vehicleVelocity.dY * lookAheadTime, vehicleVelocity.dTheta * lookAheadTime)));
     }
 
     public synchronized void addFieldToVehicleObservation(double timestamp, RigidTransform2d observation) {

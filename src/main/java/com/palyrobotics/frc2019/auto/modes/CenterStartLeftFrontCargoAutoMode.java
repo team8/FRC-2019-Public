@@ -47,7 +47,7 @@ public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
         ArrayList<Routine> routines = new ArrayList<>();
 
         //rezero
-        routines.add(new RezeroSubAutoMode().Rezero(false));
+        routines.add(new ReZeroSubAutoMode().ReZero(false));
 
         List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
         StartToCargoShip.add(new Waypoint(new Translation2d(kHabLineX + PhysicalConstants.kRobotLengthInches + kOffsetX,

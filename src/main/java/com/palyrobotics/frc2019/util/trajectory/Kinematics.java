@@ -55,10 +55,10 @@ public class Kinematics {
     }
 
     public static DriveVelocity inverseKinematics(RigidTransform2d.Delta velocity) {
-        if (Math.abs(velocity.dtheta) < kEpsilon) {
-            return new DriveVelocity(velocity.dx, velocity.dx);
+        if (Math.abs(velocity.dTheta) < kEpsilon) {
+            return new DriveVelocity(velocity.dX, velocity.dX);
         }
-        double velocityDelta = DrivetrainConstants.kTrackEffectiveDiameter * velocity.dtheta / (2 * DrivetrainConstants.kTrackScrubFactor);
-        return new DriveVelocity(velocity.dx - velocityDelta, velocity.dx + velocityDelta);
+        double velocityDelta = DrivetrainConstants.kTrackEffectiveDiameter * velocity.dTheta / (2 * DrivetrainConstants.kTrackScrubFactor);
+        return new DriveVelocity(velocity.dX - velocityDelta, velocity.dX + velocityDelta);
     }
 }

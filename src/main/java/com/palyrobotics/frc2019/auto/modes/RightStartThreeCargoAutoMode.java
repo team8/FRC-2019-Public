@@ -12,7 +12,7 @@ import com.palyrobotics.frc2019.behavior.routines.pusher.PusherOutRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import com.palyrobotics.frc2019.behavior.routines.waits.WaitForCargoElevator;
 import com.palyrobotics.frc2019.config.Constants.PhysicalConstants;
-import com.palyrobotics.frc2019.config.ElevatorConfig;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.trajectory.Path;
@@ -72,7 +72,7 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new RezeroSubAutoMode().Rezero(false), placeCargoStart(), placeCargo(1), takeCargo(1), placeCargo(2));
+        return new SequentialRoutine(new ReZeroSubAutoMode().ReZero(false), placeCargoStart(), placeCargo(1), takeCargo(1), placeCargo(2));
     }
 
     public Routine placeCargoStart() { //start to cargo ship front

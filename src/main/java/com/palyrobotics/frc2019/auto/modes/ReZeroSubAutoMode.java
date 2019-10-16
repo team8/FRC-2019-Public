@@ -10,7 +10,7 @@ import com.palyrobotics.frc2019.util.SparkMaxOutput;
 
 import java.util.ArrayList;
 
-public class RezeroSubAutoMode extends AutoModeBase {
+public class ReZeroSubAutoMode extends AutoModeBase {
 
     @Override
     public String toString() {
@@ -24,10 +24,10 @@ public class RezeroSubAutoMode extends AutoModeBase {
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new DriveSensorResetRoutine(0.1), Rezero(false));
+        return new SequentialRoutine(new DriveSensorResetRoutine(0.1), ReZero(false));
     }
 
-    public Routine Rezero(boolean inverted) {
+    Routine ReZero(boolean inverted) {
 
         //invert the cords if the robot starts backwards
         int invertCord = 1;

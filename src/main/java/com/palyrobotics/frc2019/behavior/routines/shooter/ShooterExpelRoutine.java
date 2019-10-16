@@ -10,7 +10,7 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
  */
 public class ShooterExpelRoutine extends Routine {
 
-    private Shooter.ShooterState wantedShooterState;
+    private Shooter.ShooterState mWantedShooterState;
 
     //How long the wheels spin for (seconds)
     private double mTimeout;
@@ -18,12 +18,11 @@ public class ShooterExpelRoutine extends Routine {
     private long mStartTime;
 
     /**
-     *
      * @param wantedShooterState the desired state
-     * @param timeout how long (seconds) to run for
+     * @param timeout            how long (seconds) to run for
      */
     public ShooterExpelRoutine(Shooter.ShooterState wantedShooterState, double timeout) {
-        this.wantedShooterState = wantedShooterState;
+        mWantedShooterState = wantedShooterState;
         mTimeout = timeout;
     }
 
@@ -34,7 +33,7 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public Commands update(Commands commands) {
-        commands.wantedShooterState = wantedShooterState;
+        commands.wantedShooterState = mWantedShooterState;
         commands.customShooterSpeed = false;
 
         return commands;
@@ -53,11 +52,11 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mShooter};
+        return new Subsystem[]{mShooter};
     }
 
     @Override
     public String getName() {
-        return "ShooterExpelRoutine";
+        return "Shooter Expel Routine";
     }
 }

@@ -104,8 +104,8 @@ public class DrivePathRoutine extends Routine {
             ArrayList<Path.Waypoint> absoluteList = new ArrayList<>();
             for (Path.Waypoint point : mPathList) {
                 if (point.isRelative) {
-                    if (point.marker.isPresent()) {
-                        absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, point.marker.get(), false));
+                    if (point.marker != null) {
+                        absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, point.marker, false));
                     } else {
                         absoluteList.add(new Path.Waypoint(mRobotState.getLatestFieldToVehicle().getValue().getTranslation().translateBy(point.position), point.speed, false));
                     }
@@ -113,17 +113,8 @@ public class DrivePathRoutine extends Routine {
                     absoluteList.add(point);
                 }
             }
-
-//            int counter = 0;
-//
-//            for (Path.Waypoint point : absoluteList) {
-//                counter++;
-//            }
-
             mPath = new Path(absoluteList);
         }
-//		Logger.getInstance().logSubsystemThread(Level.INFO, "Starting Drive Path Routine");
-
         mDrive.setTrajectoryController(mPath, mLookAhead, mInverted, mTolerance);
     }
 
@@ -135,7 +126,6 @@ public class DrivePathRoutine extends Routine {
 
     @Override
     public Commands cancel(Commands commands) {
-//		Logger.getInstance().logSubsystemThread(Level.INFO, "Drive Path Routine finished");
         mDrive.setNeutral();
         commands.wantedDriveState = Drive.DriveState.NEUTRAL;
         return commands;

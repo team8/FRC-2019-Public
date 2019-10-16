@@ -1,5 +1,6 @@
-package com.palyrobotics.frc2019.config;
+package com.palyrobotics.frc2019.config.subsystem;
 
+import com.palyrobotics.frc2019.util.control.SmartGains;
 import com.palyrobotics.frc2019.util.config.AbstractSubsystemConfig;
 
 public class ElevatorConfig extends AbstractSubsystemConfig {

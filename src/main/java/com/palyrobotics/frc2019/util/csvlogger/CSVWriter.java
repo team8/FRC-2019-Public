@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.function.UnaryOperator;
 
 /**
- * @author Jason Liu
+ * @author Jason Liu, Quintin Dwight
  */
 public class CSVWriter {
     private static final String COMMA_DELIMITER = ",", NEW_LINE_SEPARATOR = "\n";

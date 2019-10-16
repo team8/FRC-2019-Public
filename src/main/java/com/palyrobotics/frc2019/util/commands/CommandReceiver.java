@@ -5,7 +5,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorMeasureSpeedAtOutputRoutine;
-import com.palyrobotics.frc2019.config.ElevatorConfig;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.config.AbstractConfig;
 import com.palyrobotics.frc2019.util.config.Configs;

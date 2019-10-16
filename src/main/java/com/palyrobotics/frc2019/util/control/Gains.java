@@ -1,4 +1,4 @@
-package com.palyrobotics.frc2019.config;
+package com.palyrobotics.frc2019.util.control;
 
 import java.util.Objects;
 

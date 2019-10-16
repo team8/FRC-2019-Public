@@ -2,9 +2,9 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.Constants.ShooterConstants;
-import com.palyrobotics.frc2019.config.ElevatorConfig;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.subsystem.ShooterConfig;
 import com.palyrobotics.frc2019.util.config.Configs;
 
 public class Shooter extends Subsystem {
@@ -14,6 +14,8 @@ public class Shooter extends Subsystem {
     public static Shooter getInstance() {
         return sInstance;
     }
+
+    private ShooterConfig mConfig = Configs.get(ShooterConfig.class);
 
     private double mOutput;
 
@@ -59,9 +61,9 @@ public class Shooter extends Subsystem {
                     mOutput = robotState.operatorXboxControllerInput.leftTrigger; //TODO: change control?
                 } else {
                     if (robotState.elevatorPosition > Configs.get(ElevatorConfig.class).elevatorHeight3 - 8.0) {
-                        mOutput = ShooterConstants.kLevel3MotorVelocity;
+                        mOutput = mConfig.level3MotorVelocity;
                     } else {
-                        mOutput = ShooterConstants.kExpellingMotorVelocity;
+                        mOutput = mConfig.expellingMotorVelocity;
                     }
                 }
                 mExpellingCycles++;

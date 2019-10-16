@@ -1,7 +1,7 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
-import com.palyrobotics.frc2019.config.DriveConfig;
+import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.controllers.OnBoardDriveController.OnBoardControlType;
@@ -86,11 +86,11 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
         }
 
         //Ensure we don't accelerate too fast from the previous command
-        double accel = (speed - mLastCommand.dx) / dt;
+        double accel = (speed - mLastCommand.dX) / dt;
         if (accel < -mMaxAcceleration) {
-            speed = mLastCommand.dx - mMaxAcceleration * dt;
+            speed = mLastCommand.dX - mMaxAcceleration * dt;
         } else if (accel > mMaxAcceleration) {
-            speed = mLastCommand.dx + mMaxAcceleration * dt;
+            speed = mLastCommand.dX + mMaxAcceleration * dt;
         }
 
         //Ensure we slow down in time to stop

@@ -4,11 +4,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.IntakeConfig;
+import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.PortConstants;
 import com.palyrobotics.frc2019.util.XboxController;
 import com.palyrobotics.frc2019.util.config.Configs;
-import com.palyrobotics.frc2019.util.controllers.LazySparkMax;
+import com.palyrobotics.frc2019.util.control.LazySparkMax;
 import com.revrobotics.CANError;
 import edu.wpi.first.wpilibj.*;
 

@@ -1,7 +1,7 @@
 package com.palyrobotics.frc2019.util;
 
-import com.palyrobotics.frc2019.config.Gains;
-import com.palyrobotics.frc2019.config.SmartGains;
+import com.palyrobotics.frc2019.util.control.SmartGains;
+import com.palyrobotics.frc2019.util.control.Gains;
 import com.revrobotics.ControlType;
 
 public class SparkMaxOutput {

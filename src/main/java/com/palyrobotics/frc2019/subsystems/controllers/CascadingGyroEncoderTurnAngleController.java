@@ -1,7 +1,7 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
-import com.palyrobotics.frc2019.config.DriveConfig;
+import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive.DriveController;
 import com.palyrobotics.frc2019.util.Pose;

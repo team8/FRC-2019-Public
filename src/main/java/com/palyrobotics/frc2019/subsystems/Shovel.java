@@ -3,7 +3,7 @@ package com.palyrobotics.frc2019.subsystems;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.ShovelConfig;
+import com.palyrobotics.frc2019.config.subsystem.ShovelConfig;
 import com.palyrobotics.frc2019.util.config.Configs;
 
 public class Shovel extends Subsystem {

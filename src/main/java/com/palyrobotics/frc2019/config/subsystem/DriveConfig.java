@@ -1,5 +1,7 @@
-package com.palyrobotics.frc2019.config;
+package com.palyrobotics.frc2019.config.subsystem;
 
+import com.palyrobotics.frc2019.util.control.Gains;
+import com.palyrobotics.frc2019.util.control.TrajectoryGains;
 import com.palyrobotics.frc2019.util.config.AbstractSubsystemConfig;
 
 public class DriveConfig extends AbstractSubsystemConfig {

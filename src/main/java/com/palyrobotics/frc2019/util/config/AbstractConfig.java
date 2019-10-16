@@ -9,9 +9,9 @@ public abstract class AbstractConfig {
             return Configs.getMapper().defaultPrettyPrintingWriter().writeValueAsString(this);
         } catch (IOException exception) {
             exception.printStackTrace();
-            return "Invalid";
+            return super.toString();
         }
     }
 
-    public void onLoad() {}
+    void onLoad() {}
 }

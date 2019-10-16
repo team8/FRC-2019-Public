@@ -1,6 +1,6 @@
 package com.palyrobotics.frc2019.behavior.routines.waits;
 
-import com.palyrobotics.frc2019.config.IntakeConfig;
+import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.config.Configs;
 

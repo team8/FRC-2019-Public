@@ -1,7 +1,7 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.util.control.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.util.Pose;

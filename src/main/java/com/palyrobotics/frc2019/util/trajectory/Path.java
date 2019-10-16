@@ -27,47 +27,47 @@ public class Path {
     private Set<String> mMarkersCrossed;
 
     /**
-     * A point along the Path, which consists of the location, the speed, and a string marker (that future code can identify). Paths consist of a List of
-     * Waypoints.
+     * A point along the Path, which consists of the location, the speed, and a string marker (that future code can identify).
+     * Paths consist of a List of {@link Waypoint}'s.
      */
     public static class Waypoint {
         public final Translation2d position;
         public final double speed;
-        public final Optional<String> marker;
+        public final String marker;
         public final boolean isRelative;
 
         public Waypoint(Translation2d position) {
             this.position = position;
             this.speed = -1;
-            this.marker = Optional.empty();
             this.isRelative = false;
+            this.marker = null;
         }
 
         public Waypoint(Translation2d position, double speed) {
             this.position = position;
             this.speed = speed;
-            this.marker = Optional.empty();
             this.isRelative = false;
+            this.marker = null;
         }
 
         public Waypoint(Translation2d position, double speed, boolean isRelative) {
             this.position = position;
             this.speed = speed;
-            this.marker = Optional.empty();
             this.isRelative = isRelative;
+            this.marker = null;
         }
 
         public Waypoint(Translation2d position, double speed, String marker) {
             this.position = position;
             this.speed = speed;
-            this.marker = Optional.of(marker);
+            this.marker = marker;
             this.isRelative = false;
         }
 
         public Waypoint(Translation2d position, double speed, String marker, boolean isRelative) {
             this.position = position;
             this.speed = speed;
-            this.marker = Optional.of(marker);
+            this.marker = marker;
             this.isRelative = isRelative;
         }
     }
@@ -85,8 +85,8 @@ public class Path {
         //The first waypoint is already complete
         //If 1, assume sticking a point before this and this point needs to stay
         if (mWaypoints.size() > 1) {
-            Waypoint first_waypoint = mWaypoints.get(0);
-			first_waypoint.marker.ifPresent(s -> mMarkersCrossed.add(s));
+            Waypoint firstWaypoint = mWaypoints.get(0);
+            if (firstWaypoint.marker != null) mMarkersCrossed.add(firstWaypoint.marker);
             mWaypoints.remove(0);
         }
     }
@@ -104,13 +104,13 @@ public class Path {
                 it.remove();
                 if (mWaypoints.size() > 0) {
                     Waypoint waypoint = mWaypoints.get(0);
-					waypoint.marker.ifPresent(s -> mMarkersCrossed.add(s));
+                    if (waypoint.marker != null) mMarkersCrossed.add(waypoint.marker);
                     mWaypoints.remove(0);
                 }
             } else {
                 if (closest_point_report.index > 0.0) {
                     //Can shorten this segment
-                    segment.updateStart(closest_point_report.closest_point);
+                    segment.updateStart(closest_point_report.closestPoint);
                 }
                 //We are done
                 rv = closest_point_report.distance;
@@ -120,12 +120,12 @@ public class Path {
                     PathSegment.ClosestPointReport next_closest_point_report = next.getClosestPoint(position);
                     if (next_closest_point_report.index > 0 && next_closest_point_report.index < kSegmentCompletePercentage
                             && next_closest_point_report.distance < rv) {
-                        next.updateStart(next_closest_point_report.closest_point);
+                        next.updateStart(next_closest_point_report.closestPoint);
                         rv = next_closest_point_report.distance;
                         mSegments.remove(0);
                         if (mWaypoints.size() > 0) {
                             Waypoint waypoint = mWaypoints.get(0);
-							waypoint.marker.ifPresent(s -> mMarkersCrossed.add(s));
+                            if (waypoint.marker != null) mMarkersCrossed.add(waypoint.marker);
                             mWaypoints.remove(0);
                         }
                     }

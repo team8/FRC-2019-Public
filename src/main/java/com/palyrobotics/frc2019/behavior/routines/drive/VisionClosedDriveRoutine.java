@@ -78,7 +78,7 @@ public class VisionClosedDriveRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "VisionClosedDrive";
+        return "Vision Closed Drive";
     }
 
 }

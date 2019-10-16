@@ -1,8 +1,8 @@
 package com.palyrobotics.frc2019.subsystems.controllers;
 
-import com.palyrobotics.frc2019.config.DriveConfig;
+import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.TrajectoryGains;
+import com.palyrobotics.frc2019.util.control.TrajectoryGains;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.util.MathUtil;
 import com.palyrobotics.frc2019.util.Pose;

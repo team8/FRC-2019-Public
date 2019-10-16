@@ -9,36 +9,36 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class JoystickInput {
 
-    private double x, y;
-    private boolean[] buttons = new boolean[12];
+    private double mX, mY;
+    private boolean[] mButtons = new boolean[12];
 
     @Override
     public String toString() {
-        return String.format("Joystick X: %s Y: %s", this.x, this.y);
+        return String.format("Joystick X: %s Y: %s", this.mX, this.mY);
     }
 
     public void update(Joystick joystick) {
-        x = joystick.getX();
-        y = joystick.getY();
+        mX = joystick.getX();
+        mY = joystick.getY();
         for (int i = 1; i < 12; i++) {
             //getRawButton(1) is the trigger
-            buttons[i] = joystick.getRawButton(i);
+            mButtons[i] = joystick.getRawButton(i);
         }
     }
 
     public double getX() {
-        return this.x;
+        return mX;
     }
 
     public double getY() {
-        return this.y;
+        return mY;
     }
 
     public boolean getButtonPressed(int button) {
-        return buttons[button];
+        return mButtons[button];
     }
 
     public boolean getTriggerPressed() {
-        return buttons[1];
+        return mButtons[1];
     }
 }

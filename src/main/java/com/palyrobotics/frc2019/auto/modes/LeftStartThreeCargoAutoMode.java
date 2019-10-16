@@ -47,7 +47,7 @@ public class LeftStartThreeCargoAutoMode extends AutoModeBase {
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new RezeroSubAutoMode().Rezero(false), placeCargoStart(), placeCargo(1), takeCargo(1), placeCargo(2));
+        return new SequentialRoutine(new ReZeroSubAutoMode().ReZero(false), placeCargoStart(), placeCargo(1), takeCargo(1), placeCargo(2));
     }
 
     public Routine placeCargoStart() { //start to cargo ship front

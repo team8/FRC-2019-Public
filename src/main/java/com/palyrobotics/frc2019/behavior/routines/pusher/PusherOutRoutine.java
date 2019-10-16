@@ -6,19 +6,17 @@ import com.palyrobotics.frc2019.subsystems.Pusher;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class PusherOutRoutine extends Routine {
-    private boolean alreadyRan;
+    private boolean mAlreadyRan;
 
     @Override
     public void start() {
-        alreadyRan = false;
+        mAlreadyRan = false;
     }
 
     @Override
     public Commands update(Commands commands) {
-//        if(robotState.hasPusherCargo) {
-            commands.wantedPusherInOutState = Pusher.PusherState.OUT;
-//        }
-        alreadyRan = true;
+        commands.wantedPusherInOutState = Pusher.PusherState.OUT;
+        mAlreadyRan = true;
         return commands;
     }
 
@@ -29,16 +27,16 @@ public class PusherOutRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return alreadyRan;
+        return mAlreadyRan;
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mPusher};
+        return new Subsystem[]{mPusher};
     }
 
     @Override
     public String getName() {
-        return "PusherOutRoutine";
+        return "Pusher Out Routine";
     }
 }

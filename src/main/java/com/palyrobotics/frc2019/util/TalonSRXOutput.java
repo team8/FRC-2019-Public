@@ -1,7 +1,7 @@
 package com.palyrobotics.frc2019.util;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.util.control.Gains;
 
 import java.util.Objects;
 

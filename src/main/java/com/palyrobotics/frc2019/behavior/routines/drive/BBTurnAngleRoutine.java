@@ -22,7 +22,7 @@ public class BBTurnAngleRoutine extends Routine {
     }
 
     public BBTurnAngleRoutine(double angle) {
-        this.mAngle = angle;
+        mAngle = angle;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class BBTurnAngleRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "BangBangGyroTurnAngleRoutine";
+        return "Bang Bang Gyro Turn Angle Routine";
     }
 
 }

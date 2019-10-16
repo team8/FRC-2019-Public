@@ -24,7 +24,6 @@ public class MathUtil {
         return Math.min(maximum, Math.max(minimum, value));
     }
 
-
     /**
      * Get the difference in angle between two angles.
      *
@@ -48,7 +47,7 @@ public class MathUtil {
     }
 
     public static double boundAngle0to360Degrees(double angle) {
-        //Naive algorithm
+        // Naive algorithm
         while (angle >= 360.0) {
             angle -= 360.0;
         }

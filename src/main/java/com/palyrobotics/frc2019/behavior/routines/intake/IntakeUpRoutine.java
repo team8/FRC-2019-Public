@@ -6,17 +6,17 @@ import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class IntakeUpRoutine extends Routine {
-    private boolean alreadyRan;
+    private boolean mAlreadyRan;
 
     @Override
     public void start() {
-        alreadyRan = false;
+        mAlreadyRan = false;
     }
 
     @Override
     public Commands update(Commands commands) {
         commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_MID;
-        alreadyRan = true;
+        mAlreadyRan = true;
         return commands;
     }
 
@@ -27,7 +27,7 @@ public class IntakeUpRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return alreadyRan;
+        return mAlreadyRan;
     }
 
     @Override
@@ -37,6 +37,6 @@ public class IntakeUpRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "IntakeUpRoutine";
+        return "Intake Up Routine";
     }
 }

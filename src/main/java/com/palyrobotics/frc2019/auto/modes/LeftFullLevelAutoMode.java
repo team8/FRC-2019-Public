@@ -68,7 +68,7 @@ public class LeftFullLevelAutoMode extends AutoModeBase {
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new RezeroSubAutoMode().Rezero(true), placeHatchClose(), takeHatch(), placeHatchFar(), takeCargo(), placeCargoMid());
+        return new SequentialRoutine(new ReZeroSubAutoMode().ReZero(true), placeHatchClose(), takeHatch(), placeHatchFar(), takeCargo(), placeCargoMid());
     }
 
     public Routine placeHatchClose() { //start to rocket ship close

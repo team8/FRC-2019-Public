@@ -7,34 +7,27 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class FingersCycleRoutine extends Routine {
 
-    private Fingers.FingersState wantedFingersOpenCloseState;
-
-    private boolean alreadyRan;
-    private double timeout;
-    private double startTime;
-
-    private final double timeToShoot = 50;
+    private boolean mAlreadyRan;
+    private double mTimeout, mStartTime;
 
     public FingersCycleRoutine(double timeout) {
-        this.timeout = timeout * 1000;
+        this.mTimeout = timeout * 1000;
     }
 
     @Override
     public void start() {
-        startTime = System.currentTimeMillis();
-        alreadyRan = false;
+        mStartTime = System.currentTimeMillis();
+        mAlreadyRan = false;
     }
 
     @Override
     public Commands update(Commands commands) {
         commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
         commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
-
-
-        if(System.currentTimeMillis() > this.timeout + startTime) {
+        if (System.currentTimeMillis() > mTimeout + mStartTime) {
             commands.wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
             commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
-            alreadyRan = true;
+            mAlreadyRan = true;
         }
         return commands;
     }
@@ -46,16 +39,16 @@ public class FingersCycleRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return alreadyRan;
+        return mAlreadyRan;
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mFingers};
+        return new Subsystem[]{mFingers};
     }
 
     @Override
     public String getName() {
-        return "FingersCloseRoutine";
+        return "Fingers Close Routine";
     }
 }

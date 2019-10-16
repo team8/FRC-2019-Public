@@ -1,8 +1,6 @@
-package com.palyrobotics.frc2019.util.controllers;
+package com.palyrobotics.frc2019.util.control;
 
-import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotConfig;
-import com.palyrobotics.frc2019.config.SmartGains;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANPIDController.ArbFFUnits;

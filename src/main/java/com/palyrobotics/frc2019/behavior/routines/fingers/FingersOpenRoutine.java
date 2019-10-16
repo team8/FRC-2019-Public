@@ -5,9 +5,7 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
-public class FingersOpenRoutine  extends Routine {
-
-    private Fingers.FingersState wantedFingersOpenCloseState;
+public class FingersOpenRoutine extends Routine {
 
     private boolean alreadyRan;
 
@@ -35,11 +33,11 @@ public class FingersOpenRoutine  extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mFingers};
+        return new Subsystem[]{mFingers};
     }
 
     @Override
     public String getName() {
-        return "FingersOpenRoutine";
+        return "Fingers Open Routine";
     }
 }

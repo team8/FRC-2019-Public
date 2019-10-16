@@ -1,8 +1,13 @@
 package com.palyrobotics.frc2019.util;
 
 public class XboxInput extends JoystickInput {
-    public double leftX, leftY, rightX, rightY, leftTrigger, rightTrigger;
-    public boolean leftTriggerPressed, rightTriggerPressed, buttonA, buttonB, buttonX, buttonY, buttonStart, buttonBack, dPadUp, dPadRight, dPadDown, dPadLeft, rightBumper, leftBumper;
+    private double leftX;
+    private double leftY;
+    private double rightX;
+    private double rightY;
+    public double leftTrigger;
+    private double rightTrigger;
+    private boolean leftTriggerPressed, rightTriggerPressed, buttonA, buttonB, buttonX, buttonY, buttonStart, buttonBack, dPadUp, dPadRight, dPadDown, dPadLeft, rightBumper, leftBumper;
 
     public void update(XboxController x) {
         this.leftX = x.getLeftX();
@@ -83,19 +88,19 @@ public class XboxInput extends JoystickInput {
         return buttonBack;
     }
 
-    public boolean getdPadUp() {
+    public boolean getDPadUp() {
         return dPadUp;
     }
 
-    public boolean getdPadRight() {
+    public boolean getDPadRight() {
         return dPadRight;
     }
 
-    public boolean getdPadDown() {
+    public boolean getDPadDown() {
         return dPadDown;
     }
 
-    public boolean getdPadLeft() {
+    public boolean getDPadLeft() {
         return dPadLeft;
     }
 
@@ -106,6 +111,4 @@ public class XboxInput extends JoystickInput {
     public boolean getLeftBumper() {
         return leftBumper;
     }
-
-
 }

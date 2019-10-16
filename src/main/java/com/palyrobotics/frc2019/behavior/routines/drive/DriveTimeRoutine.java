@@ -54,7 +54,7 @@ public class DriveTimeRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "DriveTimeRoutine";
+        return "Drive Time Routine";
     }
 
     @Override

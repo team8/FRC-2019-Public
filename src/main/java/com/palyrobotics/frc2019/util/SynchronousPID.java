@@ -1,6 +1,6 @@
 package com.palyrobotics.frc2019.util;
 
-import com.palyrobotics.frc2019.config.Gains;
+import com.palyrobotics.frc2019.util.control.Gains;
 
 /**
  * Class implements a PID Control SubsystemLoop.

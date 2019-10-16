@@ -14,7 +14,7 @@ import com.palyrobotics.frc2019.behavior.routines.waits.WaitForElevatorCanMove;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.ElevatorConfig;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.subsystems.Intake.IntakeMacroState;
@@ -187,17 +187,17 @@ public class OperatorInterface {
         /*
          * Cargo Intake Control
          */
-        if (mOperatorXboxController.getdPadDown()) {
+        if (mOperatorXboxController.getDPadDown()) {
             commands.cancelCurrentRoutines = false;
             // newCommands.wantedIntakeState = Intake.IntakeMacroState.DOWN;
             commands.addWantedRoutine(new IntakeBeginCycleRoutine());
-        } else if (mOperatorXboxController.getdPadUp()) {
+        } else if (mOperatorXboxController.getDPadUp()) {
             commands.cancelCurrentRoutines = false;
             commands.addWantedRoutine(new IntakeUpRoutine());
-        } else if (mOperatorXboxController.getdPadRight()) {
+        } else if (mOperatorXboxController.getDPadRight()) {
             commands.cancelCurrentRoutines = false;
             commands.addWantedRoutine(new IntakeLevelOneRocketRoutine());
-        } else if (mOperatorXboxController.getdPadLeft()) {
+        } else if (mOperatorXboxController.getDPadLeft()) {
             commands.cancelCurrentRoutines = false;
             commands.wantedIntakeState = Intake.IntakeMacroState.STOWED;
         }

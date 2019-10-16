@@ -64,7 +64,7 @@ public class prank extends AutoModeBase {
 
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(new RezeroSubAutoMode().getRoutine(), placeHatchClose1(), takeHatch(), placeHatchClose2());
+        return new SequentialRoutine(new ReZeroSubAutoMode().getRoutine(), placeHatchClose1(), takeHatch(), placeHatchClose2());
     }
 
     public Routine placeHatchClose1() { //start to rocket ship close

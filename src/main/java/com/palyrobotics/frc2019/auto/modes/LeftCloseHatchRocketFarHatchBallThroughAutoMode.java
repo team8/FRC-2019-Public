@@ -15,7 +15,7 @@ import com.palyrobotics.frc2019.behavior.routines.pusher.PusherOutRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import com.palyrobotics.frc2019.behavior.routines.waits.WaitForCargoElevator;
 import com.palyrobotics.frc2019.config.Constants.PhysicalConstants;
-import com.palyrobotics.frc2019.config.ElevatorConfig;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.trajectory.Path;
