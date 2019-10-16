@@ -49,7 +49,7 @@ public class Pusher extends Subsystem {
         mState = commands.wantedPusherInOutState;
         switch (mState) {
             case START:
-                mOutput.setTargetPosition(mConfig.distanceIn);
+                mOutput.setTargetPosition(mConfig.distanceIn, mConfig.positionGains);
                 break;
             case IN:
                 if (mConfig.useSlam) {
@@ -71,11 +71,11 @@ public class Pusher extends Subsystem {
                         mOutput.setPercentOutput(-0.28);
                     }
                 } else {
-                    mOutput.setTargetPosition(mConfig.distanceIn);
+                    mOutput.setTargetPosition(mConfig.distanceIn, mConfig.positionGains);
                 }
                 break;
             case OUT:
-                mOutput.setTargetPosition(mConfig.distanceOut);
+                mOutput.setTargetPosition(mConfig.distanceOut, mConfig.positionGains);
                 mIsFirstTickForSlamResetEncoder = true;
                 mSlamStartTimeMs = null;
                 break;

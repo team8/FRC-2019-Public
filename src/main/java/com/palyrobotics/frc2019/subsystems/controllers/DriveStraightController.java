@@ -27,7 +27,7 @@ public class DriveStraightController implements DriveController {
 		mGains = new Gains(0.00035, 0.000004, 0.002, 0, 200, 0);
 		kTolerance = DrivetrainConstants.kAcceptableDrivePositionError;
 		forwardPID = new SynchronousPID(mGains.p, mGains.i, mGains.d, mGains.iZone);
-		headingPID = new SynchronousPID(Gains.kVidarDriveStraightTurnkP, 0, 0.005);
+		headingPID = new SynchronousPID(Gains.kVidarDriveStraightTurnP, 0, 0.005);
 		forwardPID.setOutputRange(-1, 1);
 		headingPID.setOutputRange(-0.2, 0.2);
 		forwardPID.setSetPoint(mTarget);

@@ -2,7 +2,6 @@ package com.palyrobotics.frc2019.subsystems.controllers;
 
 import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.DriveConfig;
-import com.palyrobotics.frc2019.config.Gains;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.Drive.DriveController;
 import com.palyrobotics.frc2019.util.Pose;
@@ -16,7 +15,8 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
 
     private SparkDriveSignal mOutput = new SparkDriveSignal();
 
-    private SynchronousPID mPidController = new SynchronousPID(Configs.get(DriveConfig.class).cascadingTurnGains);
+    private DriveConfig mDriveConfig = Configs.get(DriveConfig.class);
+    private SynchronousPID mPidController = new SynchronousPID(mDriveConfig.cascadingTurnGains);
 
     public CascadingGyroEncoderTurnAngleController(Pose lastSetPoint, double angle) {
         mPidController.setSetPoint(lastSetPoint.heading + angle);
@@ -31,8 +31,8 @@ public class CascadingGyroEncoderTurnAngleController implements DriveController 
             mOutput.rightOutput.setIdle();
         } else {
             double targetVelocity = mPidController.calculate(mCachedPose.heading);
-            mOutput.leftOutput.setTargetVelocity(-targetVelocity);
-            mOutput.rightOutput.setTargetVelocity(targetVelocity);
+            mOutput.leftOutput.setTargetVelocity(-targetVelocity, mDriveConfig.cascadingTurnGains);
+            mOutput.rightOutput.setTargetVelocity(targetVelocity, mDriveConfig.cascadingTurnGains);
         }
         return mOutput;
     }

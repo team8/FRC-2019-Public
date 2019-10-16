@@ -4,10 +4,10 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.Constants.OtherConstants;
 import com.palyrobotics.frc2019.config.IntakeConfig;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Intake extends Subsystem {
 
@@ -37,7 +37,6 @@ public class Intake extends Subsystem {
     }
 
     private enum UpDownState {
-        CLIMBING,
         MANUAL,
         CUSTOM_ANGLE,
         ZERO_VELOCITY,
@@ -56,7 +55,6 @@ public class Intake extends Subsystem {
         INTAKING_ROCKET,
         EXPELLING_ROCKET,
         EXPELLING_CARGO,
-        CLIMBING,
         HOLDING,
         IDLE
     }
@@ -65,8 +63,8 @@ public class Intake extends Subsystem {
     private UpDownState mUpDownState;
     private IntakeMacroState mMacroState;
 
-    private final static double requiredMSCancel = 100;
-    private double mLastIntakeQueueTime = 0;
+    private final static double kRequiredCancelSeconds = 0.1;
+    private double mLastIntakeQueueTime;
 
     protected Intake() {
         super("intake");
@@ -85,18 +83,9 @@ public class Intake extends Subsystem {
         // The intake macro state has eight possible states.  Any state can be transferred to automatically or manually,
         // but some states need to set auxiliary variables, such as the queue times.
 
-        // if (commands.wantedIntakeState == IntakeMacroState.CLIMBING && mMacroState != IntakeMacroState.CLIMBING) {
-        //     HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getPIDController().setOutputRange(-1.0,1.0);
-        //     HardwareAdapter.getInstance().getIntake().intakeSlaveSpark.getPIDController().setOutputRange(-1.0,1.0);
-        // }
-        // else if (commands.wantedIntakeState != IntakeMacroState.CLIMBING && mMacroState == IntakeMacroState.CLIMBING) {
-        //     HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getPIDController().setOutputRange(-.75,.75);
-        //     HardwareAdapter.getInstance().getIntake().intakeSlaveSpark.getPIDController().setOutputRange(-.75,.75);
-        // }
-
         if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID && mMacroState == IntakeMacroState.GROUND_INTAKING) {
             // note: this needs to be nested so that the if/else can be exited
-            if (mLastIntakeQueueTime + requiredMSCancel < System.currentTimeMillis()) {
+            if (mLastIntakeQueueTime + kRequiredCancelSeconds < Timer.getFPGATimestamp()) {
                 // move the intake back up from the ground
                 mMacroState = IntakeMacroState.HOLDING_MID;
             }
@@ -105,7 +94,7 @@ public class Intake extends Subsystem {
             commands.wantedIntakeState = IntakeMacroState.LIFTING;
         } else if (commands.wantedIntakeState == IntakeMacroState.GROUND_INTAKING && mMacroState != IntakeMacroState.LIFTING) {
             mMacroState = IntakeMacroState.GROUND_INTAKING;
-            mLastIntakeQueueTime = System.currentTimeMillis();
+            mLastIntakeQueueTime = Timer.getFPGATimestamp();
         } else if (mMacroState == IntakeMacroState.LIFTING && intakeOnTarget()) {
             mMacroState = IntakeMacroState.DROPPING;
             commands.wantedIntakeState = IntakeMacroState.DROPPING;
@@ -136,7 +125,7 @@ public class Intake extends Subsystem {
             case STOWED:
                 mWheelState = WheelState.IDLE;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
-                mIntakeWantedAngle = mConfig.maxAngle - ((1.0 + 2.0)/2.0);
+                mIntakeWantedAngle = mConfig.maxAngle - ((1.0 + 2.0) / 2.0);
                 break;
             case GROUND_INTAKING:
                 mWheelState = WheelState.INTAKING;
@@ -174,11 +163,6 @@ public class Intake extends Subsystem {
                 mWheelState = WheelState.EXPELLING;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.rocketExpelAngle;
-                break;
-            case CLIMBING:
-                mWheelState = WheelState.IDLE;
-                mUpDownState = UpDownState.CUSTOM_ANGLE;
-                mIntakeWantedAngle = mConfig.climbAngle;
                 break;
             case DOWN:
                 mWheelState = WheelState.IDLE;
@@ -218,16 +202,13 @@ public class Intake extends Subsystem {
                 break;
             default:
             case IDLE:
-                mTalonOutput = 0;
+                mTalonOutput = 0.0;
                 break;
         }
 
 //        System.out.println(mMacroState);
 
         switch (mUpDownState) {
-            case MANUAL:
-                mOutput.setIdle(); //TODO: Fix this based on what control method wanted
-                break;
             case CUSTOM_ANGLE:
 //                boolean
 //                        inClosedLoopZone = mRobotState.intakeAngle >= IntakeConstants.kLowestAngle && mRobotState.intakeAngle <= IntakeConstants.kHighestAngle,
@@ -237,10 +218,10 @@ public class Intake extends Subsystem {
 //                } else {
 //                    mSparkOutput.setIdle();
 //                }
-                mOutput.setTargetPositionSmartMotion(mIntakeWantedAngle, arbitraryDemand);
+                mOutput.setTargetPositionSmartMotion(mIntakeWantedAngle, arbitraryDemand, mConfig.gains);
                 break;
             case ZERO_VELOCITY:
-                mOutput.setTargetSmartVelocity(0.0, arbitraryDemand);
+                mOutput.setTargetSmartVelocity(0.0, arbitraryDemand, mConfig.holdGains);
             default:
             case IDLE:
                 mIntakeWantedAngle = null;

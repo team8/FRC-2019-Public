@@ -15,7 +15,6 @@
     "holdAngle": 59.0,
     "handOffAngle": 116.0,
     "rocketExpelAngle": 84.0,
-    "climbAngle": -30.0,
     "holdTolerance": 14.5,
     "acceptableAngularError": 3.0,
     "angularVelocityError": 10.0,

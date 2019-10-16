@@ -78,10 +78,8 @@ public class Commands {
         public SparkDriveSignal drivePowerSetPoint;
         public Double
                 elevatorPositionSetPoint,
-                climberPositionSetPoint,
                 pusherPositionSetPoint,
-                intakePositionSetPoint,
-                climbRateSetPoint;
+                intakePositionSetPoint;
 
         /**
          * Resets all the set points
@@ -89,10 +87,8 @@ public class Commands {
         public void reset() {
             drivePowerSetPoint = null;
             elevatorPositionSetPoint = null;
-            climberPositionSetPoint = null;
             pusherPositionSetPoint = null;
             intakePositionSetPoint = null;
-            climbRateSetPoint = null;
         }
     }
 
@@ -126,10 +122,8 @@ public class Commands {
         // Copy optionals that are present
         other.robotSetPoints.drivePowerSetPoint = robotSetPoints.drivePowerSetPoint;
         other.robotSetPoints.elevatorPositionSetPoint = robotSetPoints.elevatorPositionSetPoint;
-        other.robotSetPoints.climberPositionSetPoint = robotSetPoints.climberPositionSetPoint;
         other.robotSetPoints.intakePositionSetPoint = robotSetPoints.intakePositionSetPoint;
         other.robotSetPoints.pusherPositionSetPoint = robotSetPoints.pusherPositionSetPoint;
-        other.robotSetPoints.climbRateSetPoint = robotSetPoints.climbRateSetPoint;
     }
 
     @Override

@@ -76,7 +76,7 @@ public class Elevator extends Subsystem {
                         useClosedLoopOutOfRange = currentTimeMs - mLastTimeWhenInClosedLoopMs < mConfig.outOfClosedLoopZoneIdleDelayMs;
                 if (inClosedLoopZone) mLastTimeWhenInClosedLoopMs = currentTimeMs;
                 if (inClosedLoopZone || wantedPositionInClosedLoopZone || useClosedLoopOutOfRange) {
-                    mOutput.setTargetPositionSmartMotion(mElevatorWantedPosition, mConfig.feedForward);
+                    mOutput.setTargetPositionSmartMotion(mElevatorWantedPosition, mConfig.feedForward, mConfig.gains);
                 } else {
                     mOutput.setIdle();
                 }

@@ -1,8 +1,6 @@
 package com.palyrobotics.frc2019.config.dashboard;
 
 import com.palyrobotics.frc2019.util.service.RobotService;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LiveGraph implements RobotService {
 

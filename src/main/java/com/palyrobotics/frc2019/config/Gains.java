@@ -1,47 +1,39 @@
 package com.palyrobotics.frc2019.config;
 
-import com.palyrobotics.frc2019.util.trajectory.Trajectory;
-
 import java.util.Objects;
 
 public class Gains {
 
     // region Gains
 
-    // Use these for off-board following
-    private static final double kVidarDriveVelocitykP = .01;
-    private static final double kVidarDriveVelocitykI = 0;
-    private static final double kVidarDriveVelocitykD = .005;
-    private static final double kVidarDriveVelocitykF = 0;
-    private static final int kVidarDriveVelocitykIzone = 0;
-    private static final double kVidarDriveVelocitykRampRate = 0.0;
-    public static final Gains vidarVelocity = new Gains(kVidarDriveVelocitykP, kVidarDriveVelocitykI, kVidarDriveVelocitykD, kVidarDriveVelocitykF,
-            kVidarDriveVelocitykIzone, kVidarDriveVelocitykRampRate);
+    // Drive Distance PID control loop
+    public static final double kVidarDriveStraightTurnP = -0.06;
+    private static final double kVidarDriveDistanceP = 0.5;
+    private static final double kVidarDriveDistanceI = 0.0025;
+    private static final double kVidarDriveDistanceD = 12.0;
+    private static final int kVidarDriveDistanceIZone = 125;
+    private static final double kVidarDriveDistanceRampRate = 0.0;
+    public static final Gains vidarDriveDistance = new Gains(
+            kVidarDriveDistanceP, kVidarDriveDistanceI, kVidarDriveDistanceD, 0,
+            kVidarDriveDistanceIZone, kVidarDriveDistanceRampRate
+    );
 
-    //Drive Distance PID control loop
-    public static final double kVidarDriveStraightTurnkP = -0.06;
-    private static final double kVidarDriveDistancekP = 0.5;
-    private static final double kVidarDriveDistancekI = 0.0025;
-    private static final double kVidarDriveDistancekD = 12.0;
-    private static final int kVidarDriveDistancekIzone = 125;
-    private static final double kVidarDriveDistancekRampRate = 0.0;
-    public static final Gains vidarDriveDistance = new Gains(kVidarDriveDistancekP, kVidarDriveDistancekI, kVidarDriveDistancekD, 0,
-            kVidarDriveDistancekIzone, kVidarDriveDistancekRampRate);
-
-    //Drive Motion Magic off-board control loop
-    //Short distance max speed 45 in/s Max accel 95 in/s^2
+    // Drive Motion Magic off-board control loop
+    // Short distance max speed 45 in/s Max acceleration 95 in/s^2
     public static final double kVidarShortDriveMotionMagicCruiseVelocity = 60;
     public static final double kVidarShortDriveMotionMagicMaxAcceleration = 120;
-    private static final double kVidarShortDriveMotionMagickP = .5;
-    private static final double kVidarShortDriveMotionMagickI = 0; //0.00040 / 2;
-    private static final double kVidarShortDriveMotionMagickD = 0; //275 / 2;
-    private static final double kVidarShortDriveMotionMagickF = .1821; //2.075 / 2;
-    private static final int kVidarShortDriveMotionMagickIzone = 0; //150 / 2;
-    private static final double kVidarShortDriveMotionMagickRampRate = 0.0;
-    public static final Gains vidarShortDriveMotionMagicGains = new Gains(kVidarShortDriveMotionMagickP, kVidarShortDriveMotionMagickI,
-            kVidarShortDriveMotionMagickD, kVidarShortDriveMotionMagickF, kVidarShortDriveMotionMagickIzone, kVidarShortDriveMotionMagickRampRate);
+    private static final double kVidarShortDriveMotionMagicP = .5;
+    private static final double kVidarShortDriveMotionMagicI = 0; //0.00040 / 2;
+    private static final double kVidarShortDriveMotionMagicD = 0; //275 / 2;
+    private static final double kVidarShortDriveMotionMagicF = .1821; //2.075 / 2;
+    private static final int kVidarShortDriveMotionMagicIZone = 0; //150 / 2;
+    private static final double kVidarShortDriveMotionMagicRampRate = 0.0;
+    public static final Gains vidarShortDriveMotionMagicGains = new Gains(
+            kVidarShortDriveMotionMagicP, kVidarShortDriveMotionMagicI,
+            kVidarShortDriveMotionMagicD, kVidarShortDriveMotionMagicF, kVidarShortDriveMotionMagicIZone, kVidarShortDriveMotionMagicRampRate
+    );
 
-    //Drive Motion Magic turn angle gains
+    // Drive Motion Magic turn angle gains
     public static final double kVidarTurnMotionMagicCruiseVelocity = 72;
     public static final double kVidarTurnMotionMagicMaxAcceleration = 36;
     private static final double kVidarTurnMotionMagickP = 6.0;
@@ -50,8 +42,10 @@ public class Gains {
     private static final double kVidarTurnMotionMagickF = 2.0;
     private static final int kVidarTurnMotionMagickIzone = 50;
     private static final double kVidarTurnMotionMagickRampRate = 0.0;
-    public static final Gains vidarTurnMotionMagicGains = new Gains(kVidarTurnMotionMagickP, kVidarTurnMotionMagickI, kVidarTurnMotionMagickD,
-            kVidarTurnMotionMagickF, kVidarTurnMotionMagickIzone, kVidarTurnMotionMagickRampRate);
+    public static final Gains vidarTurnMotionMagicGains = new Gains(
+            kVidarTurnMotionMagickP, kVidarTurnMotionMagickI, kVidarTurnMotionMagickD,
+            kVidarTurnMotionMagickF, kVidarTurnMotionMagickIzone, kVidarTurnMotionMagickRampRate
+    );
 
     private static final double
             kVidarIntakePositionP = 0.27, // 0.3;
@@ -78,20 +72,6 @@ public class Gains {
     );
 
     //endregion
-
-    public static class TrajectoryGains {
-
-        public double v, a, s, p, i, d;
-
-        public TrajectoryGains() {
-
-        }
-
-        @Override
-        public String toString() { // Auto-generated
-            return String.format("TrajectoryGains{v=%f, a=%f, s=%f, p=%f, i=%f, d=%f}", v, a, s, p, i, d);
-        }
-    }
 
     public double p, i, d, f, rampRate, iZone;
 

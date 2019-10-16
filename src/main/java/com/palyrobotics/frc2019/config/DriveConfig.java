@@ -10,7 +10,7 @@ public class DriveConfig extends AbstractSubsystemConfig {
     // kV ~ 1.1 times theoretical, kA ~ 1.4 times theoretical, kS ~ 1.3V = .11
     // presentation has a typo for kA, should be wheel radius because T = Fr
 
-    public Gains.TrajectoryGains trajectoryGains;
+    public TrajectoryGains trajectoryGains;
 
-    public Gains cascadingTurnGains = new Gains(65, 0, 5, 0, 0, 0);
+    public Gains cascadingTurnGains, velocityGains;
 }

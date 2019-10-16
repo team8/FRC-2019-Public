@@ -23,7 +23,13 @@ import java.util.List;
 public class HardwareAdapter {
 
     private static final PortConstants sPortConstants = Configs.get(PortConstants.class);
-    //Hardware components at the top for maintenance purposes, variables and getters at bottom
+    // Hardware components at the top for maintenance purposes, variables and getters at bottom
+
+    private static final HardwareAdapter sInstance = new HardwareAdapter();
+
+    public static HardwareAdapter getInstance() {
+        return sInstance;
+    }
 
     /**
      * DRIVETRAIN - 6 CANSparkMax, 1 Gyro
@@ -65,7 +71,7 @@ public class HardwareAdapter {
     /**
      * Elevator - 2 CANSparkMax, 1 Encoder, 1 DoubleSolenoid
      */
-    public static class ElevatorHardware {
+    static class ElevatorHardware {
         private static ElevatorHardware sInstance = new ElevatorHardware();
 
         private static ElevatorHardware getInstance() {
@@ -287,11 +293,5 @@ public class HardwareAdapter {
 
     MiscellaneousHardware getMiscellaneousHardware() {
         return MiscellaneousHardware.getInstance();
-    }
-
-    private static final HardwareAdapter sInstance = new HardwareAdapter();
-
-    public static HardwareAdapter getInstance() {
-        return sInstance;
     }
 }

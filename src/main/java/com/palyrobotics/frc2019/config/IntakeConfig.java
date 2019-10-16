@@ -29,8 +29,7 @@ public class IntakeConfig extends AbstractSubsystemConfig {
             intakeAngle, // Degrees relatively to the plane of the field.
             holdAngle, // Same relative angle as above
             handOffAngle, // Place where the drop to the elevator occurs
-            rocketExpelAngle,
-            climbAngle;
+            rocketExpelAngle;
 
     public double holdTolerance; // Number of degrees of tolerance on arm hold to move elevator
 

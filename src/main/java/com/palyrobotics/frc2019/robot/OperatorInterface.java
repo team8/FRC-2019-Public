@@ -30,6 +30,7 @@ import com.palyrobotics.frc2019.util.XboxInput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Used to produce Commands {@link Commands} from human input Singleton class. Should only be used in robot package.
@@ -46,23 +47,21 @@ public class OperatorInterface {
 
     private final Limelight mLimelight = Limelight.getInstance();
 
-    private JoystickInput
+    private final JoystickInput
             mDriveStick = Robot.getRobotState().leftStickInput,
             mTurnStick = Robot.getRobotState().rightStickInput;
-//    private JoystickInput mClimbStick = Robot.getRobotState().backupStickInput;
-    private XboxInput mOperatorXboxController;
+    private final XboxInput mOperatorXboxController = Robot.getRobotState().operatorXboxControllerInput;
 
 //    public static boolean demandIntakeUp = true; // force intake to come up
 //    public static boolean intakeRunning = false; // force intake to come up
-    private static double
-            intakeStartTime, // force intake to come up
+    private double
+        mIntakeStartTime, // force intake to come up
             lastCancelTime;
 
     // Timestamp when a vision routine was last activated; helps us know when to turn LEDs off
-    private static double visionStartTimeMs;
+    private double mVisionStartTimeSeconds;
 
     private OperatorInterface() {
-        mOperatorXboxController = Robot.getRobotState().operatorXboxControllerInput;
     }
 
     /**
@@ -105,7 +104,7 @@ public class OperatorInterface {
         }
 
         if (mTurnStick.getButtonPressed(3)) {
-            visionStartTimeMs = System.currentTimeMillis();
+            mVisionStartTimeSeconds = Timer.getFPGATimestamp();
             // Limelight vision tracking on
             if (mLimelight.getCamMode() != LimelightControlMode.CamMode.VISION) {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.VISION);
@@ -117,14 +116,14 @@ public class OperatorInterface {
             if (!mTurnStick.getButtonPressed(4)) {
                 RobotState.getInstance().atVisionTargetThreshold = false;
             }
-            if (System.currentTimeMillis() - visionStartTimeMs > OtherConstants.kVisionLEDTimeoutMillis) {
+            if (Timer.getFPGATimestamp() - mVisionStartTimeSeconds > OtherConstants.kVisionLEDTimeoutMillis) {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off
                 mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
             }
         }
 
         if (mTurnStick.getButtonPressed(4)) {
-            visionStartTimeMs = System.currentTimeMillis();
+            mVisionStartTimeSeconds = Timer.getFPGATimestamp();
             // Limelight vision tracking on
             if (mLimelight.getCamMode() != LimelightControlMode.CamMode.VISION) {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.VISION);
@@ -136,7 +135,7 @@ public class OperatorInterface {
             if (!mTurnStick.getButtonPressed(3)) {
                 RobotState.getInstance().atVisionTargetThreshold = false;
             }
-            if (System.currentTimeMillis() - visionStartTimeMs > OtherConstants.kVisionLEDTimeoutMillis) {
+            if (Timer.getFPGATimestamp() - mVisionStartTimeSeconds > OtherConstants.kVisionLEDTimeoutMillis) {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off
                 mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
             }
@@ -156,7 +155,7 @@ public class OperatorInterface {
 //		}
 
         if (mOperatorXboxController.getButtonX() && commands.wantedShovelUpDownState == Shovel.UpDownState.UP && (lastCancelTime + 200) < System.currentTimeMillis()) {
-            intakeStartTime = System.currentTimeMillis();
+            mIntakeStartTime = System.currentTimeMillis();
             commands.addWantedRoutine(new SequentialRoutine(new ShovelDownRoutine(),
                     new FingersCloseRoutine(),
                     new PusherInRoutine(),
@@ -164,8 +163,8 @@ public class OperatorInterface {
                     new ShovelUpRoutine(),
                     new WaitForHatchIntakeUp(),
                     new FingersOpenRoutine()));
-        } else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 450 > OperatorInterface.intakeStartTime) && commands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
-            intakeStartTime = System.currentTimeMillis();
+        } else if (mOperatorXboxController.getButtonX() && (System.currentTimeMillis() - 450 > mIntakeStartTime) && commands.wantedShovelUpDownState == Shovel.UpDownState.DOWN) {
+            mIntakeStartTime = System.currentTimeMillis();
             commands.cancelCurrentRoutines = true;
             commands.wantedShovelUpDownState = Shovel.UpDownState.UP;
             lastCancelTime = System.currentTimeMillis();
@@ -234,16 +233,6 @@ public class OperatorInterface {
         } else if (!mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == IntakeMacroState.INTAKING_ROCKET) {
             commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_ROCKET;
         }
-
-//		/*
-//		 * Climber Control
-//		 */
-//		if(mClimbStick.getButtonPressed(6)) {
-//			newCommands.wantedClimberState = Elevator.ClimberState.ON_MANUAL;
-//		}
-//		else {
-//			newCommands.wantedClimberState = Elevator.ClimberState.IDLE;
-//		}
 
         /*
          * Pusher Control

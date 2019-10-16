@@ -4,12 +4,10 @@ import java.util.Objects;
 
 public class SmartGains extends Gains {
 
-    public static final SmartGains emptyGains = new SmartGains();
-
     public double acceleration, velocity, allowableError, minimumOutputVelocity;
 
-    private SmartGains() {
-        super();
+    public SmartGains() {
+
     }
 
     public SmartGains(double p, double i, double d, double f, int iZone, double rampRate, double acceleration, double velocity) {

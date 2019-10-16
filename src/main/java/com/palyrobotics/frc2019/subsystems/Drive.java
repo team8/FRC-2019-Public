@@ -17,10 +17,10 @@ import com.palyrobotics.frc2019.util.trajectory.Path;
  * @author Not Nihar
  */
 public class Drive extends Subsystem {
-    private static Drive instance = new Drive();
+    private static Drive sInstance = new Drive();
 
     public static Drive getInstance() {
-        return instance;
+        return sInstance;
     }
 
     /**
@@ -54,7 +54,7 @@ public class Drive extends Subsystem {
 //    private final double kTurnSlipFactor; //Measure empirically
 
     // Cache poses to not be allocating at 200Hz
-    private Pose mCachedPose = new Pose();
+    private Pose mPose = new Pose();
     private RobotState mRobotState;
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
@@ -117,7 +117,7 @@ public class Drive extends Subsystem {
     @Override
     public void update(Commands commands, RobotState state) {
         mRobotState = state;
-        state.drivePose.copyTo(mCachedPose);
+        state.drivePose.copyTo(mPose);
         boolean mIsNewState = mState != commands.wantedDriveState;
         mState = commands.wantedDriveState;
         switch (mState) {
@@ -184,12 +184,12 @@ public class Drive extends Subsystem {
     }
 
     public void setVisionAngleSetPoint() {
-        mController = new VisionTurnAngleController(mCachedPose);
+        mController = new VisionTurnAngleController(mPose);
         newController = true;
     }
 
     public void setTurnAngleSetPoint(double heading) {
-        mController = new BangBangTurnAngleController(mCachedPose, heading);
+        mController = new BangBangTurnAngleController(mPose, heading);
         newController = true;
     }
 
@@ -222,12 +222,12 @@ public class Drive extends Subsystem {
     }
 
     public void setDriveStraight(double distance) {
-        mController = new DriveStraightController(mCachedPose, distance);
+        mController = new DriveStraightController(mPose, distance);
         newController = true;
     }
 
     public void setCascadingGyroEncoderTurnAngleController(double angle) {
-        mController = new CascadingGyroEncoderTurnAngleController(mCachedPose, angle);
+        mController = new CascadingGyroEncoderTurnAngleController(mPose, angle);
         newController = true;
     }
 
@@ -253,7 +253,7 @@ public class Drive extends Subsystem {
         //If drivetrain has not had first update yet, return initial robot pose of 0,0,0,0,0,0
         return mRobotState == null
                 ? new Pose()
-                : mCachedPose;
+                : mPose;
     }
 
     public Drive.DriveController getController() {
@@ -283,6 +283,6 @@ public class Drive extends Subsystem {
 
     @Override
     public String getStatus() {
-        return String.format("Drive State: %s%nOutput Control Mode: %s%nLeft Set Point: %s%nRight Set Point: %s%nLeft Position: %s%nRight Position: %s%nGyro: %s%n", mState, mSignal.leftOutput.getControlType(), mSignal.leftOutput.getReference(), mSignal.rightOutput.getReference(), mCachedPose.leftEncoderPosition, mCachedPose.rightEncoderPosition, mCachedPose.heading);
+        return String.format("Drive State: %s%nOutput Control Mode: %s%nLeft Set Point: %s%nRight Set Point: %s%nLeft Position: %s%nRight Position: %s%nGyro: %s%n", mState, mSignal.leftOutput.getControlType(), mSignal.leftOutput.getReference(), mSignal.rightOutput.getReference(), mPose.leftEncoderPosition, mPose.rightEncoderPosition, mPose.heading);
     }
 }
