@@ -74,12 +74,6 @@ public class ParallelRoutine extends Routine {
         return RoutineManager.sharedSubsystems(mRoutines);
     }
 
-
-    @Override
-    public ArrayList<Routine> getEnclosingParallelRoutine() {
-        return mRoutines;
-    }
-
     @Override
     public String getName() {
         StringBuilder name = new StringBuilder("ParallelRoutine of (");

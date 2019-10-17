@@ -48,16 +48,15 @@ public class Robot extends TimedRobot {
     /* Subsystems */
     private Drive mDrive = Drive.getInstance();
     private Elevator mElevator = Elevator.getInstance();
-    private Shovel mShovel = Shovel.getInstance();
     private Shooter mShooter = Shooter.getInstance();
     private Pusher mPusher = Pusher.getsInstance();
     private Fingers mFingers = Fingers.getInstance();
     private Intake mIntake = Intake.getInstance();
     private List<Subsystem>
-            mSubsystems = List.of(mDrive, mElevator, mShooter, mPusher, mShovel, mFingers, mIntake),
+            mSubsystems = List.of(mDrive, mElevator, mShooter, mPusher, mFingers, mIntake),
             mEnabledSubsystems;
 
-    private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mPusher, mShovel, mFingers, mIntake);
+    private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mPusher, mFingers, mIntake);
 
     private List<RobotService> mEnabledServices;
 

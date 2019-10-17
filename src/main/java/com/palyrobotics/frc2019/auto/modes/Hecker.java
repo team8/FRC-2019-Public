@@ -5,12 +5,12 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.TimeoutRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.*;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCloseRoutine;
 import com.palyrobotics.frc2019.behavior.routines.fingers.FingersExpelRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.FingersRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherOutRoutine;
-import com.palyrobotics.frc2019.config.Constants.PhysicalConstants;
+import com.palyrobotics.frc2019.config.constants.PhysicalConstants;
+import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
@@ -83,10 +83,10 @@ public class Hecker extends AutoModeBase {
         routines.add(new PusherOutRoutine());
 
         //release hatch
-        routines.add(new FingersCloseRoutine());
+        routines.add(new FingersRoutine(Fingers.FingersState.CLOSE));
         routines.add(new FingersExpelRoutine(.05));
 
-        routines.add(new TimeoutRoutine(.4));
+        routines.add(new TimeoutRoutine(0.4));
 
         //pusher back in
         routines.add(new PusherInRoutine());
@@ -124,7 +124,7 @@ public class Hecker extends AutoModeBase {
                 false, false, "visionStart"));
 
         routines.add(new PusherOutRoutine());
-        routines.add(new FingersOpenRoutine());
+        routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
         routines.add(new TimeoutRoutine(.5));
 
         routines.add(new DriveSensorResetRoutine(1));
@@ -160,7 +160,7 @@ public class Hecker extends AutoModeBase {
                 false, false, "startVision"));
 
         //release hatch
-//        routines.add(new FingersOpenRoutine());
+//        routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
 
         return new SequentialRoutine(routines);
     }

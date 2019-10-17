@@ -7,15 +7,16 @@ import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.CascadingGyroEncoderTurnAngleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.FingersRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeBeginCycleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherOutRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import com.palyrobotics.frc2019.behavior.routines.waits.WaitForCargoElevator;
-import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.Constants.PhysicalConstants;
+import com.palyrobotics.frc2019.config.constants.OtherConstants;
+import com.palyrobotics.frc2019.config.constants.PhysicalConstants;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
+import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.trajectory.Path;
@@ -98,7 +99,7 @@ public class RightFullLevelAutoMode extends AutoModeBase {
                 new PusherOutRoutine()));
 
         //release hatch
-        routines.add(new FingersOpenRoutine());
+        routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
 
         //pusher back in
         routines.add(new PusherInRoutine());
@@ -137,7 +138,7 @@ public class RightFullLevelAutoMode extends AutoModeBase {
 //
 //        //drive slowly forward and intake hatch
 //        routines.add(new SequentialRoutine(new DrivePathRoutine(goForwardABit, false, true),
-//                new FingersOpenRoutine(), new PusherInRoutine()));
+//                new FingersRoutine(Fingers.FingersState.OPEN), new PusherInRoutine()));
 
         return new SequentialRoutine(routines);
     }
@@ -176,7 +177,7 @@ public class RightFullLevelAutoMode extends AutoModeBase {
 //                new PusherOutRoutine()));
 
         //release hatch
-        routines.add(new FingersOpenRoutine());
+        routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
 
         return new SequentialRoutine(routines);
     }

@@ -1,8 +1,6 @@
 package com.palyrobotics.frc2019.config;
 
-import com.palyrobotics.frc2019.util.JoystickInput;
 import com.palyrobotics.frc2019.util.Pose;
-import com.palyrobotics.frc2019.util.XboxInput;
 import com.palyrobotics.frc2019.util.trajectory.*;
 
 import java.util.ArrayList;
@@ -37,8 +35,6 @@ public class RobotState {
     public double robotVelocity, robotAcceleration;
 
     public boolean isQuickTurning;
-
-    public boolean cancelAuto;
 
     // Intake
     public boolean hasCargo;
@@ -75,20 +71,12 @@ public class RobotState {
     // Vision drive data
     public boolean atVisionTargetThreshold;
 
-    // Robot position
-    private final int kObservationBufferSize = 100;
-
     // FPGATimestamp -> RigidTransform2d or Rotation2d
     private RigidTransform2d.Delta vehicleVelocity;
     private InterpolatingTreeMap<InterpolatingDouble, RigidTransform2d> fieldToVehicle;
 
-    // Joystick input
-    public JoystickInput leftStickInput = new JoystickInput(), rightStickInput = new JoystickInput();
-	public XboxInput operatorXboxControllerInput = new XboxInput();
-    public JoystickInput operatorJoystickInput = new JoystickInput();
-
     public synchronized void reset(double startTime, RigidTransform2d initialFieldToVehicle) {
-        fieldToVehicle = new InterpolatingTreeMap<>(kObservationBufferSize);
+        fieldToVehicle = new InterpolatingTreeMap<>(100);
         fieldToVehicle.put(new InterpolatingDouble(startTime), initialFieldToVehicle);
         vehicleVelocity = new RigidTransform2d.Delta(0, 0, 0);
     }

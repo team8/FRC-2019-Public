@@ -6,12 +6,12 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.TimeoutRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.*;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCloseRoutine;
 import com.palyrobotics.frc2019.behavior.routines.fingers.FingersExpelRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.FingersRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherOutRoutine;
-import com.palyrobotics.frc2019.config.Constants.PhysicalConstants;
+import com.palyrobotics.frc2019.config.constants.PhysicalConstants;
+import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
@@ -93,7 +93,7 @@ public class Fanlin extends AutoModeBase {
         routines.add(new ParallelRoutine(new VisionClosedDriveRoutine(), new PusherOutRoutine()));
 
         //latch on to hatch
-        routines.add(new FingersOpenRoutine());
+        routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
         //wait
         routines.add(new TimeoutRoutine(.2));
         //pusher back in
@@ -128,11 +128,11 @@ public class Fanlin extends AutoModeBase {
 
 
         //release hatch
-        routines.add(new FingersCloseRoutine());
-        routines.add(new FingersExpelRoutine(.05));
+        routines.add(new FingersRoutine(Fingers.FingersState.CLOSE));
+        routines.add(new FingersExpelRoutine(0.05));
 
         //wait
-        routines.add(new TimeoutRoutine(.4));
+        routines.add(new TimeoutRoutine(0.4));
 
         //pusher back in
         routines.add(new PusherInRoutine());

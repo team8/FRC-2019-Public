@@ -1,8 +1,8 @@
 package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;

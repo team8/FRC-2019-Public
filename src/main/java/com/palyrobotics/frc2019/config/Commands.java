@@ -30,29 +30,19 @@ public class Commands {
 
     public Pusher.PusherState wantedPusherInOutState = Pusher.PusherState.START;
 
-    public Shovel.WheelState wantedShovelWheelState = Shovel.WheelState.IDLE;
-    public Shovel.UpDownState wantedShovelUpDownState = Shovel.UpDownState.UP;
-
     public Fingers.FingersState wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
     public Fingers.PushingState wantedFingersExpelState = Fingers.PushingState.CLOSED;
     public boolean blockFingers;
 
     public Intake.IntakeMacroState wantedIntakeState = Intake.IntakeMacroState.HOLDING;
 
-    public boolean disableIntakeScaling = true;
-
-    public boolean customShooterSpeed, customIntakeSpeed;
-
     public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.IDLE;
     public double customElevatorPercentOutput;
 
-    public boolean customShovelSpeed;
-    public boolean autoPlacerOutput;
-
-    public boolean intakeHFX, intakeHasHatch;
     public boolean hasCargo, hasPusherCargo;
 
-    public boolean shooterSpinning;
+    public double driveThrottle, driveWheel;
+    public boolean isQuickTurn, isBraking;
 
     public void addWantedRoutine(Routine wantedRoutine) {
         for (Routine routine : wantedRoutines) {
@@ -104,18 +94,10 @@ public class Commands {
         other.wantedElevatorState = this.wantedElevatorState;
         other.cancelCurrentRoutines = this.cancelCurrentRoutines;
         other.wantedPusherInOutState = this.wantedPusherInOutState;
-        other.wantedShovelWheelState = this.wantedShovelWheelState;
-        other.wantedShovelUpDownState = this.wantedShovelUpDownState;
         other.wantedFingersOpenCloseState = this.wantedFingersOpenCloseState;
         other.wantedFingersExpelState = this.wantedFingersExpelState;
-        other.customShooterSpeed = this.customShooterSpeed;
-        other.customIntakeSpeed = this.customIntakeSpeed;
-        other.customShovelSpeed = this.customShovelSpeed;
-        other.autoPlacerOutput = this.autoPlacerOutput;
         other.wantedIntakeState = this.wantedIntakeState;
-        other.disableIntakeScaling = this.disableIntakeScaling;
         other.hasPusherCargo = this.hasPusherCargo;
-        other.shooterSpinning = this.shooterSpinning;
 
         other.wantedRoutines.addAll(this.wantedRoutines);
 

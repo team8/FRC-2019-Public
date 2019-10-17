@@ -6,7 +6,6 @@
     "enabledSubsystems": [
         "drive",
         "intake",
-        "shovel",
         "pusher",
         "fingers",
         "shooter",

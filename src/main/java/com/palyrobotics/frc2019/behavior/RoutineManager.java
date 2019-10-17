@@ -155,7 +155,6 @@ public class RoutineManager {
         counter.put(Drive.getInstance(), 0);
         counter.put(Elevator.getInstance(), 0);
         counter.put(Shooter.getInstance(), 0);
-        counter.put(Shovel.getInstance(), 0);
         counter.put(Fingers.getInstance(), 0);
         counter.put(Intake.getInstance(), 0);
         counter.put(Pusher.getsInstance(), 0);

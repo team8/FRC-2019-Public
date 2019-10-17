@@ -1,6 +1,6 @@
 package com.palyrobotics.frc2019.util.trajectory;
 
-import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
+import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 
 import java.util.*;
 

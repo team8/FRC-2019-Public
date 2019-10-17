@@ -1,8 +1,8 @@
 package com.palyrobotics.frc2019.util;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.subsystems.Drive;
 
 /**
@@ -15,17 +15,16 @@ public class CheesyDriveHelper {
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
-        double throttle = -robotState.leftStickInput.getY(), wheel = robotState.rightStickInput.getX();
+        double throttle = commands.driveThrottle, wheel = commands.driveWheel;
 
         if (commands.wantedDriveState == Drive.DriveState.CHEZY) {
             wheel *= 0.75;
         }
         // Quick-turn if right trigger is pressed
-        boolean isQuickTurn = robotState.rightStickInput.getTriggerPressed();
-        robotState.isQuickTurning = isQuickTurn;
+        boolean isQuickTurn = robotState.isQuickTurning = commands.isQuickTurn;
 
-        //Braking if left trigger is pressed
-        boolean isBraking = robotState.leftStickInput.getTriggerPressed();
+//        //Braking if left trigger is pressed
+//        boolean isBraking = robotState.leftStickInput.getTriggerPressed();
 
         double wheelNonLinearity;
 
@@ -95,7 +94,7 @@ public class CheesyDriveHelper {
 
         // Quick-turn
         if (isQuickTurn) {
-            if (Math.abs(robotState.rightStickInput.getX()) < DrivetrainConstants.kQuickTurnSensitivityThreshold) {
+            if (Math.abs(commands.driveWheel) < DrivetrainConstants.kQuickTurnSensitivityThreshold) {
                 sensitivity = DrivetrainConstants.kPreciseQuickTurnSensitivity;
             } else {
                 sensitivity = DrivetrainConstants.kQuickTurnSensitivity;

@@ -1,14 +1,16 @@
 package com.palyrobotics.frc2019.util;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.VisionConfig;
+import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.control.SynchronousPID;
 import com.palyrobotics.frc2019.vision.Limelight;
 
 /**
- * CheesyDriveHelper implements the calculations used in CheesyDrive for teleop control. Returns a DriveSignal for the motor output
+ * {@link CheesyDriveHelper} implements the calculations used for operator control.
+ * Returns a {@link SparkDriveSignal} for the motor output.
  */
 public class VisionDriveHelper {
 
@@ -23,10 +25,10 @@ public class VisionDriveHelper {
 
     public SparkDriveSignal visionDrive(Commands commands, RobotState robotState) {
 
-        double throttle = -robotState.leftStickInput.getY();
+        double throttle = commands.driveThrottle;
 
         // Braking if left trigger is pressed
-        boolean isBraking = robotState.leftStickInput.getTriggerPressed();
+        boolean isBraking = commands.isBraking;
 
         throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
 
@@ -34,7 +36,7 @@ public class VisionDriveHelper {
 
         double angularPower;
 
-        // linear power is what's actually sent to motor, throttle is input
+        // Linear power is what's actually sent to motor, throttle is input
         double linearPower = throttle;
 
         // Handle braking

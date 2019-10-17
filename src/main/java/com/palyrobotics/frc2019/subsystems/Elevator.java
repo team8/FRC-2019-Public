@@ -2,9 +2,8 @@ package com.palyrobotics.frc2019.subsystems;
 
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -21,7 +20,7 @@ public class Elevator extends Subsystem {
     private ElevatorConfig mConfig = Configs.get(ElevatorConfig.class);
 
     public enum ElevatorState {
-        MANUAL_POSITIONING,
+        MANUAL,
         CUSTOM_POSITIONING,
         PERCENT_OUTPUT,
         IDLE
@@ -64,10 +63,8 @@ public class Elevator extends Subsystem {
         // Execute update loop based on the current state
         // Does not switch between states, only performs actions
         switch (mElevatorState) {
-            case MANUAL_POSITIONING:
-                mOutput.setPercentOutput(mConfig.manualMaxPercentOut * (OtherConstants.operatorXBoxController
-                        ? mRobotState.operatorXboxControllerInput.getRightY()
-                        : mRobotState.operatorJoystickInput.getY()));
+            case MANUAL:
+//                mOutput.setTargetSmartVelocity();
                 break;
             case CUSTOM_POSITIONING:
                 long currentTimeMs = System.currentTimeMillis();
@@ -106,7 +103,7 @@ public class Elevator extends Subsystem {
      * <p>
      * Behavior for desired states:
      * <ul>
-     * <li>{@link ElevatorState#MANUAL_POSITIONING}: Sets the state to manual.</li>
+     * <li>{@link ElevatorState#MANUAL}: Sets the state to manual.</li>
      * <li>{@link ElevatorState#CUSTOM_POSITIONING}: Sets the desired custom position and state to custom positioning. If not calibrated, set to calibrate instead.</li>
      * <li>{@link ElevatorState#IDLE}: Sets to idle.</li>
      * </ul>

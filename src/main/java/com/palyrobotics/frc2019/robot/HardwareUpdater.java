@@ -4,9 +4,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
-import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.*;
+import com.palyrobotics.frc2019.config.PortConstants;
+import com.palyrobotics.frc2019.config.RobotConfig;
+import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
+import com.palyrobotics.frc2019.config.constants.OtherConstants;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
@@ -26,7 +28,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.ControlType;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -41,15 +42,13 @@ class HardwareUpdater {
     private Elevator mElevator;
     private Shooter mShooter;
     private Pusher mPusher;
-    private Shovel mShovel;
     private Fingers mFingers;
 
-    HardwareUpdater(Drive drive, Elevator elevator, Shooter shooter, Pusher pusher, Shovel shovel, Fingers fingers, Intake intake) {
+    HardwareUpdater(Drive drive, Elevator elevator, Shooter shooter, Pusher pusher, Fingers fingers, Intake intake) {
         mDrive = drive;
         mElevator = elevator;
         mShooter = shooter;
         mPusher = pusher;
-        mShovel = shovel;
         mFingers = fingers;
         mIntake = intake;
     }
@@ -250,11 +249,6 @@ class HardwareUpdater {
                 leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark,
                 rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
 
-        robotState.leftStickInput.update(HardwareAdapter.getInstance().getJoysticks().driveStick);
-        robotState.rightStickInput.update(HardwareAdapter.getInstance().getJoysticks().turnStick);
-
-        robotState.operatorXboxControllerInput.update(HardwareAdapter.getInstance().getJoysticks().operatorXboxController);
-
         robotState.hatchIntakeUp = !HardwareAdapter.getInstance().getShovel().upDownHFX.get();
         robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(Configs.get(PortConstants.class).vidarShovelPDPPort);
         robotState.hasHatch = (robotState.shovelCurrentDraw > Configs.get(ShovelConfig.class).maxShovelCurrentDraw);
@@ -290,10 +284,6 @@ class HardwareUpdater {
         robotState.intakeAppliedOutput = intakeSpark.getAppliedOutput();
 
         double time = Timer.getFPGATimestamp();
-
-        if (!robotState.cancelAuto && robotState.rightStickInput.getButtonPressed(7)) {
-            robotState.cancelAuto = true;
-        }
 
         Rotation2d
                 gyroAngle = Rotation2d.fromDegrees(robotState.drivePose.heading),
@@ -376,7 +366,6 @@ class HardwareUpdater {
         updateElevator();
         updateShooter();
         updatePusher();
-        updateShovel();
         updateFingers();
         updateIntake();
         updateMiscellaneousHardware();
@@ -413,14 +402,10 @@ class HardwareUpdater {
         boolean rumble;
         double
                 intakeRumbleLength = mIntake.getRumbleLength(),
-                shovelRumbleLength = mShovel.getRumbleLength(),
                 shooterRumbleLength = mShooter.getRumbleLength();
         if (intakeRumbleLength > 0) {
             rumble = true;
             mIntake.decreaseRumbleLength();
-        } else if (shovelRumbleLength > 0) {
-            rumble = true;
-            mShovel.decreaseRumbleLength();
         } else if (shooterRumbleLength > 0) {
             rumble = true;
             mShooter.decreaseRumbleLength();
@@ -441,11 +426,6 @@ class HardwareUpdater {
 
     private void updatePusher() {
         updateSparkMax(HardwareAdapter.getInstance().getPusher().pusherSpark, mPusher.getPusherOutput());
-    }
-
-    private void updateShovel() {
-        HardwareAdapter.getInstance().getShovel().shovelTalon.set(mShovel.getPercentOutput());
-        HardwareAdapter.getInstance().getShovel().upDownSolenoid.set(mShovel.getUpDownOutput() ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     private void updateFingers() {

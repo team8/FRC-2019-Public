@@ -6,11 +6,11 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.CascadingGyroEncoderTurnAngleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersCloseRoutine;
-import com.palyrobotics.frc2019.behavior.routines.fingers.FingersOpenRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.FingersRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherOutRoutine;
-import com.palyrobotics.frc2019.config.Constants.PhysicalConstants;
+import com.palyrobotics.frc2019.config.constants.PhysicalConstants;
+import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
@@ -91,7 +91,7 @@ public class TestAutoMode extends AutoModeBase {
         //get fingers ready for hatch intake
         ArrayList<Routine> getIntakeReady = new ArrayList<>();
         getIntakeReady.add(new PusherOutRoutine());
-        getIntakeReady.add(new FingersCloseRoutine());
+        getIntakeReady.add(new FingersRoutine(Fingers.FingersState.CLOSE));
 
         //drive and ready fingers at the same time
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(ForwardCargoShipToLoadingStation), false),
@@ -104,7 +104,7 @@ public class TestAutoMode extends AutoModeBase {
 
         //drive slowly forward and intake hatch
         routines.add(new SequentialRoutine(new DrivePathRoutine(new Path(goForwardABit), false),
-                new FingersOpenRoutine(), new PusherInRoutine()));
+                new FingersRoutine(Fingers.FingersState.OPEN), new PusherInRoutine()));
 
         return new SequentialRoutine(routines);
     }

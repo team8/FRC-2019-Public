@@ -1,4 +1,4 @@
-package com.palyrobotics.frc2019.config.Constants;
+package com.palyrobotics.frc2019.config.constants;
 
 public class PhysicalConstants {
 

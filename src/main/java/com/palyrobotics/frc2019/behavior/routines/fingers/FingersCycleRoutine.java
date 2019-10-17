@@ -11,7 +11,7 @@ public class FingersCycleRoutine extends Routine {
     private double mTimeout, mStartTime;
 
     public FingersCycleRoutine(double timeout) {
-        this.mTimeout = timeout * 1000;
+        mTimeout = timeout * 1000;
     }
 
     @Override

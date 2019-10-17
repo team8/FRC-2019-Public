@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * @author Jason, Alan
@@ -15,7 +16,7 @@ public class ShooterExpelRoutine extends Routine {
     //How long the wheels spin for (seconds)
     private double mTimeout;
 
-    private long mStartTime;
+    private double mStartTime;
 
     /**
      * @param wantedShooterState the desired state
@@ -28,14 +29,12 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public void start() {
-        mStartTime = System.currentTimeMillis();
+        mStartTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public Commands update(Commands commands) {
         commands.wantedShooterState = mWantedShooterState;
-        commands.customShooterSpeed = false;
-
         return commands;
     }
 
@@ -47,7 +46,7 @@ public class ShooterExpelRoutine extends Routine {
 
     @Override
     public boolean finished() {
-        return System.currentTimeMillis() - mStartTime > mTimeout * 1000;
+        return Timer.getFPGATimestamp() - mStartTime > mTimeout;
     }
 
     @Override

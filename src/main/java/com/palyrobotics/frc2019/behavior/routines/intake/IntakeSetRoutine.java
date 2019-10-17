@@ -1,38 +1,21 @@
 package com.palyrobotics.frc2019.behavior.routines.intake;
 
+import com.palyrobotics.frc2019.behavior.OneTimeRoutine;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Intake;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
-public class IntakeSetRoutine extends Routine {
-    private boolean mAlreadyRan;
-
+public class IntakeSetRoutine extends OneTimeRoutine {
     @Override
-    public void start() {
-        mAlreadyRan = false;
-    }
-
-    @Override
-    public Commands update(Commands commands) {
+    public Commands doOnce(Commands commands) {
         commands.wantedIntakeState = Intake.IntakeMacroState.TUCK;
-        mAlreadyRan = true;
         return commands;
-    }
-
-    @Override
-    public Commands cancel(Commands commands) {
-        return commands;
-    }
-
-    @Override
-    public boolean finished() {
-        return mAlreadyRan;
     }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mIntake};
+        return new Subsystem[]{mIntake};
     }
 
     @Override

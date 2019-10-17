@@ -2,8 +2,8 @@ package com.palyrobotics.frc2019.behavior.routines.pusher;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.subsystems.Pusher;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.config.Configs;

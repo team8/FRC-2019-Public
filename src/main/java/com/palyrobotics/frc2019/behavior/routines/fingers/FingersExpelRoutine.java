@@ -7,6 +7,8 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class FingersExpelRoutine extends Routine {
 
+    private Fingers.FingersState mWantedFingersOpenCloseState;
+
     private double mTimeout;
 
     private long mStartTime;
@@ -39,7 +41,7 @@ public class FingersExpelRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mFingers};
+        return new Subsystem[]{mFingers};
     }
 
     @Override

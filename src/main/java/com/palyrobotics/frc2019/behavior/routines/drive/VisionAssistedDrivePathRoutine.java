@@ -2,7 +2,7 @@ package com.palyrobotics.frc2019.behavior.routines.drive;
 
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
+import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.trajectory.Path;

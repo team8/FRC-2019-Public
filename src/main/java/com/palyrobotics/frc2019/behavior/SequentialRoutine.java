@@ -79,9 +79,4 @@ public class SequentialRoutine extends Routine {
         name.append(")");
         return name.toString();
     }
-
-    @Override
-    public ArrayList<Routine> getEnclosingSequentialRoutine() {
-        return mRoutines;
-    }
 }

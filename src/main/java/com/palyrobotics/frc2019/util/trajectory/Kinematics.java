@@ -1,6 +1,6 @@
 package com.palyrobotics.frc2019.util.trajectory;
 
-import com.palyrobotics.frc2019.config.Constants.DrivetrainConstants;
+import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 
 /**
  * Provides forward and inverse kinematics equations for the robot modeling the wheelbase as a differential drive (with a corrective factor to account for the

@@ -1,9 +1,9 @@
 package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.constants.OtherConstants;
+import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.ShooterConfig;
 import com.palyrobotics.frc2019.util.config.Configs;
 
@@ -51,20 +51,14 @@ public class Shooter extends Subsystem {
 
         switch (mState) {
             case IDLE:
-                commands.shooterSpinning = false;
                 mOutput = 0;
                 mExpellingCycles = 0;
                 break;
             case SPIN_UP:
-                commands.shooterSpinning = true;
-                if (commands.customShooterSpeed) {
-                    mOutput = robotState.operatorXboxControllerInput.leftTrigger; //TODO: change control?
+                if (robotState.elevatorPosition > Configs.get(ElevatorConfig.class).elevatorHeight3 - 8.0) {
+                    mOutput = mConfig.level3MotorVelocity;
                 } else {
-                    if (robotState.elevatorPosition > Configs.get(ElevatorConfig.class).elevatorHeight3 - 8.0) {
-                        mOutput = mConfig.level3MotorVelocity;
-                    } else {
-                        mOutput = mConfig.expellingMotorVelocity;
-                    }
+                    mOutput = mConfig.expellingMotorVelocity;
                 }
                 mExpellingCycles++;
                 break;

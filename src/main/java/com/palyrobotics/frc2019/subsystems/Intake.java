@@ -1,9 +1,9 @@
 package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.config.Constants.OtherConstants;
-import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.constants.OtherConstants;
+import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -182,11 +182,7 @@ public class Intake extends Subsystem {
 
         switch (mWheelState) {
             case INTAKING:
-                if (commands.customIntakeSpeed) {
-                    mTalonOutput = robotState.operatorXboxControllerInput.leftTrigger;
-                } else {
-                    mTalonOutput = mConfig.motorVelocity;
-                }
+                mTalonOutput = mConfig.motorVelocity;
                 break;
             case DROPPING:
                 mTalonOutput = mConfig.droppingVelocity;
