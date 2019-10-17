@@ -16,9 +16,8 @@
         "i": 0.0,
         "d": 0.0,
         "f": 0.0002621578947368421,
-        "rampRate": 0.1,
-        "iZone": 0,
-        "acceleration": 6500,
-        "velocity": 2400
+        "iZone": 0.0,
+        "acceleration": 6500.0,
+        "velocity": 2400.0
     }
 }

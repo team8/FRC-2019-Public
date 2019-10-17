@@ -10,29 +10,25 @@ public class SmartGains extends Gains {
 
     }
 
-    public SmartGains(double p, double i, double d, double f, int iZone, double rampRate, double acceleration, double velocity) {
-        super(p, i, d, f, iZone, rampRate);
-        this.acceleration = acceleration;
-        this.velocity = velocity;
-    }
-
     @Override // Auto-generated
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
+        if (!(other instanceof SmartGains)) return false;
         if (!super.equals(other)) return false;
-        SmartGains otherSmartGains = (SmartGains) other;
-        return Double.compare(otherSmartGains.acceleration, acceleration) == 0 &&
-                Double.compare(otherSmartGains.velocity, velocity) == 0;
+        SmartGains otherGains = (SmartGains) other;
+        return Double.compare(otherGains.acceleration, acceleration) == 0 &&
+                Double.compare(otherGains.velocity, velocity) == 0 &&
+                Double.compare(otherGains.allowableError, allowableError) == 0 &&
+                Double.compare(otherGains.minimumOutputVelocity, minimumOutputVelocity) == 0;
     }
 
     @Override // Auto-generated
     public int hashCode() {
-        return Objects.hash(super.hashCode(), acceleration, velocity);
+        return Objects.hash(super.hashCode(), acceleration, velocity, allowableError, minimumOutputVelocity);
     }
 
-    @Override // Auto-generated
-    public String toString() {
-        return String.format("SmartGains{acceleration=%s, velocity=%s, p=%s, i=%s, d=%s, f=%s, rampRate=%s, iZone=%d}", acceleration, velocity, p, i, d, f, rampRate, iZone);
+    @Override
+    public String toString() { // Auto-generated
+        return String.format("SmartGains{acceleration=%s, velocity=%s, allowableError=%s, minimumOutputVelocity=%s} %s", acceleration, velocity, allowableError, minimumOutputVelocity, super.toString());
     }
 }

@@ -122,6 +122,8 @@ class HardwareUpdater {
         masterElevatorSpark.setIdleMode(IdleMode.kBrake);
         slaveElevatorSpark.setIdleMode(IdleMode.kBrake);
 
+        masterElevatorSpark.setClosedLoopRampRate(0.1);
+
         // TODO refactor into constants
         masterElevatorSpark.setSoftLimit(SoftLimitDirection.kForward, 0.0f);
         masterElevatorSpark.setSoftLimit(SoftLimitDirection.kReverse, ElevatorConfig.kMaxHeightInches);
@@ -149,6 +151,8 @@ class HardwareUpdater {
 
         intakeMasterSpark.getEncoder().setPositionConversionFactor(IntakeConfig.kArmDegreesPerRevolution);
         intakeMasterSpark.getEncoder().setVelocityConversionFactor(IntakeConfig.kArmDegreesPerMinutePerRpm);
+
+        intakeMasterSpark.setClosedLoopRampRate(0.05);
 
         intakeTalon.setInverted(true);
 
@@ -198,6 +202,8 @@ class HardwareUpdater {
         pusherSpark.restoreFactoryDefaults();
 
         pusherSpark.enableVoltageCompensation(12);
+
+        pusherSpark.setClosedLoopRampRate(0.05);
 
         pusherSpark.getEncoder().setPositionConversionFactor(PusherConfig.kPusherInchesPerRotation);
         pusherSpark.getEncoder().setVelocityConversionFactor(PusherConfig.kPusherEncSpeedUnitConversion);

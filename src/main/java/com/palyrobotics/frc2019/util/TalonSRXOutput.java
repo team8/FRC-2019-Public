@@ -35,7 +35,7 @@ public class TalonSRXOutput {
         controlMode = ControlMode.Disabled;
         setPoint = 0;
         profile = 0;
-        gains = new Gains(0, 0, 0, 0, 0, 0);
+        gains = new Gains(0, 0, 0, 0, 0);
 
         acceleration = 0;
         cruiseVelocity = 0;

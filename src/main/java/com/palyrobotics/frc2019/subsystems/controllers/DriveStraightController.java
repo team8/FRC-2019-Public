@@ -24,7 +24,7 @@ public class DriveStraightController implements DriveController {
 		mTarget = (priorSetPoint.leftEncoderPosition + priorSetPoint.rightEncoderPosition) / 2 + distance;
 //		Logger.getInstance().logSubsystemThread(Level.INFO, "Target", target);
 		mCachedPose = priorSetPoint;
-		mGains = new Gains(0.00035, 0.000004, 0.002, 0, 200, 0);
+		mGains = new Gains(0.00035, 0.000004, 0.002, 0, 200);
 		kTolerance = DrivetrainConstants.kAcceptableDrivePositionError;
 		forwardPID = new SynchronousPID(mGains.p, mGains.i, mGains.d, mGains.iZone);
 		headingPID = new SynchronousPID(Gains.kVidarDriveStraightTurnP, 0, 0.005);
