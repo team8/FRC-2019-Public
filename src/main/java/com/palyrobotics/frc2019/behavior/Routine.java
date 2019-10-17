@@ -31,7 +31,7 @@ public abstract class Routine {
 	public abstract Commands cancel(Commands commands);
 
 	// Notifies routine manager when routine is complete
-	public abstract boolean finished();
+	public abstract boolean isFinished();
 
 	// Store subsystems which are required by this routine, preventing routines from overlapping
 	public abstract Subsystem[] getRequiredSubsystems();

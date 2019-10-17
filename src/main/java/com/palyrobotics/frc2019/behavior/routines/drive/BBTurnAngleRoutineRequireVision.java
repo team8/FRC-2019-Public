@@ -6,6 +6,7 @@ import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
+import edu.wpi.first.wpilibj.Timer;
 
 public class BBTurnAngleRoutineRequireVision extends Routine {
 
@@ -31,14 +32,14 @@ public class BBTurnAngleRoutineRequireVision extends Routine {
     public void start() {
         mDrive.setNeutral();
         mState = GyroBBState.START;
-        mStartTime = System.currentTimeMillis();
+        mStartTime = Timer.getFPGATimestamp();
         Limelight.getInstance().setCamMode(LimelightControlMode.CamMode.VISION);
         Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_ON); // Limelight LED on
     }
 
     @Override
     public Commands update(Commands commands) {
-        if (mState != GyroBBState.TIMED_OUT && (System.currentTimeMillis() - mStartTime > 5000)) {
+        if (mState != GyroBBState.TIMED_OUT && (Timer.getFPGATimestamp() - mStartTime > 5.0)) {
 //			Logger.getInstance().logRobotThread(Level.WARNING, "Timed Out!");
             mState = GyroBBState.TIMED_OUT;
         }
@@ -74,8 +75,8 @@ public class BBTurnAngleRoutineRequireVision extends Routine {
     }
 
     @Override
-    public boolean finished() {
-        return mState == GyroBBState.DONE || ((System.currentTimeMillis() - mStartTime > 450) && Limelight.getInstance().isTargetFound());
+    public boolean isFinished() {
+        return mState == GyroBBState.DONE || ((Timer.getFPGATimestamp() - mStartTime > 450) && Limelight.getInstance().isTargetFound());
     }
 
     @Override

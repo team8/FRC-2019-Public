@@ -4,45 +4,30 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
-import com.palyrobotics.frc2019.util.trajectory.Path;
+import edu.wpi.first.wpilibj.Timer;
 
 public class ElevatorCustomPositioningRoutine extends Routine {
 
     private double mPosition;
     private double mTimeout;
-    private Long mStartTime;
-    private boolean hasSetAllVars = false;
-
-    private Path mPath;
-    private String mRoutineStartWayPoint;
+    private double mStartTime;
+    private boolean mHasSetAllCommands = false;
 
     public ElevatorCustomPositioningRoutine(double position, double timeout) {
         mPosition = position;
         mTimeout = timeout;
     }
 
-    public ElevatorCustomPositioningRoutine(double position, double timeout, Path path, String routineStartWayPoint) {
-        this.mPosition = position;
-        this.mTimeout = timeout;
-        this.mPath = path;
-        this.mRoutineStartWayPoint = routineStartWayPoint;
-    }
-
     @Override
     public void start() {
-        if (mPath == null) {
-            mStartTime = System.currentTimeMillis();
-        }
+        mStartTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public Commands update(Commands commands) {
-        if (mPath == null || (mRoutineStartWayPoint != null && mPath.getMarkersCrossed().contains(mRoutineStartWayPoint))) {
-            if (mStartTime == null) mStartTime = System.currentTimeMillis();
-            hasSetAllVars = true;
-            commands.wantedElevatorState = Elevator.ElevatorState.CUSTOM_POSITIONING;
-            commands.robotSetPoints.elevatorPositionSetPoint = mPosition;
-        }
+        mHasSetAllCommands = true;
+        commands.wantedElevatorState = Elevator.ElevatorState.CUSTOM_POSITIONING;
+        commands.robotSetPoints.elevatorPositionSetPoint = mPosition;
         return commands;
     }
 
@@ -53,13 +38,11 @@ public class ElevatorCustomPositioningRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
-        if (mStartTime != null) {
-            if (System.currentTimeMillis() - mStartTime > mTimeout * 1000) {
-                return true;
-            }
+    public boolean isFinished() {
+        if (Timer.getFPGATimestamp() - mStartTime > mTimeout) {
+            return true;
         }
-        return hasSetAllVars && mElevator.elevatorOnTarget();
+        return mHasSetAllCommands && mElevator.elevatorOnTarget();
     }
 
     @Override

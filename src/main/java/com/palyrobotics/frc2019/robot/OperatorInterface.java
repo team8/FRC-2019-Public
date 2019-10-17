@@ -85,26 +85,29 @@ public class OperatorInterface {
         if (Math.abs(mDriveStick.getY()) > DrivetrainConstants.kDeadband || Math.abs(mTurnStick.getX()) > DrivetrainConstants.kDeadband) {
             commands.wantedDriveState = Drive.DriveState.CHEZY;
         }
+        commands.driveThrottle = -mDriveStick.getThrottle();
+        commands.driveWheel = mDriveStick.getX();
+        commands.isQuickTurn = mDriveStick.getTrigger();
+        commands.isBraking = mTurnStick.getTrigger();
 
         if (mTurnStick.getRawButton(3)) {
             mVisionStartTimeSeconds = Timer.getFPGATimestamp();
             // Limelight vision tracking on
-            setVisionOn();
+            setVision(true);
             commands.wantedDriveState = Drive.DriveState.VISION_ASSIST;
         } else {
             if (!mTurnStick.getRawButton(4)) {
                 RobotState.getInstance().atVisionTargetThreshold = false;
             }
             if (Timer.getFPGATimestamp() - mVisionStartTimeSeconds > OtherConstants.kVisionLEDTimeoutSeconds) {
-                mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off
-                mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
+                setVision(false);
             }
         }
 
         if (mTurnStick.getRawButton(4)) {
             mVisionStartTimeSeconds = Timer.getFPGATimestamp();
             // Limelight vision tracking on
-            setVisionOn();
+            setVision(true);
             Drive.getInstance().setVisionClosedDriveController();
             commands.wantedDriveState = Drive.DriveState.CLOSED_VISION_ASSIST;
         } else {
@@ -112,8 +115,7 @@ public class OperatorInterface {
                 RobotState.getInstance().atVisionTargetThreshold = false;
             }
             if (Timer.getFPGATimestamp() - mVisionStartTimeSeconds > OtherConstants.kVisionLEDTimeoutSeconds) {
-                mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off
-                mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_OFF);
+                setVision(false);
             }
         }
 
@@ -214,10 +216,7 @@ public class OperatorInterface {
         }
 
         /* Pneumatic hatch pusher control */
-        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState != IntakeMacroState.EXPELLING_ROCKET && !commands.blockFingers) {
-//			Routine hatchCycle = new FingersCycleRoutine(FingerConstants.kFingersCycleTime);
-//			newCommands.cancelCurrentRoutines = false;
-//			newCommands.addWantedRoutine(hatchCycle);
+        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState != IntakeMacroState.EXPELLING_ROCKET) {
             commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
             commands.wantedFingersExpelState = Fingers.PushingState.EXPELLING;
         }
@@ -235,10 +234,8 @@ public class OperatorInterface {
         return commands;
     }
 
-    private void setVisionOn() {
-        if (mLimelight.getCamMode() != LimelightControlMode.CamMode.VISION) {
-            mLimelight.setCamMode(LimelightControlMode.CamMode.VISION);
-            mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_ON); // Limelight LED on
-        }
+    private void setVision(boolean on) {
+        mLimelight.setCamMode(on ? LimelightControlMode.CamMode.VISION : LimelightControlMode.CamMode.DRIVER); // Limelight LED off
+        mLimelight.setLEDMode(on ? LimelightControlMode.LedMode.FORCE_ON : LimelightControlMode.LedMode.FORCE_OFF);
     }
 }

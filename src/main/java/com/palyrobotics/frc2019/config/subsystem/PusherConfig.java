@@ -13,7 +13,7 @@ public class PusherConfig extends AbstractSubsystemConfig {
             cargoTolerance,
             cargoToleranceFar;
     public boolean useSlam;
-    public double slamPercentOutput, slamHoldMultiplier, slamTimeMs;
+    public double slamPercentOutput, slamHoldMultiplier, slamTime;
 
     public SmartGains smartGain;
     public Gains positionGains;

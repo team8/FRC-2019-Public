@@ -63,7 +63,7 @@ public class RoutineManager {
         mRoutinesToRemove.clear();
         // Update all running routines
         for (Routine routine : mRunningRoutines) {
-            if (routine.finished()) {
+            if (routine.isFinished()) {
                 commands = routine.cancel(commands);
                 mRoutinesToRemove.add(routine);
             } else {

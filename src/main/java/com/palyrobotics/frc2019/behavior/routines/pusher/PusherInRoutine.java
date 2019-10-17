@@ -27,7 +27,7 @@ public class PusherInRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return RobotState.getInstance().pusherPosition < Configs.get(PusherConfig.class).acceptablePositionError;
     }
 

@@ -8,6 +8,7 @@ import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Pusher extends Subsystem {
 
@@ -53,11 +54,11 @@ public class Pusher extends Subsystem {
                 break;
             case IN:
                 if (mConfig.useSlam) {
-                    long currentTimeMs = System.currentTimeMillis();
+                    double currentTimeMs = Timer.getFPGATimestamp();
                     if (mSlamStartTimeMs == null) {
-                        mSlamStartTimeMs = (double) currentTimeMs;
+                        mSlamStartTimeMs = currentTimeMs;
                     }
-                    boolean afterSlamTime = currentTimeMs - mSlamStartTimeMs > mConfig.slamTimeMs;
+                    boolean afterSlamTime = currentTimeMs - mSlamStartTimeMs > mConfig.slamTime;
                     if (afterSlamTime) {
                         if (mIsFirstTickForSlamResetEncoder) {
                             if (HardwareAdapter.getInstance().getPusher().resetSensors()) // Zero encoder since we assume to slam to in position

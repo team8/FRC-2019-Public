@@ -51,7 +51,7 @@ public class ElevatorMeasureSpeedAtOutputRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return RobotState.getInstance().elevatorPosition > mEncoderCutoff;
     }
 

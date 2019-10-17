@@ -6,6 +6,7 @@ import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
+import edu.wpi.first.wpilibj.Timer;
 
 public class VisionClosedDriveRoutine extends Routine {
 
@@ -17,7 +18,7 @@ public class VisionClosedDriveRoutine extends Routine {
     private double mAngle;
 
     private State mState = State.START;
-    private double startTime;
+    private double mStartTime;
 
     private enum State {
         START, DRIVING, TIMED_OUT, DONE
@@ -30,14 +31,14 @@ public class VisionClosedDriveRoutine extends Routine {
     public void start() {
         mDrive.setNeutral();
         mState = State.START;
-        startTime = System.currentTimeMillis();
+        mStartTime = Timer.getFPGATimestamp();
         Limelight.getInstance().setCamMode(LimelightControlMode.CamMode.VISION);
         Limelight.getInstance().setLEDMode(LimelightControlMode.LedMode.FORCE_ON); // Limelight LED on
     }
 
     @Override
     public Commands update(Commands commands) {
-        if (mState != State.TIMED_OUT && (System.currentTimeMillis() - startTime > 5000)) {
+        if (mState != State.TIMED_OUT && (Timer.getFPGATimestamp() - mStartTime > 5.0)) {
 //			Logger.getInstance().logRobotThread(Level.WARNING, "Timed Out!");
             mState = State.TIMED_OUT;
         }
@@ -72,7 +73,7 @@ public class VisionClosedDriveRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mState == State.DONE;
     }
 

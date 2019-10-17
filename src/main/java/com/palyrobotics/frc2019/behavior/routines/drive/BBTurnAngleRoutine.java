@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
+import edu.wpi.first.wpilibj.Timer;
 
 public class BBTurnAngleRoutine extends Routine {
 
@@ -15,7 +16,7 @@ public class BBTurnAngleRoutine extends Routine {
     private double mAngle;
 
     private GyroBBState mState = GyroBBState.START;
-    private double startTime;
+    private double mStartTime;
 
     private enum GyroBBState {
         START, TURNING, TIMED_OUT, DONE
@@ -29,12 +30,12 @@ public class BBTurnAngleRoutine extends Routine {
     public void start() {
         mDrive.setNeutral();
         mState = GyroBBState.START;
-        startTime = System.currentTimeMillis();
+        mStartTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public Commands update(Commands commands) {
-        if (mState != GyroBBState.TIMED_OUT && (System.currentTimeMillis() - startTime > 5000)) {
+        if (mState != GyroBBState.TIMED_OUT && (Timer.getFPGATimestamp() - mStartTime > 5.0)) {
 //			Logger.getInstance().logRobotThread(Level.WARNING, "Timed Out!");
             mState = GyroBBState.TIMED_OUT;
         }
@@ -70,7 +71,7 @@ public class BBTurnAngleRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mState == GyroBBState.DONE;
     }
 

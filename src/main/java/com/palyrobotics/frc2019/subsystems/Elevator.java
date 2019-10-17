@@ -8,6 +8,7 @@ import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator extends Subsystem {
 
@@ -34,7 +35,7 @@ public class Elevator extends Subsystem {
 
     private SparkMaxOutput mOutput;
 
-    private long mLastTimeWhenInClosedLoopMs;
+    private double mLastTimeWhenInClosedLoopMs;
 
     private Elevator() {
         super("elevator");
@@ -67,11 +68,11 @@ public class Elevator extends Subsystem {
 //                mOutput.setTargetSmartVelocity();
                 break;
             case CUSTOM_POSITIONING:
-                long currentTimeMs = System.currentTimeMillis();
+                double currentTime = Timer.getFPGATimestamp();
                 boolean inClosedLoopZone = mRobotState.elevatorPosition >= mConfig.closedLoopZoneHeight,
                         wantedPositionInClosedLoopZone = mElevatorWantedPosition >= mConfig.closedLoopZoneHeight,
-                        useClosedLoopOutOfRange = currentTimeMs - mLastTimeWhenInClosedLoopMs < mConfig.outOfClosedLoopZoneIdleDelayMs;
-                if (inClosedLoopZone) mLastTimeWhenInClosedLoopMs = currentTimeMs;
+                        useClosedLoopOutOfRange = currentTime - mLastTimeWhenInClosedLoopMs < mConfig.outOfClosedLoopZoneIdleDelayMs;
+                if (inClosedLoopZone) mLastTimeWhenInClosedLoopMs = currentTime;
                 if (inClosedLoopZone || wantedPositionInClosedLoopZone || useClosedLoopOutOfRange) {
                     mOutput.setTargetPositionSmartMotion(mElevatorWantedPosition, mConfig.feedForward, mConfig.gains);
                 } else {

@@ -35,7 +35,7 @@ public class SequentialRoutine extends Routine {
         // Update the current routine
         commands = mRoutines.get(mRunningRoutineIndex).update(commands);
         // Keep moving to next routine if the current routine is finished
-        while (mRoutines.get(mRunningRoutineIndex).finished()) {
+        while (mRoutines.get(mRunningRoutineIndex).isFinished()) {
             commands = mRoutines.get(mRunningRoutineIndex).cancel(commands);
             if (mRunningRoutineIndex <= mRoutines.size() - 1) {
                 mRunningRoutineIndex++;
@@ -61,7 +61,7 @@ public class SequentialRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mIsDone;
     }
 

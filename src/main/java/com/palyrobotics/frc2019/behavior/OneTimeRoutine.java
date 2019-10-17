@@ -25,7 +25,7 @@ public abstract class OneTimeRoutine extends Routine {
     }
 
     @Override
-    public final boolean finished() {
+    public final boolean isFinished() {
         return mAlreadyRan;
     }
 }

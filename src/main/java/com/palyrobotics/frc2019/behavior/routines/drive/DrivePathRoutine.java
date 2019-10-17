@@ -136,7 +136,7 @@ public class DrivePathRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mDrive.controllerOnTarget();
     }
 

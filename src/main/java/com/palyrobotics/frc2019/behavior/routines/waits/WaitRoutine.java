@@ -15,7 +15,7 @@ public abstract class WaitRoutine extends Routine {
 
     @Override
     public final Commands update(Commands commands) {
-        this.mIsDone = isCompleted();
+        mIsDone = isCompleted();
         return commands;
     }
 
@@ -25,7 +25,7 @@ public abstract class WaitRoutine extends Routine {
     }
 
     @Override
-    public final boolean finished() {
+    public final boolean isFinished() {
         return mIsDone;
     }
 

@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Fingers;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
+import edu.wpi.first.wpilibj.Timer;
 
 public class FingersCycleRoutine extends Routine {
 
@@ -11,12 +12,12 @@ public class FingersCycleRoutine extends Routine {
     private double mTimeout, mStartTime;
 
     public FingersCycleRoutine(double timeout) {
-        mTimeout = timeout * 1000;
+        mTimeout = timeout;
     }
 
     @Override
     public void start() {
-        mStartTime = System.currentTimeMillis();
+        mStartTime = Timer.getFPGATimestamp();
         mAlreadyRan = false;
     }
 
@@ -24,7 +25,7 @@ public class FingersCycleRoutine extends Routine {
     public Commands update(Commands commands) {
         commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
         commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
-        if (System.currentTimeMillis() > mTimeout + mStartTime) {
+        if (Timer.getFPGATimestamp() > mTimeout + mStartTime) {
             commands.wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
             commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
             mAlreadyRan = true;
@@ -38,7 +39,7 @@ public class FingersCycleRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mAlreadyRan;
     }
 

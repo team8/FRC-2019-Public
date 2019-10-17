@@ -7,7 +7,7 @@
     "acceptableVelocityError": 20,
     "slamPercentOutput": -0.35,
     "slamHoldMultiplier": 0.2,
-    "slamTimeMs": 550,
+    "slamTime": 0.55,
     "useSlam": true,
     "smartGains": {
         "p": 0.0,

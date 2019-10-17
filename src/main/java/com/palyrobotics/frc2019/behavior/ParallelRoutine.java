@@ -17,7 +17,7 @@ public class ParallelRoutine extends Routine {
 	 * Finishes when all routines finish.
      */
     public ParallelRoutine(ArrayList<Routine> routines) {
-        this.mRoutines = routines;
+        mRoutines = routines;
     }
 
     public ParallelRoutine(Routine... routines) {
@@ -57,7 +57,7 @@ public class ParallelRoutine extends Routine {
     private ArrayList<Routine> getFinishedAutos() {
         ArrayList<Routine> routinesToRemove = new ArrayList<>();
         for (Routine routine : mRoutines) {
-            if (routine.finished()) {
+            if (routine.isFinished()) {
                 routinesToRemove.add(routine);
             }
         }
@@ -65,7 +65,7 @@ public class ParallelRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mRoutines.isEmpty();
     }
 

@@ -31,7 +31,7 @@ public class CascadingGyroEncoderTurnAngleRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return mDrive.controllerOnTarget();
     }
 

@@ -45,7 +45,7 @@ public class ShooterExpelRoutine extends Routine {
     }
 
     @Override
-    public boolean finished() {
+    public boolean isFinished() {
         return Timer.getFPGATimestamp() - mStartTime > mTimeout;
     }
 
