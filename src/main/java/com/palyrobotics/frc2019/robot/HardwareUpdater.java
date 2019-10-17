@@ -290,6 +290,14 @@ class HardwareUpdater {
         robotState.intakeVelocity = armEncoder.getVelocity();
         robotState.intakeAppliedOutput = intakeSpark.getAppliedOutput();
 
+        LazySparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
+        CANEncoder pusherEncoder = pusherSpark.getEncoder();
+        robotState.pusherPosition = pusherEncoder.getPosition();
+        robotState.pusherVelocity = pusherEncoder.getVelocity();
+        robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
+
+        timeDebugger.addPoint("Basic");
+
         double time = Timer.getFPGATimestamp();
 
         Rotation2d
@@ -308,13 +316,11 @@ class HardwareUpdater {
 
         robotState.addObservations(time, odometry, velocity);
 
-        LazySparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
-        CANEncoder pusherEncoder = pusherSpark.getEncoder();
-        robotState.pusherPosition = pusherEncoder.getPosition();
-        robotState.pusherVelocity = pusherEncoder.getVelocity();
-        robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
+        timeDebugger.addPoint("Odometry");
 
         updateUltrasonicSensors(robotState);
+
+        timeDebugger.addPoint("Ultrasonics");
 
         timeDebugger.finish();
     }

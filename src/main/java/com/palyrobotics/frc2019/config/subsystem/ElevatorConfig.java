@@ -6,12 +6,11 @@ import com.palyrobotics.frc2019.util.control.SmartGains;
 public class ElevatorConfig extends AbstractSubsystemConfig {
 
     public double
-            manualMaxPercentOut,
+            manualPowerMultiplier,
             elevatorHeight1,
             elevatorHatchHeight2,
             elevatorCargoHeight2,
             elevatorHeight3,
-            handOffHeight,
             secondStageCanStartMovingArm,
             acceptablePositionError,
             acceptableVelocityError,

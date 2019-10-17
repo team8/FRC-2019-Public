@@ -94,7 +94,7 @@ public class VisionDriveHelper {
             rightOutput = -1.0;
         }
 
-        if (!hasFoundTarget && !robotState.atVisionTargetThreshold) {
+        if (throttle < 0.0 || (!hasFoundTarget && !robotState.atVisionTargetThreshold)) {
             return mCDH.cheesyDrive(commands, robotState);
         } else {
             mSignal.leftOutput.setPercentOutput(leftOutput);

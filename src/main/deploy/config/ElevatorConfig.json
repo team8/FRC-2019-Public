@@ -1,10 +1,9 @@
 {
-    "manualMaxPercentOut": 0.5,
+    "manualPowerMultiplier": 0.3,
     "elevatorHeight1": 0.0,
     "elevatorHatchHeight2": 25.0,
     "elevatorCargoHeight2": 25.0,
     "elevatorHeight3": 52.0,
-    "handOffHeight": 2.0,
     "secondStageCanStartMovingArm": 29.0,
     "acceptablePositionError": 0.5,
     "acceptableVelocityError": 20.0,

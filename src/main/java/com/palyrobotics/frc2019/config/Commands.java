@@ -36,7 +36,7 @@ public class Commands {
     public Intake.IntakeMacroState wantedIntakeState = Intake.IntakeMacroState.HOLDING;
 
     public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.IDLE;
-    public double customElevatorPercentOutput;
+    public double customElevatorPercentOutput, customElevatorVelocity;
 
     public boolean hasCargo, hasPusherCargo;
 

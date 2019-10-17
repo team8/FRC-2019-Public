@@ -6,12 +6,12 @@ import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.subsystems.Drive;
 
 /**
- * CheesyDriveHelper implements the calculations used in CheesyDrive for teleop control. Returns a DriveSignal for the motor output
+ * Implements constant curvature driving. Yoinked from 254 code
  */
 public class CheesyDriveHelper {
     private double mOldWheel, mQuickStopAccumulator;
-    private boolean mInitialBrake;
-    private double mBrakeRate;
+//    private boolean mInitialBrake;
+//    private double mBrakeRate;
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
@@ -62,11 +62,10 @@ public class CheesyDriveHelper {
             }
         }
 
-        //neginertia is difference in wheel
         double negInertiaPower = negInertia * negInertiaScalar;
         negInertiaAccumulator += negInertiaPower;
 
-        //possible source of occasional overturn
+        // Possible source of occasional overturn
         wheel = wheel + negInertiaAccumulator;
 
 //        // Handle braking
@@ -92,7 +91,7 @@ public class CheesyDriveHelper {
 //            mInitialBrake = true;
 //        }
 
-        // Quick-turn
+        // Quick-turn allows us to turn in place without having to be moving forward or backwards
         if (isQuickTurn) {
             if (Math.abs(commands.driveWheel) < DrivetrainConstants.kQuickTurnSensitivityThreshold) {
                 sensitivity = DrivetrainConstants.kPreciseQuickTurnSensitivity;

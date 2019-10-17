@@ -82,7 +82,7 @@ public class Pusher extends Subsystem {
                 break;
         }
 
-        CSVWriter.addData("pusherOutput", robotState.pusherAppliedOutput);
+        CSVWriter.addData("pusherAppliedOut", robotState.pusherAppliedOutput);
         CSVWriter.addData("pusherPos", robotState.pusherPosition);
         CSVWriter.addData("pusherSetPoint", mOutput.getReference());
         CSVWriter.addData("pusherVelocity", robotState.pusherVelocity);

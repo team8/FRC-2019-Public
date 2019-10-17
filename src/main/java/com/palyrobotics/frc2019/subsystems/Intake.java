@@ -232,7 +232,7 @@ public class Intake extends Subsystem {
         cachedCargoState = robotState.hasCargo;
 
         CSVWriter.addData("intakeAngle", mRobotState.intakeAngle);
-        CSVWriter.addData("intakeOutput", mRobotState.intakeAppliedOutput);
+        CSVWriter.addData("intakeAppliedOut", mRobotState.intakeAppliedOutput);
         if (mIntakeWantedAngle != null) CSVWriter.addData("intakeWantedAngle", mIntakeWantedAngle);
         CSVWriter.addData("intakeTargetAngle", mOutput.getReference());
     }

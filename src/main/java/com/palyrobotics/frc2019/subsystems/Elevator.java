@@ -21,7 +21,7 @@ public class Elevator extends Subsystem {
     private ElevatorConfig mConfig = Configs.get(ElevatorConfig.class);
 
     public enum ElevatorState {
-        MANUAL,
+        MANUAL_VELOCITY,
         CUSTOM_POSITIONING,
         PERCENT_OUTPUT,
         IDLE
@@ -29,7 +29,7 @@ public class Elevator extends Subsystem {
 
     private ElevatorState mElevatorState;
 
-    private Double mElevatorWantedPosition;
+    private Double mWantedPosition, mWantedVelocity;
 
     private RobotState mRobotState;
 
@@ -44,13 +44,14 @@ public class Elevator extends Subsystem {
     @Override
     public void reset() {
         mElevatorState = ElevatorState.IDLE;
-        mElevatorWantedPosition = null;
+        mWantedPosition = null;
+        mWantedVelocity = null;
         mOutput = new SparkMaxOutput();
     }
 
     /**
      * Calibration is checked and the variable for the state machine is set after processing the wanted elevator state. State machine used for movement and
-     * clearing {@link #mElevatorWantedPosition} only.
+     * clearing {@link #mWantedPosition} only.
      *
      * @param commands   used to obtain wanted elevator state
      * @param robotState used to obtain joystick input and sensor readings
@@ -64,17 +65,18 @@ public class Elevator extends Subsystem {
         // Execute update loop based on the current state
         // Does not switch between states, only performs actions
         switch (mElevatorState) {
-            case MANUAL:
-//                mOutput.setTargetSmartVelocity();
+            case MANUAL_VELOCITY:
+                mOutput.setTargetSmartVelocity(mWantedVelocity, mConfig.feedForward, mConfig.gains);
+                CSVWriter.addData("elevatorWantedVel", mRobotState.elevatorAppliedOutput);
                 break;
             case CUSTOM_POSITIONING:
                 double currentTime = Timer.getFPGATimestamp();
                 boolean inClosedLoopZone = mRobotState.elevatorPosition >= mConfig.closedLoopZoneHeight,
-                        wantedPositionInClosedLoopZone = mElevatorWantedPosition >= mConfig.closedLoopZoneHeight,
+                        wantedPositionInClosedLoopZone = mWantedPosition >= mConfig.closedLoopZoneHeight,
                         useClosedLoopOutOfRange = currentTime - mLastTimeWhenInClosedLoopMs < mConfig.outOfClosedLoopZoneIdleDelayMs;
                 if (inClosedLoopZone) mLastTimeWhenInClosedLoopMs = currentTime;
                 if (inClosedLoopZone || wantedPositionInClosedLoopZone || useClosedLoopOutOfRange) {
-                    mOutput.setTargetPositionSmartMotion(mElevatorWantedPosition, mConfig.feedForward, mConfig.gains);
+                    mOutput.setTargetPositionSmartMotion(mWantedPosition, mConfig.feedForward, mConfig.gains);
                 } else {
                     mOutput.setIdle();
                 }
@@ -87,15 +89,15 @@ public class Elevator extends Subsystem {
                 break;
         }
 
-        CSVWriter.addData("elevatorAppliedOutput", mRobotState.elevatorAppliedOutput);
+        CSVWriter.addData("elevatorAppliedOut", mRobotState.elevatorAppliedOutput);
         CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
         CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
-        CSVWriter.addData("elevatorWantedPos", mElevatorWantedPosition);
+        CSVWriter.addData("elevatorWantedPos", mWantedPosition);
         CSVWriter.addData("elevatorSetPointInch", mOutput.getReference());
     }
 
     /**
-     * Process wanted elevator state and joystick inputs into mElevatorState for the state machine. Sets {@link #mElevatorWantedPosition} for use in the state
+     * Process wanted elevator state and joystick inputs into mElevatorState for the state machine. Sets {@link #mWantedPosition} for use in the state
      * machine. Does not clear it. At the end, always check if any custom positioning has finished, and if so, set the state to hold. <br>
      * <br>
      *
@@ -104,7 +106,7 @@ public class Elevator extends Subsystem {
      * <p>
      * Behavior for desired states:
      * <ul>
-     * <li>{@link ElevatorState#MANUAL}: Sets the state to manual.</li>
+     * <li>{@link ElevatorState#MANUAL_VELOCITY}: Sets the state to manual.</li>
      * <li>{@link ElevatorState#CUSTOM_POSITIONING}: Sets the desired custom position and state to custom positioning. If not calibrated, set to calibrate instead.</li>
      * <li>{@link ElevatorState#IDLE}: Sets to idle.</li>
      * </ul>
@@ -114,11 +116,11 @@ public class Elevator extends Subsystem {
     private void handleElevatorState(Commands commands) {
         switch (commands.wantedElevatorState) {
             case CUSTOM_POSITIONING:
-                mElevatorWantedPosition = commands.robotSetPoints.elevatorPositionSetPoint;
+                mWantedPosition = commands.robotSetPoints.elevatorPositionSetPoint;
                 mElevatorState = ElevatorState.CUSTOM_POSITIONING;
                 break;
             default:
-                mElevatorWantedPosition = null;
+                mWantedPosition = null;
                 mElevatorState = commands.wantedElevatorState;
                 break;
         }
@@ -132,7 +134,7 @@ public class Elevator extends Subsystem {
      */
     public boolean elevatorOnTarget() {
         return mElevatorState == ElevatorState.CUSTOM_POSITIONING
-                && Math.abs(mElevatorWantedPosition - mRobotState.elevatorPosition) < mConfig.acceptablePositionError
+                && Math.abs(mWantedPosition - mRobotState.elevatorPosition) < mConfig.acceptablePositionError
                 && Math.abs(mRobotState.elevatorVelocity) < mConfig.acceptableVelocityError;
     }
 

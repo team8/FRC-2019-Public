@@ -23,6 +23,7 @@ import com.palyrobotics.frc2019.util.input.Joystick;
 import com.palyrobotics.frc2019.util.input.XboxController;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -158,6 +159,11 @@ public class OperatorInterface {
          * Elevator Control
          */
         ElevatorConfig elevatorConfig = Configs.get(ElevatorConfig.class);
+        double rightStick = mOperatorXboxController.getY(Hand.kRight);
+        if (Math.abs(rightStick) > 0.1) {
+            commands.wantedElevatorState = Elevator.ElevatorState.MANUAL_VELOCITY;
+            commands.customElevatorVelocity = rightStick * elevatorConfig.manualPowerMultiplier;
+        }
         if (mOperatorXboxController.getAButtonPressed()) { // Level 1
             Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(elevatorConfig.elevatorHeight1, 1.0);
             commands.cancelCurrentRoutines = false;
@@ -175,7 +181,6 @@ public class OperatorInterface {
             commands.cancelCurrentRoutines = false;
             commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel3, new WaitForArmCanTuck(), new IntakeSetRoutine()));
         }
-
 
         /*
          * Cargo Intake Control
