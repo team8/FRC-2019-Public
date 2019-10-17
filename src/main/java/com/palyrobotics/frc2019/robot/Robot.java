@@ -79,8 +79,8 @@ public class Robot extends TimedRobot {
 
     private void setIdleModes() {
         Function<Boolean, IdleMode> f = isEnabled()
-                ? b -> IdleMode.kBrake // Always brake if enabled
-                : b -> b ? IdleMode.kCoast : IdleMode.kBrake; // Set to config when disabled
+                ? c -> IdleMode.kBrake // Always brake if enabled
+                : c -> c ? IdleMode.kCoast : IdleMode.kBrake; // Set to config when disabled
         mHardwareUpdater.setDriveIdleMode(f.apply(mConfig.coastDriveIfDisabled));
         mHardwareUpdater.setElevatorIdleMode(f.apply(mConfig.coastElevatorIfDisabled));
         mHardwareUpdater.setArmIdleMode(f.apply(mConfig.coastArmIfDisabled));
@@ -98,8 +98,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-//        System.out.println(HardwareAdapter.getInstance().getIntake().intakeMasterSpark.getEncoder().getPosition());
-//        System.out.printf("Potentiometer Arm: %s%n", HardwareAdapter.getInstance().getIntake().potentiometer.get());
         mEnabledSubsystems.forEach(Subsystem::reset);
         mHardwareUpdater.updateHardware();
         mTick = 0;
@@ -108,17 +106,16 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         mTick++;
-        if (mTick % 50 == 0) {
-            mLiveGraph.put("Left Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
-            mLiveGraph.put("Right Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight.getRangeInches());
-            mLiveGraph.put("Pusher Ultrasonic", HardwareAdapter.getInstance().getPusher().pusherUltrasonic.getRangeInches());
-            mLiveGraph.put("Arm Potentiometer", HardwareAdapter.getInstance().getIntake().potentiometer.get());
+        if (mTick % 2 == 0) {
+            mLiveGraph.add("Left Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
+            mLiveGraph.add("Right Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight.getRangeInches());
+            mLiveGraph.add("Pusher Ultrasonic", HardwareAdapter.getInstance().getPusher().pusherUltrasonic.getRangeInches());
+            mLiveGraph.add("Arm Potentiometer", HardwareAdapter.getInstance().getIntake().potentiometer.get());
         }
     }
 
     @Override
     public void teleopInit() {
-
         sRobotState.gamePeriod = RobotState.GamePeriod.TELEOP;
         mRoutineManager.reset(sCommands);
         sCommands.wantedDriveState = Drive.DriveState.CHEZY; // Switch to chezy after auto ends
@@ -144,6 +141,9 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         mEnabledServices.forEach(RobotService::update);
+//        double time = Timer.getFPGATimestamp();
+//        mLiveGraph.add("Variable 1", Math.sin(time + Math.cos(time)) * 3 * Math.sin(time / 2));
+//        mLiveGraph.add("Variable 2", Math.sin(time * 2 + Math.sin(time)) * 2 / Math.sin(time / 3));
     }
 
     @Override
@@ -180,8 +180,7 @@ public class Robot extends TimedRobot {
     private void setupSubsystemsAndServices() {
         // TODO meh
         Map<String, Supplier<RobotService>> configToService = Map.of(
-                "commandReceiver", CommandReceiver::new,
-                "dashboardManager", LiveGraph::new
+                "commandReceiver", CommandReceiver::new
         );
         mEnabledServices = mConfig.enabledServices.stream()
                 .map(serviceName -> configToService.get(serviceName).get())

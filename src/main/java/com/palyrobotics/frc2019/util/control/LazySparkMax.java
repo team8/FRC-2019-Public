@@ -9,6 +9,7 @@ import com.revrobotics.ControlType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A wrapper around a Spark Max that only updates inputs when they have changed.
@@ -35,8 +36,8 @@ public class LazySparkMax extends CANSparkMax {
 
     public void set(ControlType type, double reference, double arbitraryPercentOutput, Gains gains) {
         int slot = sControlTypeToSlot.getOrDefault(type, 0);
-        updateGainsIfNeeded(gains, slot);
-        if (!gains.equals(mLastGains.get(slot)) || slot != mLastSlot || type != mLastControlType || reference != mLastReference || arbitraryPercentOutput != mLastArbitraryPercentOutput) {
+        if (gains != null) updateGainsIfNeeded(gains, slot);
+        if (!Objects.equals(gains, mLastGains.get(slot)) || slot != mLastSlot || type != mLastControlType || reference != mLastReference || arbitraryPercentOutput != mLastArbitraryPercentOutput) {
             mLastSlot = slot;
             mLastControlType = type;
             mLastReference = reference;

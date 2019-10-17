@@ -1,7 +1,6 @@
 {
     "enabledServices": [
-        "commandReceiver",
-        "liveGraph"
+        "commandReceiver"
     ],
     "enabledSubsystems": [
         "drive",

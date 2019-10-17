@@ -72,20 +72,19 @@ public class OnBoardDriveController implements Drive.DriveController {
     }
 
     private SparkDriveSignal getPositionOutput(Pose drivePose) {
-        double left_sp = mLeftSetPoint.position;
-        double left_pv = drivePose.leftEncoderPosition;
-        double right_sp = mRightSetPoint.position;
-        double right_pv = drivePose.rightEncoderPosition;
-
-        return updateClosedLoopOutputs(left_sp, left_pv, right_sp, right_pv);
+        double leftSetPoint = mLeftSetPoint.position;
+        double leftPosition = drivePose.leftEncoderPosition;
+        double rightSetPoint = mRightSetPoint.position;
+        double rightPosition = drivePose.rightEncoderPosition;
+        return updateClosedLoopOutputs(leftSetPoint, leftPosition, rightSetPoint, rightPosition);
     }
 
     private SparkDriveSignal getVelocityOutput(Pose drivePose) {
         double leftSetPoint = mLeftSetPoint.velocity;
-        double leftPosition = drivePose.leftEncoderVelocity;
+        double leftVelocity = drivePose.leftEncoderVelocity;
         double rightSetPoint = mRightSetPoint.velocity;
-        double rightPosition = drivePose.rightEncoderVelocity;
-        return updateClosedLoopOutputs(leftSetPoint, leftPosition, rightSetPoint, rightPosition);
+        double rightVelocity = drivePose.rightEncoderVelocity;
+        return updateClosedLoopOutputs(leftSetPoint, leftVelocity, rightSetPoint, rightVelocity);
     }
 
     private SparkDriveSignal getVelocityWithArbitraryDemand() {
@@ -171,13 +170,6 @@ public class OnBoardDriveController implements Drive.DriveController {
             this.velocity = vel;
             this.acc = acc;
             this.dt = dt;
-        }
-
-        public TrajectorySegment(TrajectorySegment to_copy) {
-            position = to_copy.position;
-            velocity = to_copy.velocity;
-            acc = to_copy.acc;
-            dt = to_copy.dt;
         }
 
         public String toString() {

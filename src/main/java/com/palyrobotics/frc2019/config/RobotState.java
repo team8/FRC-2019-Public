@@ -2,8 +2,8 @@ package com.palyrobotics.frc2019.config;
 
 import com.palyrobotics.frc2019.util.Pose;
 import com.palyrobotics.frc2019.util.trajectory.*;
+import edu.wpi.first.wpilibj.CircularBuffer;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -14,16 +14,18 @@ import java.util.Map;
  */
 public class RobotState {
 
+    public static final int kUltrasonicBufferSize = 10;
+
     public enum GamePeriod {
         AUTO, TELEOP, DISABLED
     }
 
-    private static RobotState instance = new RobotState();
+    private static RobotState sInstance = new RobotState();
 
     public double matchStartTimeSeconds;
 
     public static RobotState getInstance() {
-        return instance;
+        return sInstance;
     }
 
     protected RobotState() {
@@ -38,26 +40,27 @@ public class RobotState {
 
     // Intake
     public boolean hasCargo;
-    public double cargoDistance;
-    public double intakeStartAngle;  // Angle in degrees
-    public double intakeAngle;  // Angle in degrees
-    public double intakeAppliedOutput;
-    public double intakeVelocity; // RPM
-    public ArrayList<Double>
-            leftReadings = new ArrayList<>(), // TODO make queue?
-            rightReadings = new ArrayList<>();
+    public double
+            cargoDistance,
+            intakeStartAngle,  // Angle in degrees
+            intakeAngle,  // Angle in degrees
+            intakeAppliedOutput,
+            intakeVelocity; // RPM
+    public CircularBuffer
+            leftIntakeReadings = new CircularBuffer(kUltrasonicBufferSize),
+            rightIntakeReadings = new CircularBuffer(kUltrasonicBufferSize);
 
     // Pusher
     public boolean hasPusherCargo, hasPusherCargoFar;
 
     public double cargoPusherDistance;
-    public ArrayList<Double> mPusherReadings = new ArrayList<>();
+    public CircularBuffer pusherReadings = new CircularBuffer(kUltrasonicBufferSize);
 
     // Hatch Intake
     public boolean hasHatch, hatchIntakeUp = true;
 
     // Tracks total current from kPDP
-    public double shovelCurrentDraw = 0;
+    public double shovelCurrentDraw;
 
     // Pose stores drivetrain sensor data
     public Pose drivePose = new Pose();

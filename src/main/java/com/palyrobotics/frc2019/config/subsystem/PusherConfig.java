@@ -15,7 +15,7 @@ public class PusherConfig extends AbstractSubsystemConfig {
     public boolean useSlam;
     public double slamPercentOutput, slamHoldMultiplier, slamTime;
 
-    public SmartGains smartGain;
+    public SmartGains smartGains;
     public Gains positionGains;
 
     /* Tolerances */

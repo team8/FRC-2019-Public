@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class Fingers extends Subsystem {
 
-    public static Fingers instance = new Fingers();
+    private static Fingers sInstance = new Fingers();
 
     public static Fingers getInstance() {
-        return instance;
+        return sInstance;
     }
 
     private DoubleSolenoid.Value

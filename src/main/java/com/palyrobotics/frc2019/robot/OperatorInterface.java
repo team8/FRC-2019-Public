@@ -157,20 +157,21 @@ public class OperatorInterface {
         /*
          * Elevator Control
          */
+        ElevatorConfig elevatorConfig = Configs.get(ElevatorConfig.class);
         if (mOperatorXboxController.getAButtonPressed()) { // Level 1
-            Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorHeight1, .1);
+            Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(elevatorConfig.elevatorHeight1, 1.0);
             commands.cancelCurrentRoutines = false;
             commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel1));
         } else if (mOperatorXboxController.getBButtonPressed()) { // Level 2
             double levelHeight = Robot.getRobotState().hasPusherCargoFar
-                    ? Configs.get(ElevatorConfig.class).elevatorCargoHeight2
-                    : Configs.get(ElevatorConfig.class).elevatorHatchHeight2;
+                    ? elevatorConfig.elevatorCargoHeight2
+                    : elevatorConfig.elevatorHatchHeight2;
             // Has cargo -> cargo height 2
-            Routine elevatorLevel2 = new ElevatorCustomPositioningRoutine(levelHeight, .1);
+            Routine elevatorLevel2 = new ElevatorCustomPositioningRoutine(levelHeight, 1.0);
             commands.cancelCurrentRoutines = false;
             commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel2, new WaitForArmCanTuck(), new IntakeSetRoutine()));
-        } else if (mOperatorXboxController.getYButtonPressed()) {
-            Routine elevatorLevel3 = new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorHeight3, .1);
+        } else if (mOperatorXboxController.getYButtonPressed()) { // Level 3
+            Routine elevatorLevel3 = new ElevatorCustomPositioningRoutine(elevatorConfig.elevatorHeight3, 1.0);
             commands.cancelCurrentRoutines = false;
             commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel3, new WaitForArmCanTuck(), new IntakeSetRoutine()));
         }

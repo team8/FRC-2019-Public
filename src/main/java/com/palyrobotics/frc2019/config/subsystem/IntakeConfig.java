@@ -38,7 +38,8 @@ public class IntakeConfig extends AbstractSubsystemConfig {
     public double
             acceptableAngularError,
             angularVelocityError,
-            cargoInchTolerance,
+            cargoInchTolerance;
+    public int
             cargoCountRequired;
 
     public SmartGains gains, holdGains;

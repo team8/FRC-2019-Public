@@ -69,16 +69,6 @@ public class Commands {
                 elevatorPositionSetPoint,
                 pusherPositionSetPoint,
                 intakePositionSetPoint;
-
-        /**
-         * Resets all the set points
-         */
-        public void reset() {
-            drivePowerSetPoint = null;
-            elevatorPositionSetPoint = null;
-            pusherPositionSetPoint = null;
-            intakePositionSetPoint = null;
-        }
     }
 
     // All robot set points

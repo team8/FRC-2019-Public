@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Intake extends Subsystem {
 
-    public static Intake instance = new Intake();
+    private static Intake sInstance = new Intake();
 
     public static Intake getInstance() {
-        return instance;
+        return sInstance;
     }
 
     private IntakeConfig mConfig = Configs.get(IntakeConfig.class);
@@ -37,7 +37,6 @@ public class Intake extends Subsystem {
     }
 
     private enum UpDownState {
-        MANUAL,
         CUSTOM_ANGLE,
         ZERO_VELOCITY,
         IDLE
@@ -54,7 +53,6 @@ public class Intake extends Subsystem {
         HOLDING_ROCKET,
         INTAKING_ROCKET,
         EXPELLING_ROCKET,
-        EXPELLING_CARGO,
         HOLDING,
         IDLE
     }
@@ -63,7 +61,7 @@ public class Intake extends Subsystem {
     private UpDownState mUpDownState;
     private IntakeMacroState mMacroState;
 
-    private final static double kRequiredCancelSeconds = 0.1;
+    private final static double kRequiredCancelSeconds = 0.2;
     private double mLastIntakeQueueTime;
 
     protected Intake() {
@@ -125,7 +123,7 @@ public class Intake extends Subsystem {
             case STOWED:
                 mWheelState = WheelState.IDLE;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
-                mIntakeWantedAngle = mConfig.maxAngle - ((1.0 + 2.0) / 2.0);
+                mIntakeWantedAngle = mConfig.maxAngle - 2.5;
                 break;
             case GROUND_INTAKING:
                 mWheelState = WheelState.INTAKING;

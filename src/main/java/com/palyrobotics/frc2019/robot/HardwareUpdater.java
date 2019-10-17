@@ -28,6 +28,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.CircularBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -312,49 +313,45 @@ class HardwareUpdater {
         timeDebugger.finish();
     }
 
+    private boolean hasCargoFromReadings(CircularBuffer readings, double tolerance, int requiredCount) {
+        int count = 0;
+        for (int i = 0; i < RobotState.kUltrasonicBufferSize; i++) {
+            if (readings.get(i) >= tolerance) count++;
+        }
+        return count >= requiredCount;
+    }
+
     private void updateUltrasonicSensors(RobotState robotState) {
         /* Test for cargo in intake */
 
-        Ultrasonic mUltrasonicLeft = HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft;
-        robotState.leftReadings.add(mUltrasonicLeft.getRangeInches());
-        while (robotState.leftReadings.size() > 10) {
-            robotState.leftReadings.remove(0);
-        }
-        Ultrasonic mUltrasonicRight = HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight;
-        robotState.rightReadings.add(mUltrasonicRight.getRangeInches());
-        while (robotState.rightReadings.size() > 10) {
-            robotState.rightReadings.remove(0);
-        }
+        Ultrasonic ultrasonicLeft = HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft;
+        robotState.leftIntakeReadings.addFirst(ultrasonicLeft.getRangeInches());
+        Ultrasonic ultrasonicRight = HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight;
+        robotState.rightIntakeReadings.addFirst(ultrasonicRight.getRangeInches());
 
         IntakeConfig intakeConfig = Configs.get(IntakeConfig.class);
-        int leftTotal = (int) robotState.leftReadings.stream().filter(i -> (i < intakeConfig.cargoInchTolerance)).count();
-        int rightTotal = (int) robotState.rightReadings.stream().filter(i -> (i < intakeConfig.cargoInchTolerance)).count();
-        robotState.hasCargo = (leftTotal >= intakeConfig.cargoCountRequired || rightTotal >= intakeConfig.cargoCountRequired);
+        robotState.hasCargo = hasCargoFromReadings(robotState.leftIntakeReadings, intakeConfig.cargoInchTolerance, intakeConfig.cargoCountRequired)
+                || hasCargoFromReadings(robotState.rightIntakeReadings, intakeConfig.cargoInchTolerance, intakeConfig.cargoCountRequired);
 
-        robotState.cargoDistance = Math.min(mUltrasonicLeft.getRangeInches(), mUltrasonicRight.getRangeInches());
+        robotState.cargoDistance = Math.min(ultrasonicLeft.getRangeInches(), ultrasonicRight.getRangeInches());
 
         /* Test for cargo in carriage */
 
         // Cargo Distance from Pusher
-        Ultrasonic mPusherUltrasonic = HardwareAdapter.getInstance().getPusher().pusherUltrasonic;
-        robotState.mPusherReadings.add(mPusherUltrasonic.getRangeInches());
-        if (robotState.mPusherReadings.size() > 10) {
-            robotState.mPusherReadings.remove(0);
-        }
-
-        int pusherTotalClose = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).cargoTolerance).count();
-        int pusherTotalFar = (int) robotState.mPusherReadings.stream().filter(i -> i < Configs.get(PusherConfig.class).cargoToleranceFar).count();
+        Ultrasonic pusherUltrasonic = HardwareAdapter.getInstance().getPusher().pusherUltrasonic;
+        robotState.pusherReadings.addFirst(pusherUltrasonic.getRangeInches());
 
         boolean lastHasPusherCargoFar = robotState.hasPusherCargoFar;
-        robotState.hasPusherCargo = (pusherTotalClose > OtherConstants.kRequiredUltrasonicCount + 1);
-        robotState.hasPusherCargoFar = (pusherTotalFar > OtherConstants.kRequiredUltrasonicCount);
+        PusherConfig pusherConfig = Configs.get(PusherConfig.class);
+        robotState.hasPusherCargo = hasCargoFromReadings(robotState.pusherReadings, pusherConfig.cargoTolerance, OtherConstants.kRequiredUltrasonicCount + 1);
+        robotState.hasPusherCargoFar = hasCargoFromReadings(robotState.pusherReadings, pusherConfig.cargoToleranceFar, OtherConstants.kRequiredUltrasonicCount);
 
         if (lastHasPusherCargoFar != robotState.hasPusherCargoFar) {
             int properPipeline = robotState.hasCargo ? OtherConstants.kLimelightCargoPipeline : OtherConstants.kLimelightHatchPipeline;
             Limelight.getInstance().setPipeline(properPipeline);
         }
 
-        robotState.cargoPusherDistance = mPusherUltrasonic.getRangeInches();
+        robotState.cargoPusherDistance = pusherUltrasonic.getRangeInches();
 //		System.out.println(robotState.cargoPusherDistance);
     }
 

@@ -8,10 +8,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class ElevatorCustomPositioningRoutine extends Routine {
 
-    private double mPosition;
-    private double mTimeout;
-    private double mStartTime;
-    private boolean mHasSetAllCommands = false;
+    private double mPosition, mTimeout, mStartTime;
+    private boolean mHasSetAllCommands;
 
     public ElevatorCustomPositioningRoutine(double position, double timeout) {
         mPosition = position;
@@ -52,6 +50,6 @@ public class ElevatorCustomPositioningRoutine extends Routine {
 
     @Override
     public String getName() {
-        return "ElevatorCustomPositioningRoutine";
+        return "Elevator Custom Positioning Routine";
     }
 }
