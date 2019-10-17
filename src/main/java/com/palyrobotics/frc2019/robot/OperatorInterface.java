@@ -151,7 +151,7 @@ public class OperatorInterface {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.VISION);
                 mLimelight.setLEDMode(LimelightControlMode.LedMode.FORCE_ON); // Limelight LED on
             }
-            addWantedRoutine(newCommands, new VisionDrivePathRoutine());
+            newCommands.addWantedRoutine(new VisionDrivePathRoutine());
         } else {
             if (System.currentTimeMillis() - visionStartTimeMs > OtherConstants.kVisionLEDTimeoutMillis) {
                 mLimelight.setCamMode(LimelightControlMode.CamMode.DRIVER); // Limelight LED off

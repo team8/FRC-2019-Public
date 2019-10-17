@@ -108,6 +108,9 @@ public class VisionDrivePathRoutine extends Routine {
 
         selectTarget(robotHeading);
 
+        System.out.println("target heading: " + mTargetHeading);
+        System.out.println("neg tx: " + yawToTarget);
+
         //Converting to radians for math stuff
         robotHeading *= Math.PI / 180;
         yawToTarget *= Math.PI / 180;
@@ -123,13 +126,13 @@ public class VisionDrivePathRoutine extends Routine {
             xDist = yDist / Math.tan(Math.PI - Math.abs(robotHeading - mTargetHeading) - Math.abs(yawToTarget));
         }
         xDistShort = 0.3 * xDist;
-        double angle = Math.atan(xDistShort/yDist); //Hopefully this math be right
+        double angle = (yawToTarget > 0) ? Math.atan(xDistShort/yDist) : -Math.atan(xDistShort/yDist); //Hopefully this math be right
 
         absXDistShort = xDistShort * Math.cos(robotHeading) - yDist * Math.sin(robotHeading);
         absYDistShort = ((robotHeading + yawToTarget > 0) ? yDist: -yDist) * Math.cos(robotHeading) + xDistShort * Math.sin(robotHeading);
         double distToPoint = Math.sqrt(Math.pow(absXDistShort, 2) + Math.pow(absYDistShort, 2));
-        absXDistShort = distToPoint * Math.cos(robotHeading - yawToTarget);
-        absYDistShort = distToPoint * Math.sin(robotHeading - yawToTarget);
+        absXDistShort = distToPoint * Math.cos(robotHeading - angle);
+        absYDistShort = distToPoint * Math.sin(robotHeading - angle);
 
         absYDist = ((robotHeading + yawToTarget > 0) ? yDist: -yDist) * Math.cos(robotHeading) + xDist * Math.sin(robotHeading);
         absXDist = xDist * Math.cos(robotHeading) - yDist * Math.sin(robotHeading);
@@ -155,7 +158,7 @@ public class VisionDrivePathRoutine extends Routine {
      */
     private void selectTarget(double robotHeading) { //TODO: use robot x and y position to make it work
         double[] targetHeadings = new double[] {
-                PhysicalConstants.kCargoShipFrontHeading
+                PhysicalConstants.kCargoShipFrontHeading,
                 PhysicalConstants.kCargoShipLeftHeading,
                 PhysicalConstants.kCargoShipRightHeading,
                 PhysicalConstants.kLeftRocketCloseHeading,
@@ -165,12 +168,11 @@ public class VisionDrivePathRoutine extends Routine {
                 PhysicalConstants.kLoadingStationHeading
         };
 
-        for (double targetHeading : targetHeadings) { // check which target heading is being detected
-            System.out.println(Math.abs(targetHeading - robotHeading - Limelight.getInstance().getYawToTarget()));
-//            if (Math.abs(targetHeading - robotHeading - Limelight.getInstance().getYawToTarget()) < 10) { //TODO: tune threshold, check if works
+        for (double targetHeading : targetHeadings) { // robot heading needs to be within 14 deg of target heading for this to work, kinda sketch
+            if (Math.abs(targetHeading - robotHeading) < 14) { //TODO: make different threshold depending on target
                 mTargetHeading = targetHeading;
                 break;
-//            }
+            }
         }
     }
 
