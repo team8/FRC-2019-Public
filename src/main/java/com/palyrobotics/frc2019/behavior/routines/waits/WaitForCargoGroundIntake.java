@@ -6,7 +6,7 @@ public class WaitForCargoGroundIntake extends WaitRoutine {
 
     @Override
     public boolean isCompleted() {
-        return mRobotState.hasCargo;
+        return mRobotState.hasIntakeCargo;
     }
 
     @Override

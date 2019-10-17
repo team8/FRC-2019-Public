@@ -33,12 +33,12 @@ public class Commands {
     public Fingers.FingersState wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
     public Fingers.PushingState wantedFingersExpelState = Fingers.PushingState.CLOSED;
 
-    public Intake.IntakeMacroState wantedIntakeState = Intake.IntakeMacroState.HOLDING;
+    public Intake.IntakeMacroState wantedIntakeState = Intake.IntakeMacroState.HOLDING_CURRENT_ANGLE;
 
     public Elevator.ElevatorState wantedElevatorState = Elevator.ElevatorState.IDLE;
     public double customElevatorPercentOutput, customElevatorVelocity;
 
-    public boolean hasCargo, hasPusherCargo;
+    public boolean hasPusherCargo;
 
     public double driveThrottle, driveWheel;
     public boolean isQuickTurn, isBraking;

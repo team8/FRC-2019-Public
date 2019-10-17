@@ -6,10 +6,10 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.PortConstants;
 import com.palyrobotics.frc2019.config.constants.OtherConstants;
 import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
-import com.palyrobotics.frc2019.util.input.Joystick;
-import com.palyrobotics.frc2019.util.input.XboxController;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.LazySparkMax;
+import com.palyrobotics.frc2019.util.input.Joystick;
+import com.palyrobotics.frc2019.util.input.XboxController;
 import com.revrobotics.CANError;
 import edu.wpi.first.wpilibj.*;
 

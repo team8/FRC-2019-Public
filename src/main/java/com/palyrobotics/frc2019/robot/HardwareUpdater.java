@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.palyrobotics.frc2019.config.PortConstants;
 import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
@@ -325,7 +324,7 @@ class HardwareUpdater {
         robotState.rightIntakeReadings.addFirst(ultrasonicRight.getRangeInches());
 
         IntakeConfig intakeConfig = Configs.get(IntakeConfig.class);
-        robotState.hasCargo = hasCargoFromReadings(robotState.leftIntakeReadings, intakeConfig.cargoInchTolerance, intakeConfig.cargoCountRequired)
+        robotState.hasIntakeCargo = hasCargoFromReadings(robotState.leftIntakeReadings, intakeConfig.cargoInchTolerance, intakeConfig.cargoCountRequired)
                 || hasCargoFromReadings(robotState.rightIntakeReadings, intakeConfig.cargoInchTolerance, intakeConfig.cargoCountRequired);
 
         robotState.cargoDistance = Math.min(ultrasonicLeft.getRangeInches(), ultrasonicRight.getRangeInches());
@@ -342,7 +341,7 @@ class HardwareUpdater {
         robotState.hasPusherCargoFar = hasCargoFromReadings(robotState.pusherReadings, pusherConfig.cargoToleranceFar, OtherConstants.kRequiredUltrasonicCount);
 
         if (lastHasPusherCargoFar != robotState.hasPusherCargoFar) {
-            int properPipeline = robotState.hasCargo ? OtherConstants.kLimelightCargoPipeline : OtherConstants.kLimelightHatchPipeline;
+            int properPipeline = robotState.hasIntakeCargo ? OtherConstants.kLimelightCargoPipeline : OtherConstants.kLimelightHatchPipeline;
             Limelight.getInstance().setPipeline(properPipeline);
         }
 

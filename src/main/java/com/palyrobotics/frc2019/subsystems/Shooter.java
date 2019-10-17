@@ -67,16 +67,16 @@ public class Shooter extends Subsystem {
         // Once enough time passes, ready to expel
         boolean readyToExpel = 1 / OtherConstants.deltaTime <= mExpellingCycles;
 
-        if (readyToExpel && robotState.hasCargo) { // Rumble until expelled
+        if (readyToExpel && robotState.hasIntakeCargo) { // Rumble until expelled
             mRumbleLength = 0.5;
         }
 
-        if (mCachedHasCargo && !robotState.hasCargo) { // Stop rumbling once you go from cargo -> no cargo
+        if (mCachedHasCargo && !robotState.hasIntakeCargo) { // Stop rumbling once you go from cargo -> no cargo
             mRumbleLength = -1;
             mExpellingCycles = 0;
         }
 
-        mCachedHasCargo = robotState.hasCargo;
+        mCachedHasCargo = robotState.hasIntakeCargo;
     }
 
     public double getRumbleLength() {

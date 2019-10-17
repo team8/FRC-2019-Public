@@ -9,7 +9,7 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 public class IntakeBeginCycleRoutine extends OneTimeRoutine {
     @Override
     public Commands doOnce(Commands commands) {
-        commands.wantedIntakeState = Intake.IntakeMacroState.GROUND_INTAKING;
+        commands.wantedIntakeState = Intake.IntakeMacroState.GROUND_INTAKE;
         commands.addWantedRoutine(new PusherInRoutine());
         return commands;
     }

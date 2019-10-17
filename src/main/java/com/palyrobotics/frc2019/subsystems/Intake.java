@@ -7,7 +7,6 @@ import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Intake extends Subsystem {
 
@@ -38,23 +37,20 @@ public class Intake extends Subsystem {
 
     private enum UpDownState {
         CUSTOM_ANGLE,
-        ZERO_VELOCITY,
-        IDLE
+        ZERO_VELOCITY
     }
 
     public enum IntakeMacroState {
         STOWED, // Stowed at the start of the match
-        GROUND_INTAKING, // Getting the cargo off the ground
-        LIFTING, // Lifting the cargo into the intake
-        DROPPING, // Dropping the cargo into the intake
-        HOLDING_MID, // Moving the arm to the mid hold position and keeping it there
-        DOWN,
-        TUCK,
-        HOLDING_ROCKET,
-        INTAKING_ROCKET,
-        EXPELLING_ROCKET,
-        HOLDING,
-        IDLE
+        DOWN_FOR_GROUND_INTAKE,
+        GROUND_INTAKE, // Getting the cargo off the ground
+        LIFTING_FROM_GROUND_INTAKE, // Lifting the cargo into the intake
+        DROPPING_INTO_CARRIAGE, // Dropping the cargo into the pusher carriage
+        HOLDING_MID_OUT_OF_WAY, // Hold out of the way of the pusher
+        HOLDING_CARGO,
+        INTAKING_CARGO,
+        EXPELLING_CARGO,
+        HOLDING_CURRENT_ANGLE
     }
 
     private WheelState mWheelState;
@@ -70,7 +66,7 @@ public class Intake extends Subsystem {
 
     @Override
     public void reset() {
-        mMacroState = IntakeMacroState.IDLE;
+        mMacroState = IntakeMacroState.HOLDING_CURRENT_ANGLE;
         mOutput = new SparkMaxOutput();
         mTalonOutput = 0.0;
     }
@@ -79,39 +75,79 @@ public class Intake extends Subsystem {
     public void update(Commands commands, RobotState robotState) {
         mRobotState = robotState;
 
-        // The intake macro state has eight possible states.  Any state can be transferred to automatically or manually,
-        // but some states need to set auxiliary variables, such as the queue times.
-
-        if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID && mMacroState == IntakeMacroState.GROUND_INTAKING) {
-            // note: this needs to be nested so that the if/else can be exited
-            if (mLastIntakeQueueTime + kRequiredCancelSeconds < Timer.getFPGATimestamp()) {
-                // move the intake back up from the ground
-                mMacroState = IntakeMacroState.HOLDING_MID;
-            }
-        } else if (mMacroState == IntakeMacroState.GROUND_INTAKING && robotState.hasCargo) {
-            mMacroState = IntakeMacroState.LIFTING;
-            commands.wantedIntakeState = IntakeMacroState.LIFTING;
-        } else if (commands.wantedIntakeState == IntakeMacroState.GROUND_INTAKING && mMacroState != IntakeMacroState.LIFTING) {
-            mMacroState = IntakeMacroState.GROUND_INTAKING;
-            mLastIntakeQueueTime = Timer.getFPGATimestamp();
-        } else if (mMacroState == IntakeMacroState.LIFTING && intakeOnTarget()) {
-            mMacroState = IntakeMacroState.DROPPING;
-            commands.wantedIntakeState = IntakeMacroState.DROPPING;
-        } else if (commands.wantedIntakeState == IntakeMacroState.DROPPING && robotState.hasPusherCargo) {
-            mMacroState = IntakeMacroState.HOLDING_MID;
-            commands.wantedIntakeState = IntakeMacroState.HOLDING_MID; // reset it
-        } else if (mMacroState != IntakeMacroState.DROPPING
-                && !(mMacroState == IntakeMacroState.GROUND_INTAKING && commands.wantedIntakeState == IntakeMacroState.HOLDING_ROCKET)) {
-            mMacroState = commands.wantedIntakeState;
-        }
-
 //        System.out.println(mMacroState);
 //        System.out.println(commands.wantedIntakeState);
 //        System.out.println(robotState.intakeAngle);
 
-        commands.hasCargo = robotState.hasCargo;
+        // The intake macro state has eight possible states.  Any state can be transferred to automatically or manually,
+        // but some states need to set auxiliary variables, such as the queue times.
 
-        // FEED FORWARD MODEL:
+        switch (mMacroState) {
+            case STOWED:
+            case HOLDING_CURRENT_ANGLE:
+            case HOLDING_MID_OUT_OF_WAY: // Trust in the operator for this one, could still have a ball in the pusher
+                mMacroState = commands.wantedIntakeState; // Allow us to do any state from here
+                break;
+            case DOWN_FOR_GROUND_INTAKE:
+                if (intakeOnTarget()) {
+                    mMacroState = commands.wantedIntakeState = IntakeMacroState.GROUND_INTAKE;
+                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO) { // Cancel the intake and go back into stowed position
+                    mMacroState = commands.wantedIntakeState = IntakeMacroState.STOWED;
+                }
+                break;
+            case GROUND_INTAKE:
+                if (robotState.hasIntakeCargo) {
+                    mMacroState = commands.wantedIntakeState = IntakeMacroState.LIFTING_FROM_GROUND_INTAKE;
+                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO) { // Cancel the intake and go back into stowed position
+                    mMacroState = commands.wantedIntakeState = IntakeMacroState.STOWED;
+                }
+                break;
+            case LIFTING_FROM_GROUND_INTAKE: {
+                if (intakeOnTarget() && (commands.wantedIntakeState == IntakeMacroState.DROPPING_INTO_CARRIAGE || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO)) {
+                    mMacroState = commands.wantedIntakeState;
+                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY) { // Cancel the hand-off and move arm to holding mid
+                    mMacroState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
+                }
+                break;
+            }
+            case DROPPING_INTO_CARRIAGE:
+                if (robotState.hasPusherCargoFar) { // Move arm out of the way for the pusher if it is secured in the carriage
+                    mMacroState = commands.wantedIntakeState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
+                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY) { // Cancel the hand-off and move arm to holding mid
+                    mMacroState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
+                }
+                break;
+            // Handled by operator interface
+            case HOLDING_CARGO:
+            case INTAKING_CARGO:
+            case EXPELLING_CARGO:
+                break;
+        }
+
+//        if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID && mMacroState == IntakeMacroState.GROUND_INTAKING) {
+//            // note: this needs to be nested so that the if/else can be exited
+//            if (mLastIntakeQueueTime + kRequiredCancelSeconds < Timer.getFPGATimestamp()) {
+//                // move the intake back up from the ground
+//                mMacroState = IntakeMacroState.HOLDING_MID;
+//            }
+//        } else if (mMacroState == IntakeMacroState.GROUND_INTAKING && robotState.hasIntakeCargo) {
+//            mMacroState = IntakeMacroState.LIFTING;
+//            commands.wantedIntakeState = IntakeMacroState.LIFTING;
+//        } else if (commands.wantedIntakeState == IntakeMacroState.GROUND_INTAKING && mMacroState != IntakeMacroState.LIFTING) {
+//            mMacroState = IntakeMacroState.GROUND_INTAKING;
+//            mLastIntakeQueueTime = Timer.getFPGATimestamp();
+//        } else if (mMacroState == IntakeMacroState.LIFTING && intakeOnTarget()) {
+//            mMacroState = IntakeMacroState.DROPPING;
+//            commands.wantedIntakeState = IntakeMacroState.DROPPING;
+//        } else if (commands.wantedIntakeState == IntakeMacroState.DROPPING && robotState.hasPusherCargo) {
+//            mMacroState = IntakeMacroState.HOLDING_MID;
+//            commands.wantedIntakeState = IntakeMacroState.HOLDING_MID; // reset it
+//        } else if (mMacroState != IntakeMacroState.DROPPING
+//                && !(mMacroState == IntakeMacroState.GROUND_INTAKING && commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO)) {
+//            mMacroState = commands.wantedIntakeState;
+//        }
+
+        // Feed Forward Model:
         // 1. Compensate for gravity on the CM.
         // 2. Compensate for robot acceleration.  Derivation is similar to that for an inverted pendulum,
         // and can be found on slack.
@@ -124,58 +160,51 @@ public class Intake extends Subsystem {
             case STOWED:
                 mWheelState = WheelState.IDLE;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
-                mIntakeWantedAngle = mConfig.maxAngle - 2.5;
+                mIntakeWantedAngle = mConfig.handOffAngle;
                 break;
-            case GROUND_INTAKING:
+            case GROUND_INTAKE:
                 mWheelState = WheelState.INTAKING;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.intakeAngle;
                 break;
-            case LIFTING:
+            case LIFTING_FROM_GROUND_INTAKE:
                 mWheelState = WheelState.SLOW;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.handOffAngle;
                 break;
-            case DROPPING:
+            case DROPPING_INTO_CARRIAGE:
                 mWheelState = WheelState.DROPPING;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.handOffAngle;
-                // todo: add some sort of timeout so this doesn't finish immediately
                 break;
-            case HOLDING_MID:
+            case HOLDING_MID_OUT_OF_WAY:
                 mWheelState = WheelState.IDLE;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.holdAngle;
                 break;
-            case HOLDING_ROCKET:
-            case TUCK:
+            case HOLDING_CARGO:
                 mWheelState = WheelState.SLOW;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.rocketExpelAngle;
                 break;
-            case INTAKING_ROCKET:
+            case INTAKING_CARGO:
                 mWheelState = WheelState.MEDIUM;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.rocketExpelAngle;
                 break;
-            case EXPELLING_ROCKET:
+            case EXPELLING_CARGO:
                 mWheelState = WheelState.EXPELLING;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.rocketExpelAngle;
                 break;
-            case DOWN:
+            case DOWN_FOR_GROUND_INTAKE:
                 mWheelState = WheelState.IDLE;
                 mUpDownState = UpDownState.CUSTOM_ANGLE;
                 mIntakeWantedAngle = mConfig.intakeAngle;
                 break;
-            case HOLDING:
+            case HOLDING_CURRENT_ANGLE:
                 mWheelState = WheelState.IDLE;
                 mUpDownState = UpDownState.ZERO_VELOCITY;
-                break;
-            default:
-            case IDLE:
-                mWheelState = WheelState.IDLE;
-                mUpDownState = UpDownState.IDLE;
                 break;
         }
 
@@ -195,7 +224,6 @@ public class Intake extends Subsystem {
             case MEDIUM:
                 mTalonOutput = mConfig.medium;
                 break;
-            default:
             case IDLE:
                 mTalonOutput = 0.0;
                 break;
@@ -217,20 +245,15 @@ public class Intake extends Subsystem {
                 break;
             case ZERO_VELOCITY:
                 mOutput.setTargetSmartVelocity(0.0, arbitraryDemand, mConfig.holdGains);
-            default:
-            case IDLE:
-                mIntakeWantedAngle = null;
-                mOutput.setIdle();
-                break;
         }
 
-        if (!cachedCargoState && robotState.hasCargo) {
+        if (!cachedCargoState && robotState.hasIntakeCargo) {
             mRumbleLength = 0.75;
         } else if (mRumbleLength <= 0) {
             mRumbleLength = -1;
         }
 
-        cachedCargoState = robotState.hasCargo;
+        cachedCargoState = robotState.hasIntakeCargo;
 
         CSVWriter.addData("intakeAngle", mRobotState.intakeAngle);
         CSVWriter.addData("intakeAppliedOut", mRobotState.intakeAppliedOutput);

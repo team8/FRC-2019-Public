@@ -39,7 +39,7 @@ public class RobotState {
     public boolean isQuickTurning;
 
     // Intake
-    public boolean hasCargo;
+    public boolean hasIntakeCargo;
     public double
             cargoDistance,
             intakeStartAngle,  // Angle in degrees

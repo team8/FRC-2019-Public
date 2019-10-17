@@ -3,13 +3,9 @@ package com.palyrobotics.frc2019.robot;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
-import com.palyrobotics.frc2019.behavior.routines.intake.IntakeBeginCycleRoutine;
-import com.palyrobotics.frc2019.behavior.routines.intake.IntakeLevelOneRocketRoutine;
-import com.palyrobotics.frc2019.behavior.routines.intake.IntakeSetRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeUpRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
-import com.palyrobotics.frc2019.behavior.routines.waits.WaitForArmCanTuck;
 import com.palyrobotics.frc2019.behavior.routines.waits.WaitForElevatorCanMove;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
@@ -175,11 +171,11 @@ public class OperatorInterface {
             // Has cargo -> cargo height 2
             Routine elevatorLevel2 = new ElevatorCustomPositioningRoutine(levelHeight, 1.0);
             commands.cancelCurrentRoutines = false;
-            commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel2, new WaitForArmCanTuck(), new IntakeSetRoutine()));
+            commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel2));
         } else if (mOperatorXboxController.getYButtonPressed()) { // Level 3
             Routine elevatorLevel3 = new ElevatorCustomPositioningRoutine(elevatorConfig.elevatorHeight3, 1.0);
             commands.cancelCurrentRoutines = false;
-            commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel3, new WaitForArmCanTuck(), new IntakeSetRoutine()));
+            commands.addWantedRoutine(new SequentialRoutine(new PusherInRoutine(), new IntakeUpRoutine(), new WaitForElevatorCanMove(), elevatorLevel3));
         }
 
         /*
@@ -187,29 +183,29 @@ public class OperatorInterface {
          */
         if (mOperatorXboxController.getDPadDown()) {
             commands.cancelCurrentRoutines = false;
-            // newCommands.wantedIntakeState = Intake.IntakeMacroState.DOWN;
-            commands.addWantedRoutine(new IntakeBeginCycleRoutine());
+            commands.wantedIntakeState = IntakeMacroState.DOWN_FOR_GROUND_INTAKE;
+            commands.wantedPusherInOutState = Pusher.PusherState.IN;
         } else if (mOperatorXboxController.getDPadUp()) {
             commands.cancelCurrentRoutines = false;
-            commands.addWantedRoutine(new IntakeUpRoutine());
-        } else if (mOperatorXboxController.getDPadRight()) {
-            commands.cancelCurrentRoutines = false;
-            commands.addWantedRoutine(new IntakeLevelOneRocketRoutine());
+            commands.wantedIntakeState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
         } else if (mOperatorXboxController.getDPadLeft()) {
             commands.cancelCurrentRoutines = false;
-            commands.wantedIntakeState = Intake.IntakeMacroState.STOWED;
+            commands.wantedIntakeState = IntakeMacroState.HOLDING_CARGO;
+        } else if (mOperatorXboxController.getDPadRight()) {
+            commands.cancelCurrentRoutines = false;
+            commands.wantedIntakeState = IntakeMacroState.DROPPING_INTO_CARRIAGE;
         }
 
-        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_ROCKET) {
-            commands.wantedIntakeState = Intake.IntakeMacroState.EXPELLING_ROCKET;
-        } else if (!mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.EXPELLING_ROCKET) {
-            commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_ROCKET;
+        /* Intake arm for scoring in the cargo bays */
+        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_CARGO) {
+            commands.wantedIntakeState = Intake.IntakeMacroState.EXPELLING_CARGO;
+        } else if (!mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.EXPELLING_CARGO) {
+            commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_CARGO;
         }
-
-        if (mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_ROCKET) {
-            commands.wantedIntakeState = Intake.IntakeMacroState.INTAKING_ROCKET;
-        } else if (!mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == IntakeMacroState.INTAKING_ROCKET) {
-            commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_ROCKET;
+        if (mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_CARGO) {
+            commands.wantedIntakeState = Intake.IntakeMacroState.INTAKING_CARGO;
+        } else if (!mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == IntakeMacroState.INTAKING_CARGO) {
+            commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_CARGO;
         }
 
         /* Pusher control */
@@ -222,13 +218,13 @@ public class OperatorInterface {
         }
 
         /* Pneumatic hatch pusher control */
-        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState != IntakeMacroState.EXPELLING_ROCKET) {
+        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState != IntakeMacroState.EXPELLING_CARGO) {
             commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
             commands.wantedFingersExpelState = Fingers.PushingState.EXPELLING;
         }
 
         if (mOperatorXboxController.getLeftTriggerPressed()) {
-            commands.addWantedRoutine(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 3));
+            commands.addWantedRoutine(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 3.0));
         }
 
         if (mDriveStick.getTriggerPressed()) {
