@@ -49,9 +49,9 @@ public class Kinematics {
      */
     public static RigidTransform2d integrateForwardKinematics(RigidTransform2d currentPose, double leftWheelDelta, double rightWheelDelta,
                                                               Rotation2d currentHeading) {
-        RigidTransform2d.Delta with_gyro = forwardKinematics(leftWheelDelta, rightWheelDelta,
+        RigidTransform2d.Delta withGyro = forwardKinematics(leftWheelDelta, rightWheelDelta,
                 currentPose.getRotation().inverse().rotateBy(currentHeading).getRadians());
-        return currentPose.transformBy(RigidTransform2d.fromVelocity(with_gyro));
+        return currentPose.transformBy(RigidTransform2d.fromVelocity(withGyro));
     }
 
     public static DriveVelocity inverseKinematics(RigidTransform2d.Delta velocity) {

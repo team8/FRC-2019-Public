@@ -6,7 +6,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.PortConstants;
 import com.palyrobotics.frc2019.config.constants.OtherConstants;
 import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
-import com.palyrobotics.frc2019.util.XboxController;
+import com.palyrobotics.frc2019.util.input.Joystick;
+import com.palyrobotics.frc2019.util.input.XboxController;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.LazySparkMax;
 import com.revrobotics.CANError;
@@ -64,7 +65,7 @@ public class HardwareAdapter {
             rightSlave1Spark = new LazySparkMax(sPortConstants.vidarRightDriveSlave1DeviceID);
             rightSlave2Spark = new LazySparkMax(sPortConstants.vidarRightDriveSlave2DeviceID);
             sparks = List.of(leftMasterSpark, leftSlave1Spark, leftSlave2Spark, rightMasterSpark, rightSlave1Spark, rightSlave2Spark);
-            gyro = new PigeonIMU(ShovelHardware.getInstance().shovelTalon);
+            gyro = new PigeonIMU(new WPI_TalonSRX(sPortConstants.vidarShovelDeviceID));
         }
     }
 
@@ -184,27 +185,6 @@ public class HardwareAdapter {
         }
     }
 
-    /**
-     * Hatch Intake - 1 WPI_VictorSPX, 1 SingleSolenoid
-     */
-    public static class ShovelHardware {
-        private static ShovelHardware sInstance = new ShovelHardware();
-
-        private static ShovelHardware getInstance() {
-            return sInstance;
-        }
-
-        final WPI_TalonSRX shovelTalon;
-        final DoubleSolenoid upDownSolenoid;
-        final DigitalInput upDownHFX;
-
-        ShovelHardware() {
-            shovelTalon = new WPI_TalonSRX(sPortConstants.vidarShovelDeviceID);
-            upDownSolenoid = new DoubleSolenoid(0, sPortConstants.vidarShovelSolenoidUpDownID, sPortConstants.vidarShovelSolenoidUpDownID2);
-            upDownHFX = new DigitalInput(sPortConstants.vidarShovelHFXPort);
-        }
-    }
-
     public static class FingersHardware {
         private static FingersHardware sInstance = new FingersHardware();
 
@@ -233,7 +213,7 @@ public class HardwareAdapter {
 
         Joysticks() {
             if (OtherConstants.operatorXBoxController) {
-                operatorXboxController = new XboxController(2, false);
+                operatorXboxController = new XboxController(2);
             }
         }
     }
@@ -255,7 +235,6 @@ public class HardwareAdapter {
             compressor = new Compressor();
             pdp = new PowerDistributionPanel();
         }
-
     }
 
     // Wrappers to access hardware groups
@@ -273,10 +252,6 @@ public class HardwareAdapter {
 
     public ShooterHardware getShooter() {
         return ShooterHardware.getInstance();
-    }
-
-    public ShovelHardware getShovel() {
-        return ShovelHardware.getInstance();
     }
 
     public PusherHardware getPusher() {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings("Duplicates")
 
-public class test extends AutoModeBase {
+public class TestAuto extends AutoModeBase {
 
     @Override
     public String toString() {

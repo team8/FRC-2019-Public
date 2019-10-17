@@ -45,28 +45,28 @@ public class CheesyDriveHelper {
 
         double angularPower;
 
-        //linear power is what's actually sent to motor, throttle is input
+        // Linear power is what's actually sent to motor, throttle is input
         double linearPower = throttle;
 
-        //Negative inertia
-        double negInertiaAccumulator = 0.0;
-        double negInertiaScalar;
+        // Negative inertia
+        double negativeInertiaAccumulator = 0.0;
+        double negativeInertiaScalar;
 
         if (wheel * negInertia > 0) {
-            negInertiaScalar = 2.5;
+            negativeInertiaScalar = 2.5;
         } else {
             if (Math.abs(wheel) > 0.65) {
-                negInertiaScalar = 5.0;
+                negativeInertiaScalar = 5.0;
             } else {
-                negInertiaScalar = 3.0;
+                negativeInertiaScalar = 3.0;
             }
         }
 
-        double negInertiaPower = negInertia * negInertiaScalar;
-        negInertiaAccumulator += negInertiaPower;
+        double negativeInertiaPower = negInertia * negativeInertiaScalar;
+        negativeInertiaAccumulator += negativeInertiaPower;
 
         // Possible source of occasional overturn
-        wheel = wheel + negInertiaAccumulator;
+        wheel += negativeInertiaAccumulator;
 
 //        // Handle braking
 //        if (isBraking) {

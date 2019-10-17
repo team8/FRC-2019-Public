@@ -56,9 +56,6 @@ public class RobotState {
     public double cargoPusherDistance;
     public CircularBuffer pusherReadings = new CircularBuffer(kUltrasonicBufferSize);
 
-    // Hatch Intake
-    public boolean hasHatch, hatchIntakeUp = true;
-
     // Tracks total current from kPDP
     public double shovelCurrentDraw;
 

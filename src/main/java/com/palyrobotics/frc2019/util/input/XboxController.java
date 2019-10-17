@@ -1,5 +1,6 @@
 package com.palyrobotics.frc2019.util.input;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class XboxController extends edu.wpi.first.wpilibj.XboxController {
@@ -11,14 +12,14 @@ public class XboxController extends edu.wpi.first.wpilibj.XboxController {
     }
 
     private int mLastPOV = -1;
-    private Map<Hand, Boolean> mLastTriggers = Map.of(
+    private Map<Hand, Boolean> mLastTriggers = new HashMap<>(Map.of(
             Hand.kLeft, false,
             Hand.kRight, false
-    );
+    ));
 
     public void updateLastInputs() {
         mLastPOV = getPOV();
-        mLastTriggers.keySet().forEach(hand -> mLastTriggers.put(hand, getTriggerAxis(hand) > kTriggerThreshold));
+        mLastTriggers.replaceAll((hand, b) -> getTriggerAxis(hand) > kTriggerThreshold);
     }
 
     public boolean getDPadRight() {
@@ -55,5 +56,10 @@ public class XboxController extends edu.wpi.first.wpilibj.XboxController {
 
     public boolean getRightBumperPressed() {
         return getBumperPressed(Hand.kRight);
+    }
+
+    public void setRumble(boolean on) {
+        setRumble(RumbleType.kRightRumble, on ? 1.0 : 0.0);
+        setRumble(RumbleType.kLeftRumble, on ? 1.0 : 0.0);
     }
 }

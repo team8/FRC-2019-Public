@@ -12,7 +12,6 @@ import com.palyrobotics.frc2019.config.constants.OtherConstants;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
-import com.palyrobotics.frc2019.config.subsystem.ShovelConfig;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.TimeDebugger;
@@ -60,7 +59,6 @@ class HardwareUpdater {
     }
 
     private void configureHardware() {
-        configureShovelHardware();
         configureDriveHardware();
         configureElevatorHardware();
         configureIntakeHardware();
@@ -233,17 +231,6 @@ class HardwareUpdater {
 //		pusherSecondaryUltrasonic.setEnabled(true);
     }
 
-    private void configureShovelHardware() {
-        WPI_TalonSRX shovelTalon = HardwareAdapter.getInstance().getShovel().shovelTalon;
-
-        shovelTalon.setNeutralMode(NeutralMode.Brake);
-        shovelTalon.configOpenloopRamp(0.09, 0);
-        shovelTalon.enableVoltageCompensation(true);
-        shovelTalon.configVoltageCompSaturation(14, 0);
-        shovelTalon.configForwardSoftLimitEnable(false, 0);
-        shovelTalon.configReverseSoftLimitEnable(false, 0);
-    }
-
     private double[] mAccelerometerAngles = new double[3]; // Cached array to prevent more garbage
 
     /**
@@ -255,12 +242,8 @@ class HardwareUpdater {
         CANSparkMax
                 leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark,
                 rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
-
-        robotState.hatchIntakeUp = !HardwareAdapter.getInstance().getShovel().upDownHFX.get();
-        robotState.shovelCurrentDraw = HardwareAdapter.getInstance().getMiscellaneousHardware().pdp.getCurrent(Configs.get(PortConstants.class).vidarShovelPDPPort);
-        robotState.hasHatch = (robotState.shovelCurrentDraw > Configs.get(ShovelConfig.class).maxShovelCurrentDraw);
-
         LazySparkMax elevatorSpark = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark;
+
         CANEncoder elevatorEncoder = elevatorSpark.getEncoder();
         robotState.elevatorPosition = elevatorEncoder.getPosition();
         robotState.elevatorVelocity = elevatorEncoder.getVelocity();

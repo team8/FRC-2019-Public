@@ -134,10 +134,6 @@ public class RoutineManager {
         return conflicts;
     }
 
-    public String getName() {
-        return "RoutineManager";
-    }
-
     public static Subsystem[] subsystemSuperset(ArrayList<Routine> routines) {
         HashSet<Subsystem> superset = new HashSet<>();
         for (Routine routine : routines) {

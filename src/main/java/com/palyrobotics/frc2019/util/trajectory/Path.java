@@ -20,7 +20,7 @@ import java.util.*;
  * @author Team 254, Calvin Yan
  */
 public class Path {
-    private static final double kSegmentCompletePercentage = .9;
+    private static final double kSegmentCompletePercentage = 0.9;
 
     private List<Waypoint> mWaypoints;
     private List<PathSegment> mSegments;
@@ -313,11 +313,11 @@ public class Path {
             return Optional.empty();
         }
 
-        double sqrt_discriminant = Math.sqrt(discriminant);
-        Translation2d positiveSolution = new Translation2d((det * dy + (dy < 0 ? -1 : 1) * dx * sqrt_discriminant) / drSquared + center.getX(),
-                (-det * dx + Math.abs(dy) * sqrt_discriminant) / drSquared + center.getY());
-        Translation2d negativeSolution = new Translation2d((det * dy - (dy < 0 ? -1 : 1) * dx * sqrt_discriminant) / drSquared + center.getX(),
-                (-det * dx - Math.abs(dy) * sqrt_discriminant) / drSquared + center.getY());
+        double sqrtDiscriminant = Math.sqrt(discriminant);
+        Translation2d positiveSolution = new Translation2d((det * dy + (dy < 0 ? -1 : 1) * dx * sqrtDiscriminant) / drSquared + center.getX(),
+                (-det * dx + Math.abs(dy) * sqrtDiscriminant) / drSquared + center.getY());
+        Translation2d negativeSolution = new Translation2d((det * dy - (dy < 0 ? -1 : 1) * dx * sqrtDiscriminant) / drSquared + center.getX(),
+                (-det * dx - Math.abs(dy) * sqrtDiscriminant) / drSquared + center.getY());
 
         //Choose the one between start and end that is closest to start
         double positionDotProduct = segment.dotProduct(positiveSolution);

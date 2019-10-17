@@ -72,6 +72,7 @@ public class Intake extends Subsystem {
     public void reset() {
         mMacroState = IntakeMacroState.IDLE;
         mOutput = new SparkMaxOutput();
+        mTalonOutput = 0.0;
     }
 
     @Override
