@@ -57,9 +57,6 @@ public class Intake extends Subsystem {
     private UpDownState mUpDownState;
     private IntakeMacroState mMacroState;
 
-    private final static double kRequiredCancelSeconds = 0.2;
-    private double mLastIntakeQueueTime;
-
     protected Intake() {
         super("intake");
     }
@@ -85,18 +82,21 @@ public class Intake extends Subsystem {
         switch (mMacroState) {
             case STOWED:
             case HOLDING_CURRENT_ANGLE:
+            case HOLDING_CARGO:
+            case INTAKING_CARGO:
+            case EXPELLING_CARGO:
             case HOLDING_MID_OUT_OF_WAY: // Trust in the operator for this one, could still have a ball in the pusher
                 mMacroState = commands.wantedIntakeState; // Allow us to do any state from here
                 break;
             case DOWN_FOR_GROUND_INTAKE:
-                if (intakeOnTarget()) {
+                if (intakeOnTarget()) { // We are all the way on the ground and should start the intake wheels
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.GROUND_INTAKE;
                 } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO) { // Cancel the intake and go back into stowed position
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.STOWED;
                 }
                 break;
             case GROUND_INTAKE:
-                if (robotState.hasIntakeCargo) {
+                if (robotState.hasIntakeCargo) { // Test if ball is all the way in carriage and stop spinning intake wheels
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.LIFTING_FROM_GROUND_INTAKE;
                 } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO) { // Cancel the intake and go back into stowed position
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.STOWED;
@@ -116,11 +116,6 @@ public class Intake extends Subsystem {
                 } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY) { // Cancel the hand-off and move arm to holding mid
                     mMacroState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
                 }
-                break;
-            // Handled by operator interface
-            case HOLDING_CARGO:
-            case INTAKING_CARGO:
-            case EXPELLING_CARGO:
                 break;
         }
 

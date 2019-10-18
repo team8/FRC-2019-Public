@@ -13,12 +13,9 @@ import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
-import com.palyrobotics.frc2019.util.TimeDebugger;
+import com.palyrobotics.frc2019.util.LoopOverrunDebugger;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.LazySparkMax;
-import com.palyrobotics.frc2019.util.trajectory.Kinematics;
-import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
-import com.palyrobotics.frc2019.util.trajectory.Rotation2d;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -72,9 +69,9 @@ class HardwareUpdater {
         for (CANSparkMax spark : driveHardware.sparks) {
             spark.restoreFactoryDefaults();
             spark.enableVoltageCompensation(11.0);
-            spark.setSecondaryCurrentLimit(200);
+            spark.setSecondaryCurrentLimit(120);
             spark.setSmartCurrentLimit(DrivetrainConstants.kCurrentLimit);
-            spark.setOpenLoopRampRate(0.05);
+            spark.setOpenLoopRampRate(0.1);
             CANEncoder encoder = spark.getEncoder();
             encoder.setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
             encoder.setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
@@ -236,7 +233,7 @@ class HardwareUpdater {
      * Takes all of the sensor data from the hardware, and unwraps it into the current {@link RobotState}.
      */
     void updateState(RobotState robotState) {
-        TimeDebugger timeDebugger = new TimeDebugger("UpdateState", 0.02);
+        LoopOverrunDebugger loopOverrunDebugger = new LoopOverrunDebugger("UpdateState", 0.02);
 
         CANSparkMax
                 leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark,
@@ -278,33 +275,33 @@ class HardwareUpdater {
         robotState.pusherVelocity = pusherEncoder.getVelocity();
         robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
 
-        timeDebugger.addPoint("Basic");
+        loopOverrunDebugger.addPoint("Basic");
 
         double time = Timer.getFPGATimestamp();
 
-        Rotation2d
-                gyroAngle = Rotation2d.fromDegrees(robotState.drivePose.heading),
-                gyroVelocity = Rotation2d.fromDegrees(robotState.drivePose.headingVelocity);
-        RigidTransform2d odometry = robotState.generateOdometryFromSensors(
-                robotState.drivePose.leftEncoderPosition - robotState.drivePose.lastLeftEncoderPosition,
-                robotState.drivePose.rightEncoderPosition - robotState.drivePose.lastRightEncoderPosition,
-                gyroAngle
-        );
-        RigidTransform2d.Delta velocity = Kinematics.forwardKinematics(
-                robotState.drivePose.leftEncoderVelocity,
-                robotState.drivePose.rightEncoderVelocity,
-                gyroVelocity.getRadians()
-        );
+//        Rotation2d
+//                gyroAngle = Rotation2d.fromDegrees(robotState.drivePose.heading),
+//                gyroVelocity = Rotation2d.fromDegrees(robotState.drivePose.headingVelocity);
+//        RigidTransform2d odometry = robotState.generateOdometryFromSensors(
+//                robotState.drivePose.leftEncoderPosition - robotState.drivePose.lastLeftEncoderPosition,
+//                robotState.drivePose.rightEncoderPosition - robotState.drivePose.lastRightEncoderPosition,
+//                gyroAngle
+//        );
+//        RigidTransform2d.Delta velocity = Kinematics.forwardKinematics(
+//                robotState.drivePose.leftEncoderVelocity,
+//                robotState.drivePose.rightEncoderVelocity,
+//                gyroVelocity.getRadians()
+//        );
+//
+//        robotState.addObservations(time, odometry, velocity);
 
-        robotState.addObservations(time, odometry, velocity);
-
-        timeDebugger.addPoint("Odometry");
+        loopOverrunDebugger.addPoint("Odometry");
 
         updateUltrasonicSensors(robotState);
 
-        timeDebugger.addPoint("Ultrasonics");
+        loopOverrunDebugger.addPoint("Ultrasonics");
 
-        timeDebugger.finish();
+        loopOverrunDebugger.finish();
     }
 
     private boolean hasCargoFromReadings(CircularBuffer readings, double tolerance, int requiredCount) {

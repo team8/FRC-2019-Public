@@ -122,8 +122,8 @@ public class AdaptivePurePursuitController implements Drive.DriveController {
         double leftAcc = (setPoint.left - mLastDriveVelocity.left) / dt;
         double rightAcc = (setPoint.right - mLastDriveVelocity.right) / dt;
 
-        CSVWriter.addData("lastDriveVelocityLeft", mLastDriveVelocity.left);
-        CSVWriter.addData("lastDriveVelocityRight", mLastDriveVelocity.right);
+//        CSVWriter.addData("lastDriveVelocityLeft", mLastDriveVelocity.left);
+//        CSVWriter.addData("lastDriveVelocityRight", mLastDriveVelocity.right);
 
         //Pass velocity and acceleration set points into onboard controller which
         //Returns a SparkSignal with velocity setPoint and arbitrary feedforward

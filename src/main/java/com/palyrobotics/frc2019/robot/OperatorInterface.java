@@ -82,10 +82,10 @@ public class OperatorInterface {
         if (Math.abs(mDriveStick.getY()) > DrivetrainConstants.kDeadband || Math.abs(mTurnStick.getX()) > DrivetrainConstants.kDeadband) {
             commands.wantedDriveState = Drive.DriveState.CHEZY;
         }
-        commands.driveThrottle = -mDriveStick.getThrottle();
-        commands.driveWheel = mDriveStick.getX();
-        commands.isQuickTurn = mDriveStick.getTrigger();
-        commands.isBraking = mTurnStick.getTrigger();
+        commands.driveThrottle = -mDriveStick.getY();
+        commands.driveWheel = mTurnStick.getX();
+        commands.isQuickTurn = mTurnStick.getTrigger();
+        commands.isBraking = mDriveStick.getTrigger();
 
         if (mTurnStick.getRawButton(3)) {
             mVisionStartTimeSeconds = Timer.getFPGATimestamp();

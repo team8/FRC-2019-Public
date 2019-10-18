@@ -160,14 +160,14 @@ public class Drive extends Subsystem {
 
         mState = commands.wantedDriveState;
 
-        CSVWriter.addData("driveLeftEnc", state.drivePose.leftEncoderPosition);
-        CSVWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncoderVelocity);
-        CSVWriter.addData("driveRightEnc", state.drivePose.rightEncoderPosition);
-        CSVWriter.addData("driveRightEncVelocity", state.drivePose.rightEncoderVelocity);
-        CSVWriter.addData("driveHeading", state.drivePose.heading);
-        CSVWriter.addData("driveHeadingVelocity", state.drivePose.headingVelocity);
-        CSVWriter.addData("driveLeftSetPoint", mSignal.leftOutput.getReference());
-        CSVWriter.addData("driveRightSetPoint", mSignal.rightOutput.getReference());
+//        CSVWriter.addData("driveLeftEnc", state.drivePose.leftEncoderPosition);
+//        CSVWriter.addData("driveLeftEncVelocity", state.drivePose.leftEncoderVelocity);
+//        CSVWriter.addData("driveRightEnc", state.drivePose.rightEncoderPosition);
+//        CSVWriter.addData("driveRightEncVelocity", state.drivePose.rightEncoderVelocity);
+//        CSVWriter.addData("driveHeading", state.drivePose.heading);
+//        CSVWriter.addData("driveHeadingVelocity", state.drivePose.headingVelocity);
+//        CSVWriter.addData("driveLeftSetPoint", mSignal.leftOutput.getReference());
+//        CSVWriter.addData("driveRightSetPoint", mSignal.rightOutput.getReference());
     }
 
     private void setDriveOutputs(SparkDriveSignal signal) {
