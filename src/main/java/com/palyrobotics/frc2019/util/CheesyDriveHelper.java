@@ -18,7 +18,7 @@ public class CheesyDriveHelper {
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
 
         if (commands.wantedDriveState == Drive.DriveState.CHEZY) {
-            wheel *= 0.9;
+            wheel *= 1.0;
         }
         // Quick-turn if right trigger is pressed
         boolean isQuickTurn = robotState.isQuickTurning = commands.isQuickTurn;

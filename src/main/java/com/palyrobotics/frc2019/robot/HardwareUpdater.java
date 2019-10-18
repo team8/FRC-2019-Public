@@ -277,8 +277,8 @@ class HardwareUpdater {
 
         loopOverrunDebugger.addPoint("Basic");
 
-        double time = Timer.getFPGATimestamp();
-
+//        double time = Timer.getFPGATimestamp();
+//
 //        Rotation2d
 //                gyroAngle = Rotation2d.fromDegrees(robotState.drivePose.heading),
 //                gyroVelocity = Rotation2d.fromDegrees(robotState.drivePose.headingVelocity);
@@ -343,7 +343,6 @@ class HardwareUpdater {
         }
 
         robotState.cargoPusherDistance = pusherUltrasonic.getRangeInches();
-//		System.out.println(robotState.cargoPusherDistance);
     }
 
     /**

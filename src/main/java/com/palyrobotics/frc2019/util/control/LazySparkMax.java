@@ -96,7 +96,7 @@ public class LazySparkMax extends CANSparkMax {
                     controller.setSmartMotionMinOutputVelocity(smartGains.minimumOutputVelocity, slot);
                 if (firstInitialization) {
                     controller.setOutputRange(-1.0, 1.0, slot);
-                    controller.setSmartMotionAccelStrategy(CANPIDController.AccelStrategy.kSCurve, slot); // TODO this does not even do anything as of 1.40
+                    controller.setSmartMotionAccelStrategy(CANPIDController.AccelStrategy.kSCurve, slot); // TODO this does not even do anything as of 1.4.1
                 }
             }
         }
