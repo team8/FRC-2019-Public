@@ -67,7 +67,7 @@ public class Elevator extends Subsystem {
         switch (mElevatorState) {
             case MANUAL_VELOCITY:
                 mOutput.setTargetSmartVelocity(mWantedVelocity, mConfig.feedForward, mConfig.gains);
-                CSVWriter.addData("elevatorWantedVel", mRobotState.elevatorAppliedOutput);
+//                CSVWriter.addData("elevatorWantedVel", mRobotState.elevatorAppliedOutput);
                 break;
             case CUSTOM_POSITIONING:
                 double currentTime = Timer.getFPGATimestamp();
@@ -89,11 +89,11 @@ public class Elevator extends Subsystem {
                 break;
         }
 
-        CSVWriter.addData("elevatorAppliedOut", mRobotState.elevatorAppliedOutput);
-        CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
-        CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
-        CSVWriter.addData("elevatorWantedPos", mWantedPosition);
-        CSVWriter.addData("elevatorSetPointInch", mOutput.getReference());
+//        CSVWriter.addData("elevatorAppliedOut", mRobotState.elevatorAppliedOutput);
+//        CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
+//        CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
+//        CSVWriter.addData("elevatorWantedPos", mWantedPosition);
+//        CSVWriter.addData("elevatorSetPointInch", mOutput.getReference());
     }
 
     /**

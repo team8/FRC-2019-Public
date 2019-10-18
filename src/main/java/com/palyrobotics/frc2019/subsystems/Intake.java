@@ -250,10 +250,10 @@ public class Intake extends Subsystem {
 
         cachedCargoState = robotState.hasIntakeCargo;
 
-        CSVWriter.addData("intakeAngle", mRobotState.intakeAngle);
-        CSVWriter.addData("intakeAppliedOut", mRobotState.intakeAppliedOutput);
-        if (mIntakeWantedAngle != null) CSVWriter.addData("intakeWantedAngle", mIntakeWantedAngle);
-        CSVWriter.addData("intakeTargetAngle", mOutput.getReference());
+//        CSVWriter.addData("intakeAngle", mRobotState.intakeAngle);
+//        CSVWriter.addData("intakeAppliedOut", mRobotState.intakeAppliedOutput);
+//        if (mIntakeWantedAngle != null) CSVWriter.addData("intakeWantedAngle", mIntakeWantedAngle);
+//        CSVWriter.addData("intakeTargetAngle", mOutput.getReference());
     }
 
     public double getRumbleLength() {

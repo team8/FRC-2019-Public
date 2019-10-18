@@ -16,6 +16,7 @@ import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.LoopOverrunDebugger;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.LazySparkMax;
+import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -72,6 +73,7 @@ class HardwareUpdater {
             spark.setSecondaryCurrentLimit(120);
             spark.setSmartCurrentLimit(DrivetrainConstants.kCurrentLimit);
             spark.setOpenLoopRampRate(0.1);
+            spark.setClosedLoopRampRate(0.1);
             CANEncoder encoder = spark.getEncoder();
             encoder.setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
             encoder.setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
@@ -235,9 +237,7 @@ class HardwareUpdater {
     void updateState(RobotState robotState) {
         LoopOverrunDebugger loopOverrunDebugger = new LoopOverrunDebugger("UpdateState", 0.02);
 
-        CANSparkMax
-                leftMasterSpark = HardwareAdapter.getInstance().getDrivetrain().leftMasterSpark,
-                rightMasterSpark = HardwareAdapter.getInstance().getDrivetrain().rightMasterSpark;
+        HardwareAdapter.DrivetrainHardware drivetrain = HardwareAdapter.getInstance().getDrivetrain();
         LazySparkMax elevatorSpark = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark;
 
         CANEncoder elevatorEncoder = elevatorSpark.getEncoder();
@@ -245,21 +245,21 @@ class HardwareUpdater {
         robotState.elevatorVelocity = elevatorEncoder.getVelocity();
         robotState.elevatorAppliedOutput = elevatorSpark.getAppliedOutput();
 
-        PigeonIMU gyro = HardwareAdapter.getInstance().getDrivetrain().gyro;
+        PigeonIMU gyro = drivetrain.gyro;
         robotState.drivePose.lastHeading = robotState.drivePose.heading;
         robotState.drivePose.heading = gyro.getFusedHeading();
         robotState.drivePose.headingVelocity = (robotState.drivePose.heading - robotState.drivePose.lastHeading) / DrivetrainConstants.kNormalLoopsDt;
 
         robotState.drivePose.lastLeftEncoderPosition = robotState.drivePose.leftEncoderPosition;
-        robotState.drivePose.leftEncoderPosition = leftMasterSpark.getEncoder().getPosition();
-        robotState.drivePose.leftEncoderVelocity = leftMasterSpark.getEncoder().getVelocity();
+        robotState.drivePose.leftEncoderPosition = drivetrain.leftMasterSpark.getEncoder().getPosition();
+        robotState.drivePose.leftEncoderVelocity = drivetrain.leftMasterSpark.getEncoder().getVelocity();
         robotState.drivePose.lastRightEncoderPosition = robotState.drivePose.rightEncoderPosition;
-        robotState.drivePose.rightEncoderPosition = rightMasterSpark.getEncoder().getPosition();
-        robotState.drivePose.rightEncoderVelocity = rightMasterSpark.getEncoder().getVelocity();
+        robotState.drivePose.rightEncoderPosition = drivetrain.rightMasterSpark.getEncoder().getPosition();
+        robotState.drivePose.rightEncoderVelocity = drivetrain.rightMasterSpark.getEncoder().getVelocity();
 
         double robotVelocity = (robotState.drivePose.leftEncoderVelocity + robotState.drivePose.rightEncoderVelocity) / 2;
 
-        HardwareAdapter.getInstance().getDrivetrain().gyro.getAccelerometerAngles(mAccelerometerAngles);
+        drivetrain.gyro.getAccelerometerAngles(mAccelerometerAngles);
         robotState.robotAcceleration = mAccelerometerAngles[0];
         robotState.robotVelocity = robotVelocity;
 
@@ -302,6 +302,22 @@ class HardwareUpdater {
         loopOverrunDebugger.addPoint("Ultrasonics");
 
         loopOverrunDebugger.finish();
+
+        CSVWriter.addData("lc1", drivetrain.leftMasterSpark.getOutputCurrent());
+        CSVWriter.addData("lc2", drivetrain.leftSlave1Spark.getOutputCurrent());
+        CSVWriter.addData("lc3", drivetrain.leftSlave2Spark.getOutputCurrent());
+
+        CSVWriter.addData("rc1", drivetrain.rightMasterSpark.getOutputCurrent());
+        CSVWriter.addData("rc2", drivetrain.rightSlave1Spark.getOutputCurrent());
+        CSVWriter.addData("rc3", drivetrain.rightSlave2Spark.getOutputCurrent());
+
+        CSVWriter.addData("lo1", drivetrain.leftMasterSpark.getAppliedOutput());
+        CSVWriter.addData("lo2", drivetrain.leftSlave1Spark.getAppliedOutput());
+        CSVWriter.addData("lo3", drivetrain.leftSlave2Spark.getAppliedOutput());
+
+        CSVWriter.addData("ro1", drivetrain.rightMasterSpark.getAppliedOutput());
+        CSVWriter.addData("ro2", drivetrain.rightSlave1Spark.getAppliedOutput());
+        CSVWriter.addData("ro3", drivetrain.rightSlave2Spark.getAppliedOutput());
     }
 
     private boolean hasCargoFromReadings(CircularBuffer readings, double tolerance, int requiredCount) {

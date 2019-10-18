@@ -26,7 +26,7 @@ public class Pusher extends Subsystem {
     private boolean mIsFirstTickForSlamResetEncoder = true;
 
     public enum PusherState {
-        IN, MIDDLE, OUT, START
+        IN, OUT, START
     }
 
     private PusherState mState;
@@ -82,11 +82,11 @@ public class Pusher extends Subsystem {
                 break;
         }
 
-        CSVWriter.addData("pusherAppliedOut", robotState.pusherAppliedOutput);
-        CSVWriter.addData("pusherPos", robotState.pusherPosition);
-        CSVWriter.addData("pusherSetPoint", mOutput.getReference());
-        CSVWriter.addData("pusherVelocity", robotState.pusherVelocity);
-        CSVWriter.addData("pusherPosition", robotState.pusherPosition);
+//        CSVWriter.addData("pusherAppliedOut", robotState.pusherAppliedOutput);
+//        CSVWriter.addData("pusherPos", robotState.pusherPosition);
+//        CSVWriter.addData("pusherSetPoint", mOutput.getReference());
+//        CSVWriter.addData("pusherVelocity", robotState.pusherVelocity);
+//        CSVWriter.addData("pusherPosition", robotState.pusherPosition);
     }
 
     public boolean onTarget() {
