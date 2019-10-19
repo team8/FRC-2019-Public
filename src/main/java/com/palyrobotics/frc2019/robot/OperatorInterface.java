@@ -37,8 +37,8 @@ public class OperatorInterface {
 
     private final Limelight mLimelight = Limelight.getInstance();
 
-    private final Joystick mDriveStick = HardwareAdapter.getInstance().getJoysticks().driveStick, mTurnStick = new Joystick(1);
-    private final XboxController mOperatorXboxController = new XboxController(2);
+    private final Joystick mDriveStick = HardwareAdapter.getInstance().getJoysticks().driveStick, mTurnStick = HardwareAdapter.getInstance().getJoysticks().turnStick;
+    private final XboxController mOperatorXboxController = HardwareAdapter.getInstance().getJoysticks().operatorXboxController;
 
     // Timestamp when a vision routine was last activated; helps us know when to turn LEDs off
     private double mVisionStartTimeSeconds;

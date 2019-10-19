@@ -17,9 +17,13 @@ public class XboxController extends edu.wpi.first.wpilibj.XboxController {
             Hand.kRight, false
     ));
 
+    private boolean isTriggerDown(Hand hand) {
+        return getTriggerAxis(hand) > kTriggerThreshold;
+    }
+
     public void updateLastInputs() {
         mLastPOV = getPOV();
-        mLastTriggers.replaceAll((hand, b) -> getTriggerAxis(hand) > kTriggerThreshold);
+        mLastTriggers.replaceAll((hand, b) -> isTriggerDown(hand));
     }
 
     public boolean getDPadRight() {
