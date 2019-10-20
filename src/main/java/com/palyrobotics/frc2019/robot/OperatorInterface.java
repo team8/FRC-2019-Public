@@ -159,7 +159,7 @@ public class OperatorInterface {
         double rightStick = mOperatorXboxController.getY(Hand.kRight);
         if (Math.abs(rightStick) > 0.1) {
             commands.wantedElevatorState = Elevator.ElevatorState.MANUAL_VELOCITY;
-            commands.customElevatorVelocity = rightStick * -elevatorConfig.manualPowerMultiplier;
+            commands.customElevatorVelocity = -rightStick * elevatorConfig.gains.velocity * elevatorConfig.manualPowerMultiplier;
         }
         if (mOperatorXboxController.getAButtonPressed()) { // Level 1
             Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(elevatorConfig.elevatorHeight1, 1.0);

@@ -58,7 +58,7 @@ public class LazySparkMax extends CANSparkMax {
                 mLastReference = reference;
                 mLastArbitraryPercentOutput = arbitraryPercentOutput;
                 if (requiresGains) mLastGains.put(slot, gains);
-//                System.out.println("Updated gains!");
+//                System.out.printf("%s, %d, %s%n", type, slot, reference);
             } else {
                 DriverStation.reportError(String.format("Error updating output on spark max with ID: %d", getDeviceId()), new RuntimeException().getStackTrace());
             }
