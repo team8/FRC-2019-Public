@@ -2,6 +2,7 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.dashboard.LiveGraph;
 import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.robot.Robot;
@@ -81,6 +82,8 @@ public class Pusher extends Subsystem {
                 mSlamStartTimeMs = null;
                 break;
         }
+
+        LiveGraph.getInstance().add("pusher", robotState.pusherPosition);
 
 //        CSVWriter.addData("pusherAppliedOut", robotState.pusherAppliedOutput);
 //        CSVWriter.addData("pusherPos", robotState.pusherPosition);

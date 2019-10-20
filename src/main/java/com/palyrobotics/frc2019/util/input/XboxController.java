@@ -66,4 +66,12 @@ public class XboxController extends edu.wpi.first.wpilibj.XboxController {
         setRumble(RumbleType.kRightRumble, on ? 1.0 : 0.0);
         setRumble(RumbleType.kLeftRumble, on ? 1.0 : 0.0);
     }
+
+    public boolean getRightTrigger() {
+        return isTriggerDown(Hand.kRight);
+    }
+
+    public boolean getLeftTrigger() {
+        return isTriggerDown(Hand.kLeft);
+    }
 }

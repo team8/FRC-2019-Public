@@ -9,19 +9,32 @@ import com.palyrobotics.frc2019.subsystems.Drive;
  * Implements constant curvature driving. Yoinked from 254 code
  */
 public class CheesyDriveHelper {
-    private double mOldWheel, mQuickStopAccumulator;
-//    private boolean mInitialBrake;
+    private double mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp, mQuickStopAccumulator;
+    //    private boolean mInitialBrake;
 //    private double mBrakeRate;
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
-
-        if (commands.wantedDriveState == Drive.DriveState.CHEZY) {
-            wheel *= 1.0;
+        //Increase in magnitude, deceleration is fine. This misses rapid direction switches, but that's up to driver
+        double absoluteThrottle = Math.abs(throttle);
+        if (absoluteThrottle > 0.4 && absoluteThrottle > Math.abs(mPreviousThrottleForRamp)) {
+            throttle = mPreviousThrottleForRamp + Math.signum(throttle) * DrivetrainConstants.kMaxAccelRate;
         }
+        mPreviousThrottleForRamp = throttle;
+
+        double absoluteWheel = Math.abs(wheel);
+        if (absoluteWheel > 0.5 && absoluteWheel > Math.abs(mPreviousWheelForRamp)) {
+            wheel = mPreviousWheelForRamp + Math.signum(wheel) * DrivetrainConstants.kMaxAccelRate * 1.7;
+        }
+        mPreviousWheelForRamp = wheel;
+
         // Quick-turn if right trigger is pressed
         boolean isQuickTurn = robotState.isQuickTurning = commands.isQuickTurn;
+
+        if (!isQuickTurn && commands.wantedDriveState == Drive.DriveState.CHEZY) {
+            wheel *= 0.6;
+        }
 
 //        //Braking if left trigger is pressed
 //        boolean isBraking = robotState.leftStickInput.getTriggerPressed();
@@ -30,6 +43,8 @@ public class CheesyDriveHelper {
 
         wheel = MathUtil.handleDeadBand(wheel, DrivetrainConstants.kDeadband);
         throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
+        if (throttle > 0.8) throttle = 0.8;
+        else if (throttle < -0.8) throttle = -0.8;
 
         double negInertia = wheel - mOldWheel;
         mOldWheel = wheel;
@@ -132,8 +147,8 @@ public class CheesyDriveHelper {
             rightPower = -1.0;
         }
 
-        mSignal.leftOutput.setPercentOutput(leftPower * 0.7);
-        mSignal.rightOutput.setPercentOutput(rightPower * 0.7);
+        mSignal.leftOutput.setPercentOutput(leftPower);
+        mSignal.rightOutput.setPercentOutput(rightPower);
         return mSignal;
     }
 

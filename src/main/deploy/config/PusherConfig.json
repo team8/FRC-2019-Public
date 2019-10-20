@@ -1,6 +1,6 @@
 {
     "distanceIn": 0.0,
-    "distanceOut": 5.5,
+    "distanceOut": 5.6,
     "cargoTolerance": 5.9,
     "cargoToleranceFar": 7.0,
     "acceptablePositionError": 0.2,
@@ -8,7 +8,7 @@
     "slamPercentOutput": -0.35,
     "slamHoldMultiplier": 0.2,
     "slamTime": 0.55,
-    "useSlam": true,
+    "useSlam": false,
     "smartGains": {
         "p": 0.0,
         "i": 0.0,
@@ -20,10 +20,10 @@
         "allowableError": 0.01
     },
     "positionGains": {
-        "p": 0.004,
+        "p": 0.36,
         "i": 0.0,
-        "d": 0.016,
+        "d": 0.0,
         "f": 0.0,
-        "iZone": 0
+        "iZone": 0.0
     }
 }

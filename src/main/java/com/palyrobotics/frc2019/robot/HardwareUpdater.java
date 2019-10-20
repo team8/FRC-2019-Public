@@ -71,9 +71,9 @@ class HardwareUpdater {
             spark.restoreFactoryDefaults();
             spark.enableVoltageCompensation(11.0);
             spark.setSecondaryCurrentLimit(120);
-            spark.setSmartCurrentLimit(DrivetrainConstants.kCurrentLimit);
-            spark.setOpenLoopRampRate(0.1);
-            spark.setClosedLoopRampRate(0.1);
+            spark.setSmartCurrentLimit(40, 10, 20000);
+            spark.setOpenLoopRampRate(0.15);
+            spark.setClosedLoopRampRate(0.15);
             CANEncoder encoder = spark.getEncoder();
             encoder.setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
             encoder.setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
@@ -243,37 +243,39 @@ class HardwareUpdater {
         CANEncoder elevatorEncoder = elevatorSpark.getEncoder();
         robotState.elevatorPosition = elevatorEncoder.getPosition();
         robotState.elevatorVelocity = elevatorEncoder.getVelocity();
-        robotState.elevatorAppliedOutput = elevatorSpark.getAppliedOutput();
+//        robotState.elevatorAppliedOutput = elevatorSpark.getAppliedOutput();
 
-        PigeonIMU gyro = drivetrain.gyro;
-        robotState.drivePose.lastHeading = robotState.drivePose.heading;
-        robotState.drivePose.heading = gyro.getFusedHeading();
-        robotState.drivePose.headingVelocity = (robotState.drivePose.heading - robotState.drivePose.lastHeading) / DrivetrainConstants.kNormalLoopsDt;
+//        PigeonIMU gyro = drivetrain.gyro;
+//        robotState.drivePose.lastHeading = robotState.drivePose.heading;
+//        robotState.drivePose.heading = gyro.getFusedHeading();
+//        robotState.drivePose.headingVelocity = (robotState.drivePose.heading - robotState.drivePose.lastHeading) / DrivetrainConstants.kNormalLoopsDt;
 
-        robotState.drivePose.lastLeftEncoderPosition = robotState.drivePose.leftEncoderPosition;
-        robotState.drivePose.leftEncoderPosition = drivetrain.leftMasterSpark.getEncoder().getPosition();
-        robotState.drivePose.leftEncoderVelocity = drivetrain.leftMasterSpark.getEncoder().getVelocity();
-        robotState.drivePose.lastRightEncoderPosition = robotState.drivePose.rightEncoderPosition;
-        robotState.drivePose.rightEncoderPosition = drivetrain.rightMasterSpark.getEncoder().getPosition();
-        robotState.drivePose.rightEncoderVelocity = drivetrain.rightMasterSpark.getEncoder().getVelocity();
+//        robotState.drivePose.lastLeftEncoderPosition = robotState.drivePose.leftEncoderPosition;
+//        robotState.drivePose.leftEncoderPosition = drivetrain.leftMasterSpark.getEncoder().getPosition();
+//        robotState.drivePose.leftEncoderVelocity = drivetrain.leftMasterSpark.getEncoder().getVelocity();
+//        robotState.drivePose.lastRightEncoderPosition = robotState.drivePose.rightEncoderPosition;
+//        robotState.drivePose.rightEncoderPosition = drivetrain.rightMasterSpark.getEncoder().getPosition();
+//        robotState.drivePose.rightEncoderVelocity = drivetrain.rightMasterSpark.getEncoder().getVelocity();
 
-        double robotVelocity = (robotState.drivePose.leftEncoderVelocity + robotState.drivePose.rightEncoderVelocity) / 2;
+//        double robotVelocity = (robotState.drivePose.leftEncoderVelocity + robotState.drivePose.rightEncoderVelocity) / 2;
 
-        drivetrain.gyro.getAccelerometerAngles(mAccelerometerAngles);
-        robotState.robotAcceleration = mAccelerometerAngles[0];
-        robotState.robotVelocity = robotVelocity;
+//        drivetrain.gyro.getAccelerometerAngles(mAccelerometerAngles);
+//        robotState.robotAcceleration = mAccelerometerAngles[0];
+//        robotState.robotVelocity = robotVelocity;
 
         LazySparkMax intakeSpark = HardwareAdapter.getInstance().getIntake().intakeMasterSpark;
         CANEncoder armEncoder = intakeSpark.getEncoder();
         robotState.intakeAngle = armEncoder.getPosition();
         robotState.intakeVelocity = armEncoder.getVelocity();
-        robotState.intakeAppliedOutput = intakeSpark.getAppliedOutput();
+//        robotState.intakeAppliedOutput = intakeSpark.getAppliedOutput();
+
+        loopOverrunDebugger.addPoint("3");
 
         LazySparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
         CANEncoder pusherEncoder = pusherSpark.getEncoder();
         robotState.pusherPosition = pusherEncoder.getPosition();
         robotState.pusherVelocity = pusherEncoder.getVelocity();
-        robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
+//        robotState.pusherAppliedOutput = pusherSpark.getAppliedOutput();
 
         loopOverrunDebugger.addPoint("Basic");
 
@@ -323,7 +325,7 @@ class HardwareUpdater {
     private boolean hasCargoFromReadings(CircularBuffer readings, double tolerance, int requiredCount) {
         int count = 0;
         for (int i = 0; i < RobotState.kUltrasonicBufferSize; i++) {
-            if (readings.get(i) >= tolerance) count++;
+            if (readings.get(i) <= tolerance) count++;
         }
         return count >= requiredCount;
     }

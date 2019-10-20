@@ -14,7 +14,7 @@ class DriverProfiles {
         switch (OtherConstants.kDriverName) {
             case BRYAN:
                 DrivetrainConstants.kDeadband = 0.02;
-                DrivetrainConstants.kMaxAccelRate = 2.00;
+                DrivetrainConstants.kMaxAccelRate = 0.02;
 
                 DrivetrainConstants.kDriveSensitivity = 0.85;
 

@@ -119,6 +119,10 @@ public class Elevator extends Subsystem {
                 mWantedPosition = commands.robotSetPoints.elevatorPositionSetPoint;
                 mElevatorState = ElevatorState.CUSTOM_POSITIONING;
                 break;
+            case MANUAL_VELOCITY:
+                mWantedVelocity = commands.customElevatorVelocity;
+                mElevatorState = ElevatorState.MANUAL_VELOCITY;
+                break;
             default:
                 mWantedPosition = null;
                 mElevatorState = commands.wantedElevatorState;

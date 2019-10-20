@@ -21,13 +21,13 @@ public class LoopOverrunDebugger {
     }
 
     private String mName;
-    private double mStartTimeSeconds;
+    private double mStartTimeSeconds, mLastSeconds;
     private Double mPrintDuration;
     private ArrayList<Measurement> mMeasurements = new ArrayList<>(8);
 
     public LoopOverrunDebugger(String name) {
         mName = name;
-        mStartTimeSeconds = Timer.getFPGATimestamp();
+        mStartTimeSeconds = mLastSeconds = Timer.getFPGATimestamp();
     }
 
     public LoopOverrunDebugger(String name, double printDurationSeconds) {
@@ -37,7 +37,8 @@ public class LoopOverrunDebugger {
 
     public void addPoint(String name) {
         double now = Timer.getFPGATimestamp();
-        double deltaSeconds = now - mStartTimeSeconds;
+        double deltaSeconds = now - mLastSeconds;
+        mLastSeconds = now;
         mMeasurements.add(new Measurement(name, deltaSeconds));
     }
 

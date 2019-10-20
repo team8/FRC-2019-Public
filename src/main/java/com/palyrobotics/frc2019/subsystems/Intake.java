@@ -82,14 +82,20 @@ public class Intake extends Subsystem {
         switch (mMacroState) {
             case STOWED:
             case HOLDING_CURRENT_ANGLE:
-            case HOLDING_CARGO:
             case INTAKING_CARGO:
             case EXPELLING_CARGO:
             case HOLDING_MID_OUT_OF_WAY: // Trust in the operator for this one, could still have a ball in the pusher
                 mMacroState = commands.wantedIntakeState; // Allow us to do any state from here
                 break;
+            case HOLDING_CARGO:
+                if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY) {
+                    mMacroState = commands.wantedIntakeState = IntakeMacroState.LIFTING_FROM_GROUND_INTAKE;
+                } else {
+                    mMacroState = commands.wantedIntakeState;
+                }
+                break;
             case DOWN_FOR_GROUND_INTAKE:
-                if (intakeOnTarget()) { // We are all the way on the ground and should start the intake wheels
+                if (Math.abs(mIntakeWantedAngle - mRobotState.intakeAngle) < mConfig.acceptableAngularError * 2) { // We are all the way on the ground and should start the intake wheels
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.GROUND_INTAKE;
                 } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO) { // Cancel the intake and go back into stowed position
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.STOWED;
@@ -103,18 +109,18 @@ public class Intake extends Subsystem {
                 }
                 break;
             case LIFTING_FROM_GROUND_INTAKE: {
-                if (intakeOnTarget() && (commands.wantedIntakeState == IntakeMacroState.DROPPING_INTO_CARRIAGE || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO)) {
+                if (Math.abs(mIntakeWantedAngle - mRobotState.intakeAngle) < mConfig.acceptableAngularError * 2.5 && (commands.wantedIntakeState == IntakeMacroState.DROPPING_INTO_CARRIAGE || commands.wantedIntakeState == IntakeMacroState.HOLDING_CARGO)) {
                     mMacroState = commands.wantedIntakeState;
-                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY) { // Cancel the hand-off and move arm to holding mid
-                    mMacroState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
+                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.DOWN_FOR_GROUND_INTAKE) { // Cancel the hand-off and move arm to holding mid
+                    mMacroState = commands.wantedIntakeState;
                 }
                 break;
             }
             case DROPPING_INTO_CARRIAGE:
                 if (robotState.hasPusherCargoFar) { // Move arm out of the way for the pusher if it is secured in the carriage
                     mMacroState = commands.wantedIntakeState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
-                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY) { // Cancel the hand-off and move arm to holding mid
-                    mMacroState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
+                } else if (commands.wantedIntakeState == IntakeMacroState.HOLDING_MID_OUT_OF_WAY || commands.wantedIntakeState == IntakeMacroState.DOWN_FOR_GROUND_INTAKE) { // Cancel the hand-off and move arm to holding mid
+                    mMacroState = commands.wantedIntakeState;
                 }
                 break;
         }

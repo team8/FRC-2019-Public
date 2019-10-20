@@ -3,11 +3,16 @@
         "commandReceiver"
     ],
     "enabledSubsystems": [
-        "drive"
+        "drive",
+        "fingers",
+        "pusher",
+        "intake",
+        "elevator",
+        "shooter"
     ],
     "coastDriveIfDisabled": false,
     "coastElevatorIfDisabled": false,
     "coastArmIfDisabled": false,
     "disableSparkOutput": false,
-    "sendMultiplier": 1.0
+    "sendMultiplier": 0.95
 }

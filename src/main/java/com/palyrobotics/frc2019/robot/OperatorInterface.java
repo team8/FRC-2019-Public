@@ -20,6 +20,7 @@ import com.palyrobotics.frc2019.util.input.XboxController;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -158,7 +159,7 @@ public class OperatorInterface {
         double rightStick = mOperatorXboxController.getY(Hand.kRight);
         if (Math.abs(rightStick) > 0.1) {
             commands.wantedElevatorState = Elevator.ElevatorState.MANUAL_VELOCITY;
-            commands.customElevatorVelocity = rightStick * elevatorConfig.manualPowerMultiplier;
+            commands.customElevatorVelocity = rightStick * -elevatorConfig.manualPowerMultiplier;
         }
         if (mOperatorXboxController.getAButtonPressed()) { // Level 1
             Routine elevatorLevel1 = new ElevatorCustomPositioningRoutine(elevatorConfig.elevatorHeight1, 1.0);
@@ -197,14 +198,14 @@ public class OperatorInterface {
         }
 
         /* Intake arm for scoring in the cargo bays */
-        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_CARGO) {
+        if (mOperatorXboxController.getRightTrigger() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_CARGO) {
             commands.wantedIntakeState = Intake.IntakeMacroState.EXPELLING_CARGO;
-        } else if (!mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.EXPELLING_CARGO) {
+        } else if (!mOperatorXboxController.getRightTrigger() && commands.wantedIntakeState == Intake.IntakeMacroState.EXPELLING_CARGO) {
             commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_CARGO;
         }
-        if (mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_CARGO) {
+        if (mOperatorXboxController.getLeftTrigger() && commands.wantedIntakeState == Intake.IntakeMacroState.HOLDING_CARGO) {
             commands.wantedIntakeState = Intake.IntakeMacroState.INTAKING_CARGO;
-        } else if (!mOperatorXboxController.getLeftTriggerPressed() && commands.wantedIntakeState == IntakeMacroState.INTAKING_CARGO) {
+        } else if (!mOperatorXboxController.getLeftTrigger() && commands.wantedIntakeState == IntakeMacroState.INTAKING_CARGO) {
             commands.wantedIntakeState = Intake.IntakeMacroState.HOLDING_CARGO;
         }
 
@@ -218,13 +219,16 @@ public class OperatorInterface {
         }
 
         /* Pneumatic hatch pusher control */
-        if (mOperatorXboxController.getRightTriggerPressed() && commands.wantedIntakeState != IntakeMacroState.EXPELLING_CARGO) {
+        if (mOperatorXboxController.getRightTrigger() && commands.wantedIntakeState != IntakeMacroState.EXPELLING_CARGO) {
             commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
             commands.wantedFingersExpelState = Fingers.PushingState.EXPELLING;
+        } else {
+            commands.wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
+            commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
         }
 
         if (mOperatorXboxController.getLeftTriggerPressed()) {
-            commands.addWantedRoutine(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 3.0));
+            commands.addWantedRoutine(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 5.0));
         }
 
         if (mDriveStick.getTriggerPressed()) {
