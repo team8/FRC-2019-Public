@@ -12,5 +12,9 @@
     "velocityGains": {
         "p": 0.01,
         "d": 0.05
-    }
+    },
+    "throttleAccelerationLimit": 0.02,
+    "wheelAccelerationLimit": 0.03,
+    "throttleAccelerationThreshold": 0.4,
+    "wheelAccelerationThreshold": 0.5
 }

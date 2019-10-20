@@ -3,7 +3,9 @@ package com.palyrobotics.frc2019.util;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
+import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
 import com.palyrobotics.frc2019.subsystems.Drive;
+import com.palyrobotics.frc2019.util.config.Configs;
 
 /**
  * Implements constant curvature driving. Yoinked from 254 code
@@ -12,20 +14,21 @@ public class CheesyDriveHelper {
     private double mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp, mQuickStopAccumulator;
     //    private boolean mInitialBrake;
 //    private double mBrakeRate;
+    private final DriveConfig driveConfig = Configs.get(DriveConfig.class);
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
         //Increase in magnitude, deceleration is fine. This misses rapid direction switches, but that's up to driver
         double absoluteThrottle = Math.abs(throttle);
-        if (absoluteThrottle > 0.4 && absoluteThrottle > Math.abs(mPreviousThrottleForRamp)) {
-            throttle = mPreviousThrottleForRamp + Math.signum(throttle) * DrivetrainConstants.kMaxAccelRate;
+        if (absoluteThrottle > driveConfig.throttleAccelerationThreshold && absoluteThrottle > Math.abs(mPreviousThrottleForRamp)) {
+            throttle = mPreviousThrottleForRamp + Math.signum(throttle) * driveConfig.throttleAccelerationLimit;
         }
         mPreviousThrottleForRamp = throttle;
 
         double absoluteWheel = Math.abs(wheel);
-        if (absoluteWheel > 0.5 && absoluteWheel > Math.abs(mPreviousWheelForRamp)) {
-            wheel = mPreviousWheelForRamp + Math.signum(wheel) * DrivetrainConstants.kMaxAccelRate * 1.7;
+        if (absoluteWheel > driveConfig.wheelAccelerationThreshold && absoluteWheel > Math.abs(mPreviousWheelForRamp)) {
+            wheel = mPreviousWheelForRamp + Math.signum(wheel) * driveConfig.wheelAccelerationLimit;
         }
         mPreviousWheelForRamp = wheel;
 
@@ -43,8 +46,6 @@ public class CheesyDriveHelper {
 
         wheel = MathUtil.handleDeadBand(wheel, DrivetrainConstants.kDeadband);
         throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
-        if (throttle > 0.8) throttle = 0.8;
-        else if (throttle < -0.8) throttle = -0.8;
 
         double negInertia = wheel - mOldWheel;
         mOldWheel = wheel;
@@ -66,7 +67,6 @@ public class CheesyDriveHelper {
         // Negative inertia
         double negativeInertiaAccumulator = 0.0;
         double negativeInertiaScalar;
-
         if (wheel * negInertia > 0) {
             negativeInertiaScalar = 2.5;
         } else {
@@ -82,29 +82,6 @@ public class CheesyDriveHelper {
 
         // Possible source of occasional overturn
         wheel += negativeInertiaAccumulator;
-
-//        // Handle braking
-//        if (isBraking) {
-//            //Set up braking rates for linear deceleration in a set amount of time
-//            if (mInitialBrake) {
-//                mInitialBrake = false;
-//                //Old throttle initially set to throttle
-//                mOldThrottle = linearPower;
-//                //Braking rate set
-//                mBrakeRate = mOldThrottle / DrivetrainConstants.kCyclesUntilStop;
-//            }
-//
-//            //If braking is not complete, decrease by the brake rate
-//            if (Math.abs(mOldThrottle) >= Math.abs(mBrakeRate)) {
-//                //reduce throttle
-//                mOldThrottle -= mBrakeRate;
-//                linearPower = mOldThrottle;
-//            } else {
-//                linearPower = 0;
-//            }
-//        } else {
-//            mInitialBrake = true;
-//        }
 
         // Quick-turn allows us to turn in place without having to be moving forward or backwards
         if (isQuickTurn) {
