@@ -26,20 +26,36 @@ public class XboxController extends edu.wpi.first.wpilibj.XboxController {
         mLastTriggers.replaceAll((hand, b) -> isTriggerDown(hand));
     }
 
+    public boolean getDPadRightPressed() {
+        return getPOV() != mLastPOV && getDPadRight();
+    }
+
+    public boolean getDPadUpPressed() {
+        return getPOV() != mLastPOV && getDPadUp();
+    }
+
+    public boolean getDPadDownPressed() {
+        return getPOV() != mLastPOV && getDPadDown();
+    }
+
+    public boolean getDPadLeftPressed() {
+        return getPOV() != mLastPOV && getDPadLeft();
+    }
+
     public boolean getDPadRight() {
-        return getPOV() != mLastPOV && getPOV() == 90;
+        return getPOV() == 90;
     }
 
     public boolean getDPadUp() {
-        return getPOV() != mLastPOV && getPOV() == 0;
+        return getPOV() == 0;
     }
 
     public boolean getDPadDown() {
-        return getPOV() != mLastPOV && getPOV() == 180;
+        return getPOV() == 180;
     }
 
     public boolean getDPadLeft() {
-        return getPOV() != mLastPOV && getPOV() == 270;
+        return getPOV() == 270;
     }
 
     public boolean getTriggerPressed(Hand hand) {

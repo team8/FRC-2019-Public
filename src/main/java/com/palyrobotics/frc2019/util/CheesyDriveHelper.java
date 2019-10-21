@@ -11,7 +11,7 @@ import com.palyrobotics.frc2019.util.config.Configs;
  * Implements constant curvature driving. Yoinked from 254 code
  */
 public class CheesyDriveHelper {
-    private double mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp, mQuickStopAccumulator;
+    private double mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp, mQuickStopAccumulator, mNegativeInertiaAccumulator;
     //    private boolean mInitialBrake;
 //    private double mBrakeRate;
     private final DriveConfig driveConfig = Configs.get(DriveConfig.class);
@@ -23,89 +23,84 @@ public class CheesyDriveHelper {
         double absoluteThrottle = Math.abs(throttle);
         if (absoluteThrottle > driveConfig.throttleAccelerationThreshold && absoluteThrottle > Math.abs(mPreviousThrottleForRamp)) {
             throttle = mPreviousThrottleForRamp + Math.signum(throttle) * driveConfig.throttleAccelerationLimit;
+            absoluteThrottle = Math.abs(throttle);
         }
         mPreviousThrottleForRamp = throttle;
 
         double absoluteWheel = Math.abs(wheel);
         if (absoluteWheel > driveConfig.wheelAccelerationThreshold && absoluteWheel > Math.abs(mPreviousWheelForRamp)) {
             wheel = mPreviousWheelForRamp + Math.signum(wheel) * driveConfig.wheelAccelerationLimit;
+            absoluteWheel = Math.abs(wheel);
         }
         mPreviousWheelForRamp = wheel;
 
         // Quick-turn if right trigger is pressed
         boolean isQuickTurn = robotState.isQuickTurning = commands.isQuickTurn;
 
-        if (!isQuickTurn && commands.wantedDriveState == Drive.DriveState.CHEZY) {
-            wheel *= 0.6;
-        }
-
-//        //Braking if left trigger is pressed
-//        boolean isBraking = robotState.leftStickInput.getTriggerPressed();
-
-        double wheelNonLinearity;
+//        if (!isQuickTurn && commands.wantedDriveState == Drive.DriveState.CHEZY) {
+//            wheel *= 0.6;
+//        }
 
         wheel = MathUtil.handleDeadBand(wheel, DrivetrainConstants.kDeadband);
         throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
 
-        double negInertia = wheel - mOldWheel;
+        double negativeWheelInertia = wheel - mOldWheel;
         mOldWheel = wheel;
-
-        wheelNonLinearity = 0.5;
 
         // Map linear wheel input onto a sin wave, three passes
         for (int i = 0; i < 3; i++)
-            wheel = applyWheelNonLinearPass(wheel, wheelNonLinearity);
-
-        double leftPower, rightPower, overPower;
-        double sensitivity;
-
-        double angularPower;
-
-        // Linear power is what's actually sent to motor, throttle is input
-        double linearPower = throttle;
+            wheel = applyWheelNonLinearPass(wheel, driveConfig.wheelNonLinearity);
 
         // Negative inertia
-        double negativeInertiaAccumulator = 0.0;
         double negativeInertiaScalar;
-        if (wheel * negInertia > 0) {
-            negativeInertiaScalar = 2.5;
+        if (wheel * negativeWheelInertia > 0) {
+            // If we are moving away from zero - trying to get more wheel
+            negativeInertiaScalar = driveConfig.lowNegativeInertiaTurnScalar;
         } else {
-            if (Math.abs(wheel) > 0.65) {
-                negativeInertiaScalar = 5.0;
+            // Going back to zero
+            if (absoluteWheel > driveConfig.lowNegativeInertiaThreshold) {
+                negativeInertiaScalar = driveConfig.lowNegativeInertiaFarScalar;
             } else {
-                negativeInertiaScalar = 3.0;
+                negativeInertiaScalar = driveConfig.lowNegativeInertiaCloseScalar;
             }
         }
 
-        double negativeInertiaPower = negInertia * negativeInertiaScalar;
-        negativeInertiaAccumulator += negativeInertiaPower;
+        double negativeInertiaPower = negativeWheelInertia * negativeInertiaScalar;
+        mNegativeInertiaAccumulator += negativeInertiaPower;
 
-        // Possible source of occasional overturn
-        wheel += negativeInertiaAccumulator;
+        wheel += mNegativeInertiaAccumulator;
+        if (mNegativeInertiaAccumulator > 1.0) {
+            mNegativeInertiaAccumulator -= 1.0;
+        } else if (mNegativeInertiaAccumulator < -1.0) {
+            mNegativeInertiaAccumulator += 1.0;
+        } else {
+            mNegativeInertiaAccumulator = 0.0;
+        }
 
         // Quick-turn allows us to turn in place without having to be moving forward or backwards
+        double angularPower, overPower;
         if (isQuickTurn) {
-            if (Math.abs(commands.driveWheel) < DrivetrainConstants.kQuickTurnSensitivityThreshold) {
-                sensitivity = DrivetrainConstants.kPreciseQuickTurnSensitivity;
-            } else {
-                sensitivity = DrivetrainConstants.kQuickTurnSensitivity;
+            if (absoluteThrottle < driveConfig.quickStopDeadBand) {
+                double alpha = driveConfig.quickStopWeight;
+                mQuickStopAccumulator = (1 - alpha) * mQuickStopAccumulator + alpha * MathUtil.clamp01(wheel) * driveConfig.quickStopScalar;
             }
-            angularPower = wheel * sensitivity;
-            mQuickStopAccumulator = (1 - DrivetrainConstants.kAlpha) * mQuickStopAccumulator + DrivetrainConstants.kAlpha * angularPower * 6.5;
             overPower = 1.0;
+            angularPower = wheel * driveConfig.quickTurnScalar;
         } else {
             overPower = 0.0;
-            // Sets turn amount
-            angularPower = Math.abs(throttle) * wheel - mQuickStopAccumulator;
-            if (mQuickStopAccumulator > DrivetrainConstants.kQuickStopAccumulatorDecreaseThreshold) {
-                mQuickStopAccumulator -= DrivetrainConstants.kQuickStopAccumulatorDecreaseRate;
-            } else if (mQuickStopAccumulator < -DrivetrainConstants.kQuickStopAccumulatorDecreaseThreshold) {
-                mQuickStopAccumulator += DrivetrainConstants.kQuickStopAccumulatorDecreaseRate;
+            angularPower = absoluteThrottle * wheel * driveConfig.turnSensitivity - mQuickStopAccumulator;
+            if (mQuickStopAccumulator > 1.0) {
+                mQuickStopAccumulator -= 1.0;
+            } else if (mQuickStopAccumulator < -1.0) {
+                mQuickStopAccumulator += 1.0;
             } else {
                 mQuickStopAccumulator = 0.0;
             }
         }
 
+        double linearPower = throttle;
+
+        double rightPower, leftPower;
         rightPower = leftPower = linearPower;
         leftPower += angularPower;
         rightPower -= angularPower;
@@ -131,6 +126,11 @@ public class CheesyDriveHelper {
 
     private double applyWheelNonLinearPass(double wheel, double wheelNonLinearity) {
         return Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
+    }
+
+    public void reset() {
+        mNegativeInertiaAccumulator = mQuickStopAccumulator = 0.0;
+        mOldWheel = mPreviousWheelForRamp = mPreviousThrottleForRamp = 0.0;
     }
 
 //    /**

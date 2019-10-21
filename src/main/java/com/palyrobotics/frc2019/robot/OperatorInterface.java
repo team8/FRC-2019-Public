@@ -20,7 +20,6 @@ import com.palyrobotics.frc2019.util.input.XboxController;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -182,17 +181,17 @@ public class OperatorInterface {
         /*
          * Cargo Intake Control
          */
-        if (mOperatorXboxController.getDPadDown()) {
+        if (mOperatorXboxController.getDPadDownPressed()) {
             commands.cancelCurrentRoutines = false;
             commands.wantedIntakeState = IntakeMacroState.DOWN_FOR_GROUND_INTAKE;
             commands.wantedPusherInOutState = Pusher.PusherState.IN;
-        } else if (mOperatorXboxController.getDPadUp()) {
+        } else if (mOperatorXboxController.getDPadUpPressed()) {
             commands.cancelCurrentRoutines = false;
-            commands.wantedIntakeState = IntakeMacroState.HOLDING_MID_OUT_OF_WAY;
-        } else if (mOperatorXboxController.getDPadLeft()) {
+            commands.wantedIntakeState = IntakeMacroState.HOLDING_OUT_OF_WAY;
+        } else if (mOperatorXboxController.getDPadLeftPressed()) {
             commands.cancelCurrentRoutines = false;
             commands.wantedIntakeState = IntakeMacroState.HOLDING_CARGO;
-        } else if (mOperatorXboxController.getDPadRight()) {
+        } else if (mOperatorXboxController.getDPadRightPressed()) {
             commands.cancelCurrentRoutines = false;
             commands.wantedIntakeState = IntakeMacroState.DROPPING_INTO_CARRIAGE;
         }

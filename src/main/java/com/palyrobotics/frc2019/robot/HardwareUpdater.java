@@ -8,6 +8,7 @@ import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.constants.OtherConstants;
+import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
@@ -71,15 +72,20 @@ class HardwareUpdater {
             spark.restoreFactoryDefaults();
             spark.enableVoltageCompensation(11.0);
             spark.setSecondaryCurrentLimit(120);
-            spark.setSmartCurrentLimit(40, 10, 20000);
-            spark.setOpenLoopRampRate(0.15);
-            spark.setClosedLoopRampRate(0.15);
             CANEncoder encoder = spark.getEncoder();
             encoder.setPositionConversionFactor(DrivetrainConstants.kDriveInchesPerRotation);
             encoder.setVelocityConversionFactor(DrivetrainConstants.kDriveSpeedUnitConversion);
             CANPIDController controller = spark.getPIDController();
             controller.setOutputRange(-DrivetrainConstants.kDriveMaxClosedLoopOutput, DrivetrainConstants.kDriveMaxClosedLoopOutput);
         }
+
+        Configs.listen(DriveConfig.class, config -> {
+            for (LazySparkMax spark : driveHardware.sparks) {
+                spark.setSmartCurrentLimit(config.stallCurrentLimit, config.freeCurrentLimit, config.freeRpmLimit);
+                spark.setOpenLoopRampRate(config.controllerRampRate);
+                spark.setClosedLoopRampRate(config.controllerRampRate);
+            }
+        });
 
         driveHardware.resetSensors();
 

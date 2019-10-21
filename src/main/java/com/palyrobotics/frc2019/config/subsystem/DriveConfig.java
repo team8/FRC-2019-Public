@@ -16,5 +16,14 @@ public class DriveConfig extends AbstractSubsystemConfig {
 
     public Gains cascadingTurnGains, velocityGains;
 
-    public double throttleAccelerationLimit, wheelAccelerationLimit, throttleAccelerationThreshold, wheelAccelerationThreshold;
+    public double
+            throttleAccelerationLimit, wheelAccelerationLimit,
+            throttleAccelerationThreshold, wheelAccelerationThreshold,
+            quickStopWeight, quickTurnScalar, quickStopDeadBand, quickStopScalar,
+            turnSensitivity,
+            lowNegativeInertiaThreshold, lowNegativeInertiaFarScalar, lowNegativeInertiaCloseScalar, lowNegativeInertiaTurnScalar,
+            wheelNonLinearity,
+            controllerRampRate;
+    public int
+            stallCurrentLimit, freeCurrentLimit, freeRpmLimit;
 }
