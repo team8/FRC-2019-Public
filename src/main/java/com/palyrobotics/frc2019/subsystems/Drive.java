@@ -8,7 +8,6 @@ import com.palyrobotics.frc2019.util.CheesyDriveHelper;
 import com.palyrobotics.frc2019.util.Pose;
 import com.palyrobotics.frc2019.util.SparkDriveSignal;
 import com.palyrobotics.frc2019.util.VisionDriveHelper;
-import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 
 /**

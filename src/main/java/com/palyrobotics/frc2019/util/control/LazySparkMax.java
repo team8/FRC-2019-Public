@@ -88,11 +88,11 @@ public class LazySparkMax extends CANSparkMax {
                 SmartGains lastSmartGains = (SmartGains) lastGains, smartGains = (SmartGains) gains;
                 if (Double.compare(lastSmartGains.acceleration, smartGains.acceleration) != 0)
                     controller.setSmartMotionMaxAccel(smartGains.acceleration * mRobotConfig.sendMultiplier, slot);
-                if (Double.compare(lastSmartGains.velocity != smartGains.velocity) != 0)
+                if (Double.compare(lastSmartGains.velocity, smartGains.velocity) != 0)
                     controller.setSmartMotionMaxVelocity(smartGains.velocity * mRobotConfig.sendMultiplier, slot);
-                if (Double.compare(lastSmartGains.allowableError != smartGains.allowableError)
+                if (Double.compare(lastSmartGains.allowableError, smartGains.allowableError) != 0)
                     controller.setSmartMotionAllowedClosedLoopError(smartGains.allowableError, slot);
-                if (Double.compare(lastSmartGains.minimumOutputVelocity != smartGains.minimumOutputVelocity)
+                if (Double.compare(lastSmartGains.minimumOutputVelocity, smartGains.minimumOutputVelocity) != 0)
                     controller.setSmartMotionMinOutputVelocity(smartGains.minimumOutputVelocity, slot);
                 if (firstInitialization) {
                     controller.setOutputRange(-1.0, 1.0, slot);

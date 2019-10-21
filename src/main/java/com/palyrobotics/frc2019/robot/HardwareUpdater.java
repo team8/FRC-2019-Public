@@ -3,7 +3,6 @@ package com.palyrobotics.frc2019.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
@@ -13,11 +12,10 @@ import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.IntakeConfig;
 import com.palyrobotics.frc2019.config.subsystem.PusherConfig;
 import com.palyrobotics.frc2019.subsystems.*;
-import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.LoopOverrunDebugger;
+import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.LazySparkMax;
-import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -26,7 +24,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.CircularBuffer;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
@@ -209,9 +206,9 @@ class HardwareUpdater {
 
         pusherSpark.getEncoder().setPositionConversionFactor(PusherConfig.kPusherInchesPerRotation);
         pusherSpark.getEncoder().setVelocityConversionFactor(PusherConfig.kPusherEncSpeedUnitConversion);
-        pusherSpark.getPIDController().setOutputRange(-0.7, 0.7);
+        pusherSpark.getPIDController().setOutputRange(-0.9, 0.9);
 
-        pusherSpark.setSmartCurrentLimit(56);
+        pusherSpark.setSmartCurrentLimit(80);
         pusherSpark.setInverted(true);
         pusherSpark.setIdleMode(IdleMode.kBrake);
     }

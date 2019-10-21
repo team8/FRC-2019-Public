@@ -6,7 +6,6 @@ import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
-import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 

@@ -3,6 +3,7 @@ package com.palyrobotics.frc2019.util;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
+import com.palyrobotics.frc2019.config.dashboard.LiveGraph;
 import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
@@ -29,6 +30,7 @@ public class CheesyDriveHelper {
         }
 
         CSVWriter.addData("drivePowerMultiplier", mTotalPowerMultiplier);
+        LiveGraph.getInstance().add("drivePowerMultiplier", mTotalPowerMultiplier);
 
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
 

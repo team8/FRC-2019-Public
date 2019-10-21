@@ -8,7 +8,6 @@ import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
-import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Pusher extends Subsystem {
@@ -79,7 +78,7 @@ public class Pusher extends Subsystem {
             case OUT:
                 double arbitraryDemand;
                 if (robotState.pusherPosition < mConfig.distanceOut / 2.0) {
-                    arbitraryDemand = 0.2;
+                    arbitraryDemand = 0.3;
                 } else {
                     arbitraryDemand = 0.0;
                 }
