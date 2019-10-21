@@ -20,7 +20,7 @@ public class DriveSensorResetRoutine extends Routine {
     public void start() {
         mStartTime = Timer.getFPGATimestamp();
         HardwareAdapter.getInstance().getDrivetrain().resetSensors();
-        mRobotState.reset(0, new RigidTransform2d());
+        mRobotState.reset(0.0, new RigidTransform2d());
         mRobotState.drivePose.heading = 0.0;
         mRobotState.drivePose.leftEncoderPosition = 0.0;
         mRobotState.drivePose.rightEncoderPosition = 0.0;

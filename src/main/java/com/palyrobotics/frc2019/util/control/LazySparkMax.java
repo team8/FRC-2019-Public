@@ -79,20 +79,20 @@ public class LazySparkMax extends CANSparkMax {
                 mLastGains.put(slot, (slot == 1 || slot == 2) ? new SmartGains() : new Gains()); // TODO a little ugly
             }
             Gains lastGains = mLastGains.get(slot);
-            if (lastGains.p != gains.p) controller.setP(gains.p, slot);
-            if (lastGains.i != gains.i) controller.setI(gains.i, slot);
-            if (lastGains.d != gains.d) controller.setD(gains.d, slot);
-            if (lastGains.f != gains.f) controller.setFF(gains.f, slot);
-            if (lastGains.iZone != gains.iZone) controller.setIZone(gains.iZone, slot);
+            if (Double.compare(lastGains.p, gains.p) != 0) controller.setP(gains.p, slot);
+            if (Double.compare(lastGains.i, gains.i) != 0) controller.setI(gains.i, slot);
+            if (Double.compare(lastGains.d, gains.d) != 0) controller.setD(gains.d, slot);
+            if (Double.compare(lastGains.f, gains.f) != 0) controller.setFF(gains.f, slot);
+            if (Double.compare(lastGains.iZone, gains.iZone) != 0) controller.setIZone(gains.iZone, slot);
             if (gains instanceof SmartGains) { // TODO maybe we could set this up such that we do not check type
                 SmartGains lastSmartGains = (SmartGains) lastGains, smartGains = (SmartGains) gains;
-                if (lastSmartGains.acceleration != smartGains.acceleration)
+                if (Double.compare(lastSmartGains.acceleration, smartGains.acceleration) != 0)
                     controller.setSmartMotionMaxAccel(smartGains.acceleration * mRobotConfig.sendMultiplier, slot);
-                if (lastSmartGains.velocity != smartGains.velocity)
+                if (Double.compare(lastSmartGains.velocity != smartGains.velocity) != 0)
                     controller.setSmartMotionMaxVelocity(smartGains.velocity * mRobotConfig.sendMultiplier, slot);
-                if (lastSmartGains.allowableError != smartGains.allowableError)
+                if (Double.compare(lastSmartGains.allowableError != smartGains.allowableError)
                     controller.setSmartMotionAllowedClosedLoopError(smartGains.allowableError, slot);
-                if (lastSmartGains.minimumOutputVelocity != smartGains.minimumOutputVelocity)
+                if (Double.compare(lastSmartGains.minimumOutputVelocity != smartGains.minimumOutputVelocity)
                     controller.setSmartMotionMinOutputVelocity(smartGains.minimumOutputVelocity, slot);
                 if (firstInitialization) {
                     controller.setOutputRange(-1.0, 1.0, slot);

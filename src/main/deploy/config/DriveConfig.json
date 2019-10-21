@@ -30,5 +30,7 @@
     "controllerRampRate": 0.1,
     "stallCurrentLimit": 40,
     "freeCurrentLimit": 40,
-    "freeRpmLimit": 0
+    "freeRpmLimit": 0,
+    "nonlinearPasses": 3,
+    "brownOutRecoverySeconds": 2.0
 }

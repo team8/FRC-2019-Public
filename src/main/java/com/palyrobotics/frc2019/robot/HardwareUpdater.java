@@ -148,8 +148,8 @@ class HardwareUpdater {
 
         intakeSlaveSpark.follow(intakeMasterSpark);
 
-        intakeMasterSpark.enableVoltageCompensation(12);
-        intakeSlaveSpark.enableVoltageCompensation(12);
+        intakeMasterSpark.enableVoltageCompensation(12.0);
+        intakeSlaveSpark.enableVoltageCompensation(12.0);
 
         intakeMasterSpark.getEncoder().setPositionConversionFactor(IntakeConfig.kArmDegreesPerRevolution);
         intakeMasterSpark.getEncoder().setVelocityConversionFactor(IntakeConfig.kArmDegreesPerMinutePerRpm);
@@ -275,8 +275,6 @@ class HardwareUpdater {
         robotState.intakeVelocity = armEncoder.getVelocity();
 //        robotState.intakeAppliedOutput = intakeSpark.getAppliedOutput();
 
-        loopOverrunDebugger.addPoint("3");
-
         LazySparkMax pusherSpark = HardwareAdapter.getInstance().getPusher().pusherSpark;
         CANEncoder pusherEncoder = pusherSpark.getEncoder();
         robotState.pusherPosition = pusherEncoder.getPosition();
@@ -310,22 +308,6 @@ class HardwareUpdater {
         loopOverrunDebugger.addPoint("Ultrasonics");
 
         loopOverrunDebugger.finish();
-
-        CSVWriter.addData("lc1", drivetrain.leftMasterSpark.getOutputCurrent());
-        CSVWriter.addData("lc2", drivetrain.leftSlave1Spark.getOutputCurrent());
-        CSVWriter.addData("lc3", drivetrain.leftSlave2Spark.getOutputCurrent());
-
-        CSVWriter.addData("rc1", drivetrain.rightMasterSpark.getOutputCurrent());
-        CSVWriter.addData("rc2", drivetrain.rightSlave1Spark.getOutputCurrent());
-        CSVWriter.addData("rc3", drivetrain.rightSlave2Spark.getOutputCurrent());
-
-        CSVWriter.addData("lo1", drivetrain.leftMasterSpark.getAppliedOutput());
-        CSVWriter.addData("lo2", drivetrain.leftSlave1Spark.getAppliedOutput());
-        CSVWriter.addData("lo3", drivetrain.leftSlave2Spark.getAppliedOutput());
-
-        CSVWriter.addData("ro1", drivetrain.rightMasterSpark.getAppliedOutput());
-        CSVWriter.addData("ro2", drivetrain.rightSlave1Spark.getAppliedOutput());
-        CSVWriter.addData("ro3", drivetrain.rightSlave2Spark.getAppliedOutput());
     }
 
     private boolean hasCargoFromReadings(CircularBuffer readings, double tolerance, int requiredCount) {

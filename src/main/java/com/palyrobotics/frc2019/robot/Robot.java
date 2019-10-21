@@ -149,6 +149,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         sRobotState.reset(0.0, new RigidTransform2d());
+        sRobotState.resetUltrasonics();
         // Stops updating routines
         mRoutineManager.reset(sCommands);
 

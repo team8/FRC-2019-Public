@@ -23,7 +23,9 @@ public class DriveConfig extends AbstractSubsystemConfig {
             turnSensitivity,
             lowNegativeInertiaThreshold, lowNegativeInertiaFarScalar, lowNegativeInertiaCloseScalar, lowNegativeInertiaTurnScalar,
             wheelNonLinearity,
-            controllerRampRate;
+            controllerRampRate,
+            brownOutRecoverySeconds;
     public int
-            stallCurrentLimit, freeCurrentLimit, freeRpmLimit;
+            stallCurrentLimit, freeCurrentLimit, freeRpmLimit,
+            nonlinearPasses;
 }

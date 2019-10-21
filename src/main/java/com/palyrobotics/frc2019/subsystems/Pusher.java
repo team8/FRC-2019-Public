@@ -77,7 +77,13 @@ public class Pusher extends Subsystem {
                 }
                 break;
             case OUT:
-                mOutput.setTargetPosition(mConfig.distanceOut, mConfig.positionGains);
+                double arbitraryDemand;
+                if (robotState.pusherPosition < mConfig.distanceOut / 2.0) {
+                    arbitraryDemand = 0.2;
+                } else {
+                    arbitraryDemand = 0.0;
+                }
+                mOutput.setTargetPosition(mConfig.distanceOut, arbitraryDemand, mConfig.positionGains);
                 mIsFirstTickForSlamResetEncoder = true;
                 mSlamStartTimeMs = null;
                 break;

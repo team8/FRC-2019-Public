@@ -4,22 +4,34 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
 import com.palyrobotics.frc2019.config.subsystem.DriveConfig;
-import com.palyrobotics.frc2019.subsystems.Drive;
 import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Implements constant curvature driving. Yoinked from 254 code
  */
 public class CheesyDriveHelper {
-    private double mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp, mQuickStopAccumulator, mNegativeInertiaAccumulator;
-    //    private boolean mInitialBrake;
-//    private double mBrakeRate;
+    private double
+            mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp,
+            mQuickStopAccumulator, mNegativeInertiaAccumulator,
+            mTotalPowerMultiplier = 1.0, mBrownOutTimeSeconds;
     private final DriveConfig driveConfig = Configs.get(DriveConfig.class);
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
+        if (RobotController.isBrownedOut()) {
+            mTotalPowerMultiplier = 0.5;
+            mBrownOutTimeSeconds = Timer.getFPGATimestamp();
+        } else if (Timer.getFPGATimestamp() - mBrownOutTimeSeconds > driveConfig.brownOutRecoverySeconds) {
+            mTotalPowerMultiplier = 1.0;
+        }
+
+        CSVWriter.addData("drivePowerMultiplier", mTotalPowerMultiplier);
+
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
-        //Increase in magnitude, deceleration is fine. This misses rapid direction switches, but that's up to driver
+
         double absoluteThrottle = Math.abs(throttle);
         if (absoluteThrottle > driveConfig.throttleAccelerationThreshold && absoluteThrottle > Math.abs(mPreviousThrottleForRamp)) {
             throttle = mPreviousThrottleForRamp + Math.signum(throttle) * driveConfig.throttleAccelerationLimit;
@@ -37,10 +49,6 @@ public class CheesyDriveHelper {
         // Quick-turn if right trigger is pressed
         boolean isQuickTurn = robotState.isQuickTurning = commands.isQuickTurn;
 
-//        if (!isQuickTurn && commands.wantedDriveState == Drive.DriveState.CHEZY) {
-//            wheel *= 0.6;
-//        }
-
         wheel = MathUtil.handleDeadBand(wheel, DrivetrainConstants.kDeadband);
         throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
 
@@ -48,7 +56,7 @@ public class CheesyDriveHelper {
         mOldWheel = wheel;
 
         // Map linear wheel input onto a sin wave, three passes
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < driveConfig.nonlinearPasses; i++)
             wheel = applyWheelNonLinearPass(wheel, driveConfig.wheelNonLinearity);
 
         // Negative inertia
@@ -119,8 +127,8 @@ public class CheesyDriveHelper {
             rightPower = -1.0;
         }
 
-        mSignal.leftOutput.setPercentOutput(leftPower);
-        mSignal.rightOutput.setPercentOutput(rightPower);
+        mSignal.leftOutput.setPercentOutput(leftPower * mTotalPowerMultiplier);
+        mSignal.rightOutput.setPercentOutput(rightPower * mTotalPowerMultiplier);
         return mSignal;
     }
 

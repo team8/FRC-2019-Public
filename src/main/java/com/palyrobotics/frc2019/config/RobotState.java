@@ -4,6 +4,7 @@ import com.palyrobotics.frc2019.util.Pose;
 import com.palyrobotics.frc2019.util.trajectory.*;
 import edu.wpi.first.wpilibj.CircularBuffer;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,30 +76,38 @@ public class RobotState {
     private RigidTransform2d.Delta vehicleVelocity;
     private InterpolatingTreeMap<InterpolatingDouble, RigidTransform2d> fieldToVehicle;
 
-    public synchronized void reset(double startTime, RigidTransform2d initialFieldToVehicle) {
+    public void reset(double startTime, RigidTransform2d initialFieldToVehicle) {
         fieldToVehicle = new InterpolatingTreeMap<>(100);
         fieldToVehicle.put(new InterpolatingDouble(startTime), initialFieldToVehicle);
         vehicleVelocity = new RigidTransform2d.Delta(0, 0, 0);
     }
 
-    public synchronized RigidTransform2d getFieldToVehicle(double timestamp) {
+    public void resetUltrasonics() {
+        for (CircularBuffer buffer : List.of(leftIntakeReadings, rightIntakeReadings, pusherReadings)) {
+            for (int i = 0; i < kUltrasonicBufferSize; i++) {
+                buffer.addFirst(Double.MAX_VALUE);
+            }
+        }
+    }
+
+    public RigidTransform2d getFieldToVehicle(double timestamp) {
         return fieldToVehicle.getInterpolated(new InterpolatingDouble(timestamp));
     }
 
-    public synchronized Map.Entry<InterpolatingDouble, RigidTransform2d> getLatestFieldToVehicle() {
+    public Map.Entry<InterpolatingDouble, RigidTransform2d> getLatestFieldToVehicle() {
         return fieldToVehicle.lastEntry();
     }
 
-    public synchronized RigidTransform2d getPredictedFieldToVehicle(double lookAheadTime) {
+    public RigidTransform2d getPredictedFieldToVehicle(double lookAheadTime) {
         return getLatestFieldToVehicle().getValue().transformBy(
                 RigidTransform2d.fromVelocity(new RigidTransform2d.Delta(vehicleVelocity.dX * lookAheadTime, vehicleVelocity.dY * lookAheadTime, vehicleVelocity.dTheta * lookAheadTime)));
     }
 
-    public synchronized void addFieldToVehicleObservation(double timestamp, RigidTransform2d observation) {
+    public void addFieldToVehicleObservation(double timestamp, RigidTransform2d observation) {
         fieldToVehicle.put(new InterpolatingDouble(timestamp), observation);
     }
 
-    public synchronized void addObservations(double timestamp, RigidTransform2d fieldToVehicle, RigidTransform2d.Delta velocity) {
+    public void addObservations(double timestamp, RigidTransform2d fieldToVehicle, RigidTransform2d.Delta velocity) {
         addFieldToVehicleObservation(timestamp, fieldToVehicle);
         vehicleVelocity = velocity;
     }
