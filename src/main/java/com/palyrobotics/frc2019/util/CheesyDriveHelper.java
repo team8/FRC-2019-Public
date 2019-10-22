@@ -17,20 +17,26 @@ public class CheesyDriveHelper {
     private double
             mOldWheel, mPreviousWheelForRamp, mPreviousThrottleForRamp,
             mQuickStopAccumulator, mNegativeInertiaAccumulator,
-            mTotalPowerMultiplier = 1.0, mBrownOutTimeSeconds;
+            mBrownOutTimeSeconds;
     private final DriveConfig driveConfig = Configs.get(DriveConfig.class);
     private SparkDriveSignal mSignal = new SparkDriveSignal();
 
     public SparkDriveSignal cheesyDrive(Commands commands, RobotState robotState) {
+        double totalPowerMultiplier;
         if (RobotController.isBrownedOut()) {
-            mTotalPowerMultiplier = 0.5;
+            totalPowerMultiplier = driveConfig.brownOutInitialNerfMultiplier;
             mBrownOutTimeSeconds = Timer.getFPGATimestamp();
-        } else if (Timer.getFPGATimestamp() - mBrownOutTimeSeconds > driveConfig.brownOutRecoverySeconds) {
-            mTotalPowerMultiplier = 1.0;
+        } else {
+            totalPowerMultiplier = MathUtil.clamp(
+                    driveConfig.brownOutInitialNerfMultiplier
+                            + (Timer.getFPGATimestamp() - mBrownOutTimeSeconds)
+                            * (1 / driveConfig.brownOutRecoverySeconds) * (1 - driveConfig.brownOutInitialNerfMultiplier),
+                    driveConfig.brownOutInitialNerfMultiplier, 1.0
+            );
         }
 
-        CSVWriter.addData("drivePowerMultiplier", mTotalPowerMultiplier);
-        LiveGraph.getInstance().add("drivePowerMultiplier", mTotalPowerMultiplier);
+        CSVWriter.addData("drivePowerMultiplier", totalPowerMultiplier);
+        LiveGraph.getInstance().add("drivePowerMultiplier", totalPowerMultiplier);
 
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
 
@@ -129,8 +135,8 @@ public class CheesyDriveHelper {
             rightPower = -1.0;
         }
 
-        mSignal.leftOutput.setPercentOutput(leftPower * mTotalPowerMultiplier);
-        mSignal.rightOutput.setPercentOutput(rightPower * mTotalPowerMultiplier);
+        mSignal.leftOutput.setPercentOutput(leftPower * totalPowerMultiplier);
+        mSignal.rightOutput.setPercentOutput(rightPower * totalPowerMultiplier);
         return mSignal;
     }
 

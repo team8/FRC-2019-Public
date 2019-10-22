@@ -32,5 +32,6 @@
     "freeCurrentLimit": 40,
     "freeRpmLimit": 0,
     "nonlinearPasses": 3,
-    "brownOutRecoverySeconds": 2.0
+    "brownOutRecoverySeconds": 0.5,
+    "brownOutInitialNerfMultiplier": 0.5
 }
