@@ -102,37 +102,4 @@ public class VisionDriveHelper {
         }
         return mSignal;
     }
-
-//    /**
-//     * Throttle tuning functions
-//     */
-//    public double remapThrottle(double initialThrottle) {
-//        double x = Math.abs(initialThrottle);
-//        switch (OtherConstants.kDriverName) {
-//            case BRYAN:
-//                //Reversal of directions
-//                //Stick a 0 cycle in between
-//                if (initialThrottle * mLastThrottle < 0) {
-//                    return 0.0;
-//                }
-//
-//                //Increase in magnitude, deceleration is fine. This misses rapid direction switches, but that's up to driver
-//                if (x > Math.abs(mLastThrottle)) {
-//                    x = mLastThrottle + Math.signum(initialThrottle) * DrivetrainConstants.kMaxAccelRate;
-//                } else {
-//                    x = initialThrottle;
-//                }
-//
-//                //				x = initialThrottle;
-//                break;
-//        }
-//        return x;
-//    }
-//
-//    /**
-//     * Limits the given input to the given magnitude.
-//     */
-//    public double limit(double v, double limit) {
-//        return (Math.abs(v) < limit) ? v : limit * (v < 0 ? -1 : 1);
-//    }
 }

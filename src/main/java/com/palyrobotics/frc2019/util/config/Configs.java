@@ -157,6 +157,19 @@ public class Configs {
     }
 
     /**
+     * Copy an object by converting it to its JSON representation then reads it into a new object.
+     * This is slow and creates garbage, so it should not be used often.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T copy(T toCopy) {
+        try {
+            return (T) sMapper.readValue(sMapper.writeValueAsString(toCopy), toCopy.getClass());
+        } catch (IOException exception) {
+            throw new IllegalArgumentException("Type supplied cannot be represented as JSON! Can not copy.", exception);
+        }
+    }
+
+    /**
      * This should be started in a new thread to watch changes for the folder containing the JSON configuration files.
      * It detects when files are modified and written in the filesystem, then reloads them calling {@link #notifyUpdated(Class)}.
      */
