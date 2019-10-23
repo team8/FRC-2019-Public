@@ -37,7 +37,7 @@ public class LazySparkMax extends CANSparkMax {
         super(deviceNumber, MotorType.kBrushless);
     }
 
-    public void set(ControlType type, double reference, double arbitraryPercentOutput, Gains gains) {
+    public boolean set(ControlType type, double reference, double arbitraryPercentOutput, Gains gains) {
         // Checks to make sure we are using this properly
         boolean isSmart = type == ControlType.kSmartMotion || type == ControlType.kSmartVelocity,
                 requiresGains = isSmart || type == ControlType.kPosition || type == ControlType.kVelocity;
@@ -60,11 +60,13 @@ public class LazySparkMax extends CANSparkMax {
                 if (requiresGains) {
                     mLastGains.put(slot, Configs.copy(gains));
                 }
+                return true;
 //                System.out.printf("%s, %d, %f, %f, %s%n", type, slot, reference, arbitraryPercentOutput, Configs.toJson(gains));
             } else {
                 DriverStation.reportError(String.format("Error updating output on spark max with ID: %d", getDeviceId()), new RuntimeException().getStackTrace());
             }
         }
+        return false;
     }
 
     private void updateGainsIfNeeded(Gains gains, int slot) {
