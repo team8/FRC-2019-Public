@@ -38,7 +38,7 @@ public class Tests {
             assertTrue(spark.set(ControlType.kSmartMotion, 0.1, 0.1, new SmartGains()));
             assertFalse(spark.set(ControlType.kSmartMotion, 0.1, 0.1, new SmartGains()));
         } else {
-            System.out.println("Skipping lazy spark max tests since we are not on Windows");
+            System.out.println("OS is not Windows, skipping lazy spark max tests");
         }
     }
 }
