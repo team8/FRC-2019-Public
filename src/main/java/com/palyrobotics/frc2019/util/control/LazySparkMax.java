@@ -51,13 +51,14 @@ public class LazySparkMax extends CANSparkMax {
         // TODO add feature to add custom slots
         int slot = sControlTypeToSlot.getOrDefault(type, 0);
         updateGainsIfNeeded(gains, slot);
-        if ((requiresGains && !Objects.equals(gains, mLastGains.get(slot))) || slot != mLastSlot || type != mLastControlType || reference != mLastReference || arbitraryPercentOutput != mLastArbitraryPercentOutput) {
+        boolean areGainsEqual = !requiresGains || Objects.equals(gains, mLastGains.get(slot));
+        if (!areGainsEqual || slot != mLastSlot || type != mLastControlType || reference != mLastReference || arbitraryPercentOutput != mLastArbitraryPercentOutput) {
             if (getPIDController().setReference(reference, type, slot, arbitraryPercentOutput, ArbFFUnits.kPercentOut) == CANError.kOk) {
                 mLastSlot = slot;
                 mLastControlType = type;
                 mLastReference = reference;
                 mLastArbitraryPercentOutput = arbitraryPercentOutput;
-                if (requiresGains) {
+                if (!areGainsEqual) {
                     mLastGains.put(slot, Configs.copy(gains));
                 }
                 return true;
