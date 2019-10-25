@@ -14,7 +14,7 @@ import com.palyrobotics.frc2019.vision.Limelight;
  */
 public class VisionDriveHelper {
 
-    private static final double kMaxAngularPower = 0.6;
+    private static final double kMaxAngularPower = 0.4;
 
     private final Limelight mLimelight = Limelight.getInstance();
     private final SparkDriveSignal mSignal = new SparkDriveSignal();
@@ -31,10 +31,6 @@ public class VisionDriveHelper {
         boolean isBraking = commands.isBraking;
 
         throttle = MathUtil.handleDeadBand(throttle, DrivetrainConstants.kDeadband);
-
-        double leftOutput, rightOutput;
-
-        double angularPower;
 
         // Linear power is what's actually sent to motor, throttle is input
         double linearPower = throttle;
@@ -61,7 +57,9 @@ public class VisionDriveHelper {
         } else {
             mInitialBrake = true;
         }
+        mLastThrottle = linearPower;
 
+        double angularPower;
         boolean hasFoundTarget;
         if (mLimelight.isTargetFound()) {
             angularPower = mPidController.calculate(mLimelight.getYawToTarget());
@@ -77,12 +75,11 @@ public class VisionDriveHelper {
             angularPower = 0.0;
         }
 
-        rightOutput = leftOutput = mLastThrottle = linearPower;
-
         angularPower *= -1.0;
+        double leftOutput, rightOutput;
 //        angularPower *= mOldThrottle;
-        leftOutput *= (1 + angularPower);
-        rightOutput *= (1 - angularPower);
+        leftOutput = linearPower + angularPower;
+        rightOutput = linearPower - angularPower;
 
         if (leftOutput > 1.0) {
             leftOutput = 1.0;
