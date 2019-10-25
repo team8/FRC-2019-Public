@@ -14,5 +14,5 @@
     "coastElevatorIfDisabled": false,
     "coastArmIfDisabled": false,
     "disableSparkOutput": false,
-    "sendMultiplier": 0.95
+    "smartMotionMultiplier": 0.95
 }

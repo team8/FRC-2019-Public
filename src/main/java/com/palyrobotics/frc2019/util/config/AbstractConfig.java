@@ -13,5 +13,5 @@ public abstract class AbstractConfig {
         }
     }
 
-    void onLoad() {}
+    protected void onPostUpdate() {}
 }

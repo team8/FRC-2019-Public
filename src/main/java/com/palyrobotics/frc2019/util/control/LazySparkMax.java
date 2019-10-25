@@ -58,7 +58,7 @@ public class LazySparkMax extends CANSparkMax {
                 mLastControlType = type;
                 mLastReference = reference;
                 mLastArbitraryPercentOutput = arbitraryPercentOutput;
-                if (!areGainsEqual) {
+                if (!areGainsEqual) { // Special check since the copy function creates garbage and should only be done when necessary. All other variables are trivial to set.
                     mLastGains.put(slot, Configs.copy(gains));
                 }
                 return true;
@@ -74,7 +74,7 @@ public class LazySparkMax extends CANSparkMax {
         if (gains != null) {
             CANPIDController controller = getPIDController();
             boolean firstInitialization = !mLastGains.containsKey(slot);
-            if (firstInitialization) {
+            if (firstInitialization) { // Empty gains for default value instead of null
                 mLastGains.put(slot, (slot == 1 || slot == 2) ? new SmartGains() : new Gains()); // TODO a little ugly
             }
             Gains lastGains = mLastGains.get(slot);
@@ -85,10 +85,10 @@ public class LazySparkMax extends CANSparkMax {
             if (Double.compare(lastGains.iZone, gains.iZone) != 0) controller.setIZone(gains.iZone, slot);
             if (gains instanceof SmartGains) { // TODO maybe we could set this up such that we do not check type
                 SmartGains lastSmartGains = (SmartGains) lastGains, smartGains = (SmartGains) gains;
-                if (Double.compare(lastSmartGains.acceleration, smartGains.acceleration) != 0)
-                    controller.setSmartMotionMaxAccel(smartGains.acceleration * mRobotConfig.sendMultiplier, slot);
-                if (Double.compare(lastSmartGains.velocity, smartGains.velocity) != 0)
-                    controller.setSmartMotionMaxVelocity(smartGains.velocity * mRobotConfig.sendMultiplier, slot);
+                if (Double.compare(lastSmartGains.acceleration * mRobotConfig.smartMotionMultiplier, smartGains.acceleration * mRobotConfig.smartMotionMultiplier) != 0)
+                    controller.setSmartMotionMaxAccel(smartGains.acceleration * mRobotConfig.smartMotionMultiplier, slot);
+                if (Double.compare(lastSmartGains.velocity * mRobotConfig.smartMotionMultiplier, smartGains.velocity * mRobotConfig.smartMotionMultiplier) != 0)
+                    controller.setSmartMotionMaxVelocity(smartGains.velocity * mRobotConfig.smartMotionMultiplier, slot);
                 if (Double.compare(lastSmartGains.allowableError, smartGains.allowableError) != 0)
                     controller.setSmartMotionAllowedClosedLoopError(smartGains.allowableError, slot);
                 if (Double.compare(lastSmartGains.minimumOutputVelocity, smartGains.minimumOutputVelocity) != 0)

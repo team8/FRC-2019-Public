@@ -72,7 +72,7 @@ public class Configs {
         Path custom = resolveConfigPath(name);
         try {
             T value = sMapper.readValue(custom.toFile(), configClass);
-            value.onLoad();
+            value.onPostUpdate();
             return value;
         } catch (IOException parseException) {
             throw handleParseError(parseException, configClass);
@@ -197,7 +197,9 @@ public class Configs {
                             if (alreadySeen.contains(configName)) continue;
                             System.out.printf("Config named %s hot reloaded%n", configName);
                             try {
-                                sMapper.updatingReader(get(configClass)).readValue(getFileForConfig(configClass).toFile());
+                                AbstractConfig config = get(configClass);
+                                sMapper.updatingReader(config).readValue(getFileForConfig(configClass).toFile());
+                                config.onPostUpdate();
                             } catch (IOException readException) {
                                 handleParseError(readException, configClass).printStackTrace();
                                 System.err.printf("Error updating config for %s. Aborting reload.%n", configName);
@@ -246,7 +248,7 @@ public class Configs {
         }
         try {
             T value = sMapper.readValue(configFile.toFile(), configClass);
-            value.onLoad();
+            value.onPostUpdate();
             return value;
         } catch (IOException readException) {
             RuntimeException exception = handleParseError(readException, configClass);

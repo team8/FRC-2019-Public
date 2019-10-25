@@ -29,6 +29,6 @@ public class SmartGains extends Gains {
 
     @Override
     public String toString() { // Auto-generated
-        return String.format("SmartGains{acceleration=%s, velocity=%s, allowableError=%s, minimumOutputVelocity=%s} %s", acceleration, velocity, allowableError, minimumOutputVelocity, super.toString());
+        return String.format("SmartGains{acceleration=%f, velocity=%f, allowableError=%f, minimumOutputVelocity=%f} %s", acceleration, velocity, allowableError, minimumOutputVelocity, super.toString());
     }
 }
