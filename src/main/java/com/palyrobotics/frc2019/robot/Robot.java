@@ -15,6 +15,7 @@ import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -71,6 +72,7 @@ public class Robot extends TimedRobot {
         DriveTeam.configConstants();
 
         mEnabledServices.forEach(RobotService::start);
+        CameraServer.getInstance().startAutomaticCapture();
 
         if (RobotBase.isSimulation()) sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
 
