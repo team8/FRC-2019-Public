@@ -250,6 +250,9 @@ class HardwareUpdater {
         HardwareAdapter.DrivetrainHardware drivetrain = HardwareAdapter.getInstance().getDrivetrain();
         LazySparkMax elevatorSpark = HardwareAdapter.getInstance().getElevator().elevatorMasterSpark;
 
+        robotState.leftDriveVelocity = drivetrain.leftMasterSpark.getEncoder().getVelocity();
+        robotState.rightDriveVelocity = drivetrain.rightMasterSpark.getEncoder().getVelocity();
+
         CANEncoder elevatorEncoder = elevatorSpark.getEncoder();
         robotState.elevatorPosition = elevatorEncoder.getPosition();
         robotState.elevatorVelocity = elevatorEncoder.getVelocity();
