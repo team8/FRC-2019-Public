@@ -23,6 +23,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.ControlType;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CircularBuffer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
@@ -59,6 +60,7 @@ class HardwareUpdater {
         configureIntakeHardware();
         configureShooterHardware();
         configurePusherHardware();
+        configureMiscellaneousHardware();
         HardwareAdapter.getInstance().getIntake().calibrateIntakeEncoderWithPotentiometer();
     }
 
@@ -211,6 +213,11 @@ class HardwareUpdater {
         pusherSpark.setSmartCurrentLimit(80);
         pusherSpark.setInverted(true);
         pusherSpark.setIdleMode(IdleMode.kBrake);
+    }
+
+    private void configureMiscellaneousHardware() {
+        UsbCamera fisheyeCam = HardwareAdapter.getInstance().getMiscellaneousHardware().fisheyeCam;
+        fisheyeCam.setResolution(640,360); // Original is 1920 x 1080
     }
 
     private void startUltrasonics() {
