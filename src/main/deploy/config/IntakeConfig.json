@@ -39,5 +39,6 @@
         "iZone": 0,
         "acceleration": 20000,
         "velocity": 8000
-    }
+    },
+    "useBrokenPotFix": true
 }

@@ -38,15 +38,16 @@ public class CheesyDriveHelper {
                     mDriveConfig.brownOutInitialNerfMultiplier, 1.0
             );
         }
-
-        LiveGraph.getInstance().add("velocityLeft", robotState.leftDriveVelocity);
-        LiveGraph.getInstance().add("velocityRight", robotState.rightDriveVelocity);
-        LiveGraph.getInstance().add("drivePowerMultiplier", totalPowerMultiplier);
+//        CSVWriter.addData("totalPowerMultiplier", totalPowerMultiplier);
 
         double throttle = commands.driveThrottle, wheel = commands.driveWheel;
 
         boolean underVelocity = Math.abs(robotState.rightDriveVelocity) < mDriveConfig.velocityUnlock &&
                 Math.abs(robotState.leftDriveVelocity) < mDriveConfig.velocityUnlock;
+
+//        CSVWriter.addData("underVelocity", underVelocity);
+//        CSVWriter.addData("leftVelocity", robotState.leftDriveVelocity);
+//        CSVWriter.addData("rightVelocity", robotState.rightDriveVelocity);
 
         if (Math.abs(throttle) > mDriveConfig.initialLock && underVelocity) {
             throttle = Math.signum(throttle) * mDriveConfig.initialLock;
@@ -148,8 +149,9 @@ public class CheesyDriveHelper {
             rightPower = -1.0;
         }
 
-        System.out.println(leftPower * totalPowerMultiplier);
-        System.out.println(rightPower * totalPowerMultiplier);
+//        CSVWriter.addData("leftWantedPower", leftPower * totalPowerMultiplier);
+//        CSVWriter.addData("rightWantedPower", rightPower * totalPowerMultiplier);
+
         mSignal.leftOutput.setPercentOutput(leftPower * totalPowerMultiplier);
         mSignal.rightOutput.setPercentOutput(rightPower * totalPowerMultiplier);
         return mSignal;

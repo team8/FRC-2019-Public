@@ -72,7 +72,6 @@ public class Robot extends TimedRobot {
         DriveTeam.configConstants();
 
         mEnabledServices.forEach(RobotService::start);
-        CameraServer.getInstance().startAutomaticCapture();
 
         if (RobotBase.isSimulation()) sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
 
@@ -109,10 +108,14 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         mTick++;
         if (mTick % 2 == 0) {
-            mLiveGraph.add("Left Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
-            mLiveGraph.add("Right Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight.getRangeInches());
-            mLiveGraph.add("Pusher Ultrasonic", HardwareAdapter.getInstance().getPusher().pusherUltrasonic.getRangeInches());
-            mLiveGraph.add("Arm Potentiometer", HardwareAdapter.getInstance().getIntake().potentiometer.get());
+//            mLiveGraph.add("Left Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
+//            mLiveGraph.add("Right Ultrasonic", HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight.getRangeInches());
+//            mLiveGraph.add("Pusher Ultrasonic", HardwareAdapter.getInstance().getPusher().pusherUltrasonic.getRangeInches());
+//            mLiveGraph.add("Arm Potentiometer", HardwareAdapter.getInstance().getIntake().potentiometer.get());
+//            System.out.println("Left: " + HardwareAdapter.getInstance().getIntake().intakeUltrasonicLeft.getRangeInches());
+//            System.out.println("Right: " + HardwareAdapter.getInstance().getIntake().intakeUltrasonicRight.getRangeInches());
+//            System.out.println("Pusher: " + HardwareAdapter.getInstance().getPusher().pusherUltrasonic.getRangeInches());
+            System.out.println("Pot: " + HardwareAdapter.getInstance().getIntake().potentiometer.get());
         }
     }
 
@@ -143,9 +146,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         mEnabledServices.forEach(RobotService::update);
-//        double time = Timer.getFPGATimestamp();
-//        mLiveGraph.add("Variable 1", Math.sin(time + Math.cos(time)) * 3 * Math.sin(time / 2));
-//        mLiveGraph.add("Variable 2", Math.sin(time * 2 + Math.sin(time)) * 2 / Math.sin(time / 3));
     }
 
     @Override
