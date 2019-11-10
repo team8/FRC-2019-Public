@@ -3,6 +3,8 @@ package com.palyrobotics.frc2019.robot;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.AutoGetPanelRoutine;
+import com.palyrobotics.frc2019.behavior.routines.fingers.AutoPlacePanelRoutine;
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeUpRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
@@ -238,6 +240,14 @@ public class OperatorInterface {
             commands.cancelCurrentRoutines = true;
         }
 
+        if (mDriveStick.getRawButton(3)) {
+            System.out.println("button 3 pressed, placing panel");
+            commands.addWantedRoutine(new AutoPlacePanelRoutine());
+        }
+        if (mDriveStick.getRawButton(5)) {
+            System.out.println("button 5 pressed, getting panel");
+            commands.addWantedRoutine(new AutoGetPanelRoutine());
+        }
         mOperatorXboxController.updateLastInputs();
 
         return commands;

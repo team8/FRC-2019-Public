@@ -1,3 +1,4 @@
 {
-    "angleLoadingStationTolerance": 20
+  "angleLoadingStationTolerance": 20,
+  "compressionError": 3
 }
