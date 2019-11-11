@@ -17,6 +17,7 @@ import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.subsystems.Intake.IntakeMacroState;
 import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.input.Joystick;
 import com.palyrobotics.frc2019.util.input.XboxController;
 import com.palyrobotics.frc2019.vision.Limelight;
@@ -240,13 +241,18 @@ public class OperatorInterface {
             commands.cancelCurrentRoutines = true;
         }
 
-        if (mDriveStick.getRawButton(3)) {
-            System.out.println("button 3 pressed, placing panel");
-            commands.addWantedRoutine(new AutoPlacePanelRoutine());
-        }
+        //TESTING ONLY GET PANEL ROUTINE FOR NOW
+
+//        if (mDriveStick.getRawButton(3)) {
+//            System.out.println("button 3 pressed, placing panel");
+//            commands.addWantedRoutine(new AutoPlacePanelRoutine());
+//        }
         if (mDriveStick.getRawButton(5)) {
             System.out.println("button 5 pressed, getting panel");
             commands.addWantedRoutine(new AutoGetPanelRoutine());
+        }
+        else{
+            CSVWriter.addData("EnteredRoutine", 0);
         }
         mOperatorXboxController.updateLastInputs();
 

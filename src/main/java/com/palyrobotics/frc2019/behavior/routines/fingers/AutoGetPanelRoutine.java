@@ -1,4 +1,5 @@
 package com.palyrobotics.frc2019.behavior.routines.fingers;
+
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.subsystem.FingerConfig;
@@ -15,57 +16,55 @@ public class AutoGetPanelRoutine extends Routine {
     private double mStartingTime;
 
     private mStates mState;
+
     private enum mStates {
         START, COMPRESSED, EXTENDED, DONE
     }
 
     @Override
     public void start() {
-        mInitialPusherEncPos =  mRobotState.pusherPosition;
+        mInitialPusherEncPos = mRobotState.pusherPosition;
         mState = mStates.START;
     }
 
     @Override
     public Commands update(Commands commands) {
-        if (mState == mStates.START){ //runs only once
-            mInitialPusherEncPos =  mRobotState.pusherPosition;
+        CSVWriter.addData("EnteredRoutine", 1);
+        if (mState == mStates.START) { //runs only once
+            mInitialPusherEncPos = mRobotState.pusherPosition;
             commands.wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
             commands.wantedFingersExpelState = Fingers.PushingState.EXPELLING;
             mState = mStates.EXTENDED;
-            commands.wantedPusherInOutState = Pusher.PusherState.OUT;
         }
 
         double currentPusherEncoder = mRobotState.pusherPosition;
+        //CSVWriter.addData("FingerState",  Fingers.getInstance().FingersState == Fingers.FingersState.OPEN ? 1 : 0 );
+        CSVWriter.addData("Encoder", currentPusherEncoder);
         //if pusher has been compressed for more than 250 ms, then get the panel.
-        if (currentPusherEncoder - mInitialPusherEncPos > mFingerConfig.compressionError){
+        if (currentPusherEncoder - mInitialPusherEncPos > mFingerConfig.compressionError) {
+            System.out.println("FingerStateCompressed");
             if (mState == mStates.EXTENDED) {
-                mStartingTime = Timer.getFPGATimestamp();
                 mState = mStates.COMPRESSED;
+                mStartingTime = Timer.getFPGATimestamp(); //gets time only first time compression was found to be true
                 System.out.println("Started wait loop");
+            } else {
+                CSVWriter.addData("TimeSinceStart", Timer.getFPGATimestamp() - mStartingTime);
             }
-            else{
-                CSVWriter.addData("DeltaTime", Timer.getFPGATimestamp() - mStartingTime);
-            }
-            if (Timer.getFPGATimestamp() - mStartingTime > 0.25 && currentPusherEncoder - mInitialPusherEncPos > mFingerConfig.compressionError) {
-                commands.wantedFingersOpenCloseState = Fingers.FingersState.CLOSE;
-                commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
+            if ((Timer.getFPGATimestamp() - mStartingTime) > 0.2) { //checks if 200 ms elapsed
+                commands.wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
+                commands.wantedFingersExpelState = Fingers.PushingState.EXPELLING;
                 mState = mStates.DONE;
                 System.out.println("Compressed, picking up panel");
             }
-        } else {
-            if (mState == mStates.COMPRESSED) {
-                System.out.println("Ended wait loop");
-            }
-            mState = mStates.EXTENDED;
         }
         return commands;
     }
 
     @Override
     public Commands cancel(Commands commands) {
+          mState = mStates.EXTENDED;
 //        commands.wantedFingersOpenCloseState = Fingers.FingersState.OPEN;
 //        commands.wantedFingersExpelState = Fingers.PushingState.CLOSED;
-        CSVWriter.addData("DeltaTime",0);
         return commands;
     }
 

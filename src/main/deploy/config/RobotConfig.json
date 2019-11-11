@@ -3,11 +3,8 @@
         "commandReceiver"
     ],
     "enabledSubsystems": [
-        "drive",
         "fingers",
-        "pusher",
-        "intake",
-        "shooter"
+        "pusher"
     ],
     "coastDriveIfDisabled": false,
     "coastElevatorIfDisabled": false,
