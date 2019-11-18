@@ -14,7 +14,7 @@ public class IntakeLevelOneRocketRoutine extends OneTimeRoutine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mIntake};
+        return new Subsystem[]{mIntake};
     }
 
     @Override

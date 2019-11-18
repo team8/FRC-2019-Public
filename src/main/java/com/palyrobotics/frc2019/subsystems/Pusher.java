@@ -8,28 +8,25 @@ import com.palyrobotics.frc2019.robot.HardwareAdapter;
 import com.palyrobotics.frc2019.robot.Robot;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Pusher extends Subsystem {
 
     private static Pusher sInstance = new Pusher();
+    private PusherConfig mConfig = Configs.get(PusherConfig.class);
+    private Double mSlamStartTimeMs;
+    private SparkMaxOutput mOutput;
+    private boolean mIsFirstTickForSlamResetEncoder = true;
+    private PusherState mState;
+
+    protected Pusher() {
+        super("pusher");
+    }
 
     public static Pusher getsInstance() {
         return sInstance;
     }
-
-    private PusherConfig mConfig = Configs.get(PusherConfig.class);
-
-    private Double mSlamStartTimeMs;
-
-    private SparkMaxOutput mOutput;
-    private boolean mIsFirstTickForSlamResetEncoder = true;
-
-    public enum PusherState {
-        IN, OUT, START
-    }
-
-    private PusherState mState;
 
     @Override
     public void reset() {
@@ -37,10 +34,6 @@ public class Pusher extends Subsystem {
         mSlamStartTimeMs = null;
         mState = PusherState.START;
         mIsFirstTickForSlamResetEncoder = true;
-    }
-
-    protected Pusher() {
-        super("pusher");
     }
 
     @Override
@@ -88,13 +81,12 @@ public class Pusher extends Subsystem {
                 break;
         }
 
-//        LiveGraph.getInstance().add("pusher", robotState.pusherPosition);
-
-//        CSVWriter.addData("pusherAppliedOut", robotState.pusherAppliedOutput);
-//        CSVWriter.addData("pusherPos", robotState.pusherPosition);
-//        CSVWriter.addData("pusherSetPoint", mOutput.getReference());
-//        CSVWriter.addData("pusherVelocity", robotState.pusherVelocity);
-//        CSVWriter.addData("pusherPosition", robotState.pusherPosition);
+        LiveGraph.getInstance().add("pusher", robotState.pusherPosition);
+        CSVWriter.addData("pusherAppliedOut", robotState.pusherAppliedOutput);
+        CSVWriter.addData("pusherPos", robotState.pusherPosition);
+        CSVWriter.addData("pusherSetPoint", mOutput.getReference());
+        CSVWriter.addData("pusherVelocity", robotState.pusherVelocity);
+        CSVWriter.addData("pusherPosition", robotState.pusherPosition);
     }
 
     public boolean onTarget() {
@@ -113,5 +105,9 @@ public class Pusher extends Subsystem {
     @Override
     public String getStatus() {
         return String.format("Pusher State: %s%nPusher output%s", mState, mOutput.getReference());
+    }
+
+    public enum PusherState {
+        IN, OUT, START
     }
 }

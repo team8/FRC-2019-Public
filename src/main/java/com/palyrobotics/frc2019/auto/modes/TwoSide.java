@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @SuppressWarnings("Duplicates")
 
 public class TwoSide extends AutoModeBase {
-    //right start > rocket ship close > loading station > rocket ship far > depot > rocket ship mid
+    // right start > rocket ship close > loading station > rocket ship far > depot > rocket ship mid
 
     public static int kRunSpeed = 60;
     public static double kOffsetX = 10;
@@ -73,21 +73,17 @@ public class TwoSide extends AutoModeBase {
         StartToCargoShip.add(new Waypoint(new Translation2d(kRightFirstCargoShipX + PhysicalConstants.kRobotLengthInches * .55 + kOffsetX,
                 0 + kOffsetY), kRunSpeed));
         StartToCargoShip.add(new Waypoint(new Translation2d(kRightFirstCargoShipX + PhysicalConstants.kRobotLengthInches * .85 + kOffsetX,
-                kRightFirstCargoShipY - PhysicalConstants.kRobotLengthInches + kOffsetY), kRunSpeed, "visionStart")); //line up in front of cargo bay
+                kRightFirstCargoShipY - PhysicalConstants.kRobotLengthInches + kOffsetY), kRunSpeed, "visionStart")); // line up in front of cargo bay
         StartToCargoShip.add(new Waypoint(new Translation2d(kRightFirstCargoShipX + PhysicalConstants.kRobotLengthInches * .85 + kOffsetX,
                 kRightFirstCargoShipY - PhysicalConstants.kRobotLengthInches * .2 + kOffsetY), 0));
 
         routines.add(new VisionAssistedDrivePathRoutine(StartToCargoShip, false, false, "visionStart"));
 
-        //move elevator up while driving
-//        routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(StartToCargoShip), false),
-//                new ElevatorCustomPositioningRoutine(ElevatorConstants.kElevatorCargoBaysHeightInches, 1)));
-
         return new SequentialRoutine(routines);
 
     }
 
-    public Routine takeHatch() { //cargo ship front to loading station
+    public Routine takeHatch() { // cargo ship front to loading station
         ArrayList<Routine> routines = new ArrayList<>();
 
         ArrayList<Waypoint> BackCargoShipToLoadingStation = new ArrayList<>();
@@ -99,7 +95,7 @@ public class TwoSide extends AutoModeBase {
                 kRightLoadingStationY + kOffsetY), 0));
         routines.add(new DrivePathRoutine(new Path(BackCargoShipToLoadingStation), true));
 
-        //turn toward the loading station
+        // turn toward the loading station
         routines.add(new CascadingGyroEncoderTurnAngleRoutine(90));
 
         ArrayList<Waypoint> ForwardCargoShipToLoadingStation = new ArrayList<>();
@@ -139,7 +135,7 @@ public class TwoSide extends AutoModeBase {
 
         ArrayList<Waypoint> ForwardLoadingStationToCargoShip = new ArrayList<>();
         ForwardLoadingStationToCargoShip.add(new Waypoint(new Translation2d(0,
-                0), kRunSpeed, "visionStart")); //line up in front of cargo bay
+                0), kRunSpeed, "visionStart")); // line up in front of cargo bay
         ForwardLoadingStationToCargoShip.add(new Waypoint(new Translation2d(0, 50), 0));
 
         routines.add(new VisionAssistedDrivePathRoutine(ForwardLoadingStationToCargoShip, false, false, "visionStart"));

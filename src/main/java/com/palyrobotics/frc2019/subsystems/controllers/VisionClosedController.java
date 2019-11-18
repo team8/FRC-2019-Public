@@ -59,7 +59,7 @@ public class VisionClosedController implements Drive.DriveController {
                 rightOutput = getAdjustedDistancePower();
 
         angularPower *= -1;
-        //angularPower *= mOldThrottle;
+        // angularPower *= mOldThrottle;
         leftOutput *= (1 + angularPower);
         rightOutput *= (1 - angularPower);
 
@@ -80,7 +80,6 @@ public class VisionClosedController implements Drive.DriveController {
 
     @Override
     public Pose getSetPoint() {
-        // TODO use default constructor?
         return new Pose();
     }
 

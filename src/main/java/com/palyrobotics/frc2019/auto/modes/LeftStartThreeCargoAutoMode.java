@@ -21,7 +21,6 @@ import java.util.List;
 
 public class LeftStartThreeCargoAutoMode extends AutoModeBase {
     //left start > cargo ship 1 > depot x 3
-    //TODO: copy right side version
 
     public static int SPEED = 70;
     public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches;

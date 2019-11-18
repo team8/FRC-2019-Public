@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @SuppressWarnings("Duplicates")
 
 public class TwoBall extends AutoModeBase {
-    //right start > rocket ship close > loading station > rocket ship far > depot > rocket ship mid
+    // right start > rocket ship close > loading station > rocket ship far > depot > rocket ship mid
 
     public static int kRunSpeed = 80;
     public static double kOffsetX = -20;
@@ -66,47 +66,38 @@ public class TwoBall extends AutoModeBase {
         return new SequentialRoutine(new DriveSensorResetRoutine(1), placeHatchClose1());
     }
 
-    public Routine placeHatchClose1() { //start to rocket ship close
+    public Routine placeHatchClose1() { // start to rocket ship close
         ArrayList<Routine> routines = new ArrayList<>();
 
         ArrayList<Waypoint> StartToRocketShip = new ArrayList<>();
         StartToRocketShip.add(new Waypoint(new Translation2d(0, 0), kRunSpeed));
         StartToRocketShip.add(new Waypoint(new Translation2d(kHabLineX + PhysicalConstants.kRobotLengthInches * 0.5 + kOffsetX,
-                0), kRunSpeed)); //goes straight at the start so the robot doesn't get messed up over the ramp
+                0), kRunSpeed)); // goes straight at the start so the robot doesn't get messed up over the ramp
         StartToRocketShip.add(new Waypoint(new Translation2d(kRightRocketShipCloseX * .6 + kOffsetX,
                 findLineClose(kRightRocketShipCloseX * .8) + PhysicalConstants.kRobotLengthInches * .35 + kOffsetY), kRunSpeed, "visionStart")); //line up with rocket ship
         StartToRocketShip.add(new Waypoint(kRightRocketShipClose, 0));
 
         routines.add(new VisionAssistedDrivePathRoutine(StartToRocketShip, false, false, "visionStart"));
 
-//        ArrayList<Waypoint> goForward = new ArrayList<>();
-//        goForward.add(new Waypoint(new Translation2d(0, 0), 20, true));
-//        //TODO: change translation cords
-//        goForward.add(new Waypoint(new Translation2d(20, 0), 0, true));
-
-        //pusher out while driving forward slowly
-//        routines.add(new ParallelRoutine(new DrivePathRoutine(goForward, false, true),
-//                new PusherOutRoutine()));
-
         routines.add(new PusherOutRoutine());
 
-        //release hatch
+        // release hatch
         routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
 
         routines.add(new TimeoutRoutine(1));
-        //pusher back in
+        // pusher back in
         routines.add(new PusherInRoutine());
 
         return new SequentialRoutine(routines);
     }
 
     public double findLineClose(double cordX) {
-        return -0.54862 * cordX + 0.54862 * kRightRocketShipCloseX + kRightRocketShipCloseY; //slope is derived from the angle of the rocket ship sides - constants derived from math
-    } //the y cord of an invisible line extending from rocket ship close
+        return -0.54862 * cordX + 0.54862 * kRightRocketShipCloseX + kRightRocketShipCloseY; // slope is derived from the angle of the rocket ship sides - constants derived from math
+    } // the y cord of an invisible line extending from rocket ship close
 
     public double findLineFar(double cordX) {
-        return 0.54862 * cordX - 0.54862 * kRightRocketShipFarX + kRightRocketShipFarY; //slope is derived from the angle of the rocket ship sides - constants derived from math
-    } //the y cord of an invisible line extending from rocket ship close
+        return 0.54862 * cordX - 0.54862 * kRightRocketShipFarX + kRightRocketShipFarY; // slope is derived from the angle of the rocket ship sides - constants derived from math
+    } // the y cord of an invisible line extending from rocket ship close
 
     @Override
     public String getKey() {

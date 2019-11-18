@@ -5,9 +5,6 @@ import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 
-/**
- * Created by Justin on 3/22/18.
- */
 public class WaypointTriggerRoutine extends Routine {
     private Routine mRoutine;
     private DrivePathRoutine mDrivePathRoutine;

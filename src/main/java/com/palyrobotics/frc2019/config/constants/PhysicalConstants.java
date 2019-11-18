@@ -5,7 +5,7 @@ public class PhysicalConstants {
     /**
      * Physical field constants
      */
-    public static double kUpperPlatformLength =  48.0;
+    public static double kUpperPlatformLength = 48.0;
     public static double kLevel1Width = 150.0;
     public static double kLevel2Width = 40.0;
     public static double kLevel3Width = 48.0;

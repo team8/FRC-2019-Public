@@ -14,7 +14,7 @@ public class ParallelRoutine extends Routine {
 
     /**
      * Runs all routines at the same time.
-	 * Finishes when all routines finish.
+     * Finishes when all routines finish.
      */
     public ParallelRoutine(ArrayList<Routine> routines) {
         mRoutines = routines;

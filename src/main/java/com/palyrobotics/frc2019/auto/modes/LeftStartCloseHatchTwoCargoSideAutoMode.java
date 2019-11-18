@@ -23,7 +23,6 @@ import java.util.List;
 
 public class LeftStartCloseHatchTwoCargoSideAutoMode extends AutoModeBase {
     //Left start > cargo ship front > ball in first cargo > depot x2
-    //TODO: copy right side version
 
     public static int kRunSpeed = 150;
     public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches;
@@ -86,27 +85,21 @@ public class LeftStartCloseHatchTwoCargoSideAutoMode extends AutoModeBase {
         DepotToCargoShip.add(new Waypoint(new Translation2d(kLeftFirstCargoShipX + PhysicalConstants.kRobotLengthInches * .85 + CargoSlot * PhysicalConstants.kCargoLineGap + kOffsetX,
                 kLeftFirstCargoShipY + PhysicalConstants.kRobotLengthInches * .2 + kOffsetY), 0));
 
-        //TODO: change path so the robot doesn't go all the way into the cargo bay but instead shoots the cargo in
-
-        //move elevator up while driving
-//        routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(DepotToCargoShip), false),
-//                new ElevatorCustomPositioningRoutine(ElevatorConstants.kElevatorCargoBaysHeightInches, 1)));
-
-        //shoot cargo
+        // shoot cargo
         routines.add(new PusherOutRoutine());
         routines.add(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 1));
 
         return new SequentialRoutine(routines);
     }
 
-    public Routine takeCargo(int DepotSlot) { //cargo ship bays to depot
+    public Routine takeCargo(int DepotSlot) { // cargo ship bays to depot
         ArrayList<Routine> routines = new ArrayList<>();
 
-        List<Path.Waypoint> CargoShipToDepot = new ArrayList<>(); //the DepotSlot variable makes the robot go farther each time to collect the next cargo
+        List<Path.Waypoint> CargoShipToDepot = new ArrayList<>(); // the DepotSlot variable makes the robot go farther each time to collect the next cargo
         CargoShipToDepot.add(new Waypoint(new Translation2d(kLeftFirstCargoShipX + DepotSlot * PhysicalConstants.kCargoLineGap + PhysicalConstants.kRobotLengthInches + kOffsetX,
                 kLeftFirstCargoShipY + PhysicalConstants.kRobotLengthInches * .7 + kOffsetY), kRunSpeed));
         CargoShipToDepot.add(new Waypoint(new Translation2d(kLeftFirstCargoShipX + DepotSlot * PhysicalConstants.kCargoLineGap + PhysicalConstants.kRobotLengthInches + kOffsetX,
-                kLeftDepotY + kOffsetY), kRunSpeed)); //turn back and line up with the depot
+                kLeftDepotY + kOffsetY), kRunSpeed)); // turn back and line up with the depot
         CargoShipToDepot.add(new Waypoint(new Translation2d(kLeftFirstCargoShipX + DepotSlot * PhysicalConstants.kCargoLineGap - PhysicalConstants.kRobotLengthInches * .5 + kOffsetX,
                 kLeftDepotY + kOffsetY), kRunSpeed));
         CargoShipToDepot.add(new Waypoint(new Translation2d(kHabLineX + kOffsetX,
@@ -114,11 +107,11 @@ public class LeftStartCloseHatchTwoCargoSideAutoMode extends AutoModeBase {
         CargoShipToDepot.add(new Waypoint(new Translation2d(kLeftDepotX + PhysicalConstants.kRobotLengthInches - (DepotSlot + 1) * kCargoDiameter + kOffsetX,
                 kLeftDepotY + kOffsetY), 0));
 
-        //move elevator down while driving
+        // move elevator down while driving
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(CargoShipToDepot), true),
                 new ElevatorCustomPositioningRoutine(0, 1)));
 
-        //intake cargo
+        // intake cargo
         routines.add(new IntakeBeginCycleRoutine());
         routines.add(new WaitForCargoElevator());
 

@@ -34,7 +34,7 @@ public class InterpolatingDouble implements Interpolable<InterpolatingDouble>, I
 
     @Override
     public int compareTo(InterpolatingDouble other) {
-		return value.compareTo(other.value);
+        return value.compareTo(other.value);
     }
 
 }

@@ -8,9 +8,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 
 public class JSONFormatterTest { // doesn't work probably cause of different file locations based on computer/roboRIO
-	
-	// TODO: replace with assertThat methods instead
-	
+
 	File testJSON = JSONFormatter.loadFileDirectory("constants/fields", "Team8Field.json");
 	
 	/**

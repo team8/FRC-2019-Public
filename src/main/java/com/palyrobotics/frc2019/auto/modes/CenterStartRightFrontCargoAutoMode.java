@@ -20,9 +20,9 @@ import java.util.List;
 
 public class CenterStartRightFrontCargoAutoMode extends AutoModeBase {
 
-    public static int kRunSpeed = 50; //speed can be faster
+    public static int kRunSpeed = 50; // speed can be faster
     public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
-    public static double kOffsetY = 0; //starts at center so the offset is 0
+    public static double kOffsetY = 0; // starts at center so the offset is 0
     public static double kCargoShipRightFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength + PhysicalConstants.kUpperPlatformLength;
     public static double kCargoShipRightFrontY = -(sDistances.fieldWidth * .5 - (sDistances.cargoRightY + sDistances.cargoOffsetY));
     public static double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;

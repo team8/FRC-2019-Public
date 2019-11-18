@@ -37,7 +37,7 @@ public class CascadingGyroEncoderTurnAngleRoutine extends Routine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mDrive};
+        return new Subsystem[]{mDrive};
     }
 
     @Override

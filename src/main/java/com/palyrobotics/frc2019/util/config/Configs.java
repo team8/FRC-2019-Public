@@ -89,7 +89,7 @@ public class Configs {
     public static <T extends AbstractConfig> void listen(Class<T> configClass, Consumer<T> onChanged) {
         onChanged.accept(get(configClass));
         var consumers = sListeners.computeIfAbsent(configClass, newValue -> new ArrayList<>(1));
-        consumers.add(() -> onChanged.accept(get(configClass))); // TODO kinda whack
+        consumers.add(() -> onChanged.accept(get(configClass)));
     }
 
     public static <T extends AbstractConfig> boolean save(Class<T> configClass) {
@@ -222,7 +222,6 @@ public class Configs {
     }
 
     private static void notifyUpdated(Class<? extends AbstractConfig> configClass) {
-        // TODO nasty
         Optional.ofNullable(sListeners.get(configClass)).ifPresent(listeners -> listeners.forEach(Runnable::run));
     }
 

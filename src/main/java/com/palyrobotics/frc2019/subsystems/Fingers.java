@@ -43,7 +43,6 @@ public class Fingers extends Subsystem {
     public void update(Commands commands, RobotState robotState) {
         mOpenCloseState = commands.wantedFingersOpenCloseState;
         mExpelState = commands.wantedFingersExpelState;
-//        System.out.println(robotState.drivePose.heading);
         if (Math.abs(Math.abs(robotState.drivePose.heading % 360) - 180) < Configs.get(FingerConfig.class).angleLoadingStationTolerance) {
             // We are at the loading station
             if (mExpelState == PushingState.EXPELLING) {

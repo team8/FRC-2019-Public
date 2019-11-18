@@ -6,38 +6,26 @@ import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator extends Subsystem {
 
     private static Elevator sInstance = new Elevator();
-
-    public static Elevator getInstance() {
-        return sInstance;
-    }
-
     private ElevatorConfig mConfig = Configs.get(ElevatorConfig.class);
-
-    public enum ElevatorState {
-        MANUAL_VELOCITY,
-        CUSTOM_POSITIONING,
-        PERCENT_OUTPUT,
-        IDLE
-    }
-
     private ElevatorState mElevatorState;
-
     private Double mWantedPosition, mWantedVelocity;
-
     private RobotState mRobotState;
-
     private SparkMaxOutput mOutput;
-
     private double mLastTimeWhenInClosedLoopMs;
 
     private Elevator() {
         super("elevator");
+    }
+
+    public static Elevator getInstance() {
+        return sInstance;
     }
 
     @Override
@@ -88,11 +76,11 @@ public class Elevator extends Subsystem {
                 break;
         }
 
-//        CSVWriter.addData("elevatorAppliedOut", mRobotState.elevatorAppliedOutput);
-//        CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
-//        CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
-//        CSVWriter.addData("elevatorWantedPos", mWantedPosition);
-//        CSVWriter.addData("elevatorSetPointInch", mOutput.getReference());
+        CSVWriter.addData("elevatorAppliedOut", mRobotState.elevatorAppliedOutput);
+        CSVWriter.addData("elevatorPositionInch", mRobotState.elevatorPosition);
+        CSVWriter.addData("elevatorVelInchPerSec", mRobotState.elevatorVelocity);
+        CSVWriter.addData("elevatorWantedPos", mWantedPosition);
+        CSVWriter.addData("elevatorSetPointInch", mOutput.getReference());
     }
 
     /**
@@ -147,5 +135,12 @@ public class Elevator extends Subsystem {
 
     public DoubleSolenoid.Value getSolenoidOutput() {
         return DoubleSolenoid.Value.kForward;
+    }
+
+    public enum ElevatorState {
+        MANUAL_VELOCITY,
+        CUSTOM_POSITIONING,
+        PERCENT_OUTPUT,
+        IDLE
     }
 }

@@ -11,7 +11,6 @@ import java.util.*;
  * <p>
  * Various changes to path construction were made in accordance with team 1712's whitepaper: https://www.chiefdelphi.com/media/papers/3488?
  * These improvements are represented by the following methods:
- * // TODO fix these, they do not do anything right now
  * {@link #injectPoints(List)} injectPoints}
  * {@link #smoothOut(List) smoothen}
  * {@link #setVelocities(List) setVelocities}
@@ -254,9 +253,9 @@ public class Path {
 
     public double getRemainingLength() {
         double length = 0.0;
-		for (PathSegment mSegment : mSegments) {
-			length += mSegment.getLength();
-		}
+        for (PathSegment mSegment : mSegments) {
+            length += mSegment.getLength();
+        }
         return length;
     }
 
@@ -280,21 +279,21 @@ public class Path {
             //point.
             return new PathSegment.Sample(mSegments.get(0).getStart(), mSegments.get(0).getSpeed());
         }
-		for (PathSegment segment : mSegments) {
-			double distance = positionInverse.translateBy(segment.getEnd()).norm();
-			if (distance >= lookAheadDistance) {
-				//This segment contains the lookahead point
-				Optional<Translation2d> intersectionPoint = getFirstCircleSegmentIntersection(segment, position, lookAheadDistance);
-				if (intersectionPoint.isPresent()) {
-					return new PathSegment.Sample(intersectionPoint.get(), segment.getSpeed());
-				}
-			}
-		}
+        for (PathSegment segment : mSegments) {
+            double distance = positionInverse.translateBy(segment.getEnd()).norm();
+            if (distance >= lookAheadDistance) {
+                //This segment contains the lookahead point
+                Optional<Translation2d> intersectionPoint = getFirstCircleSegmentIntersection(segment, position, lookAheadDistance);
+                if (intersectionPoint.isPresent()) {
+                    return new PathSegment.Sample(intersectionPoint.get(), segment.getSpeed());
+                }
+            }
+        }
         //Special case: After the last point, so extrapolate forward.
         PathSegment lastSegment = mSegments.get(mSegments.size() - 1);
         PathSegment newLastSegment = new PathSegment(lastSegment.getStart(), lastSegment.interpolate(10000), lastSegment.getSpeed());
         Optional<Translation2d> intersectionPoint = getFirstCircleSegmentIntersection(newLastSegment, position, lookAheadDistance);
-		return intersectionPoint.map(translation2d -> new PathSegment.Sample(translation2d, lastSegment.getSpeed())).orElseGet(() -> new PathSegment.Sample(lastSegment.getEnd(), lastSegment.getSpeed()));
+        return intersectionPoint.map(translation2d -> new PathSegment.Sample(translation2d, lastSegment.getSpeed())).orElseGet(() -> new PathSegment.Sample(lastSegment.getEnd(), lastSegment.getSpeed()));
     }
 
     private static Optional<Translation2d> getFirstCircleSegmentIntersection(PathSegment segment, Translation2d center, double radius) {
