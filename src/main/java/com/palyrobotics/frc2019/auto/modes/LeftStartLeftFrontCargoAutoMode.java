@@ -1,5 +1,8 @@
 package com.palyrobotics.frc2019.auto.modes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.palyrobotics.frc2019.auto.AutoModeBase;
 import com.palyrobotics.frc2019.behavior.ParallelRoutine;
 import com.palyrobotics.frc2019.behavior.Routine;
@@ -13,65 +16,65 @@ import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@SuppressWarnings("Duplicates")
+@SuppressWarnings ("Duplicates")
 
 public class LeftStartLeftFrontCargoAutoMode extends AutoModeBase {
 
-    public static int kRunSpeed = 60; //can be faster
-    public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
-    public static double kOffsetY = -(PhysicalConstants.kLevel3Width * .5 + PhysicalConstants.kLevel2Width * .5);
-    public static double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength + PhysicalConstants.kUpperPlatformLength;
-    public static double kCargoShipLeftFrontY = sDistances.fieldWidth * .5 - (sDistances.cargoLeftY + sDistances.cargoOffsetY);
-    public static double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
+	public static int kRunSpeed = 60; // can be faster
+	public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength
+			- PhysicalConstants.kRobotLengthInches * 0.6;
+	public static double kOffsetY = -(PhysicalConstants.kLevel3Width * .5 + PhysicalConstants.kLevel2Width * .5);
+	public static double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength
+			+ PhysicalConstants.kUpperPlatformLength;
+	public static double kCargoShipLeftFrontY = sDistances.fieldWidth * .5
+			- (sDistances.cargoLeftY + sDistances.cargoOffsetY);
+	public static double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
 
-    @Override
-    public String toString() {
-        return sAlliance + this.getClass().toString();
-    }
+	@Override
+	public String toString() {
+		return sAlliance + this.getClass().toString();
+	}
 
-    @Override
-    public void preStart() {
+	@Override
+	public void preStart() {
 
-    }
+	}
 
-    @Override
-    public Routine getRoutine() {
-        return new SequentialRoutine(placeHatch());
-    }
+	@Override
+	public Routine getRoutine() {
+		return new SequentialRoutine(placeHatch());
+	}
 
-    public Routine placeHatch() {
+	public Routine placeHatch() {
 
-        ArrayList<Routine> routines = new ArrayList<>();
+		ArrayList<Routine> routines = new ArrayList<>();
 
-        //rezero
-        routines.add(new ReZeroSubAutoMode().ReZero(false));
+		// rezero
+		routines.add(new ReZeroSubAutoMode().ReZero(false));
 
-        List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
-        StartToCargoShip.add(new Waypoint(new Translation2d(kHabLineX + PhysicalConstants.kRobotLengthInches + kOffsetX,
-                0), kRunSpeed));
-        StartToCargoShip.add(new Waypoint(new Translation2d(kCargoShipLeftFrontX * .6 + kOffsetX,
-                kCargoShipLeftFrontY + kOffsetY), kRunSpeed));
-        StartToCargoShip.add(new Waypoint(new Translation2d(kCargoShipLeftFrontX - PhysicalConstants.kRobotLengthInches * 2 + kOffsetX,
-                kCargoShipLeftFrontY + kOffsetY), 0));
-        routines.add(new DrivePathRoutine(new Path(StartToCargoShip), true));
+		List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
+		StartToCargoShip.add(new Waypoint(
+				new Translation2d(kHabLineX + PhysicalConstants.kRobotLengthInches + kOffsetX, 0), kRunSpeed));
+		StartToCargoShip.add(new Waypoint(
+				new Translation2d(kCargoShipLeftFrontX * .6 + kOffsetX, kCargoShipLeftFrontY + kOffsetY), kRunSpeed));
+		StartToCargoShip.add(new Waypoint(
+				new Translation2d(kCargoShipLeftFrontX - PhysicalConstants.kRobotLengthInches * 2 + kOffsetX,
+						kCargoShipLeftFrontY + kOffsetY),
+				0));
+		routines.add(new DrivePathRoutine(new Path(StartToCargoShip), true));
 
-        //move elevator up while driving
-        routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(StartToCargoShip), true),
-                new ElevatorCustomPositioningRoutine(OtherConstants.kCargoHatchTargetHeight, 1)));
+		// move elevator up while driving
+		routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(StartToCargoShip), true),
+				new ElevatorCustomPositioningRoutine(OtherConstants.kCargoHatchTargetHeight, 1)));
 
-        //place hatch on cargo ship
-        routines.add(new FingersCycleRoutine(1));
+		// place hatch on cargo ship
+		routines.add(new FingersCycleRoutine(1));
 
-        return new SequentialRoutine(routines);
-    }
+		return new SequentialRoutine(routines);
+	}
 
-    @Override
-    public String getKey() {
-        return sAlliance.toString();
-    }
+	@Override
+	public String getKey() {
+		return sAlliance.toString();
+	}
 }
-
-

@@ -10,34 +10,34 @@ import com.palyrobotics.frc2019.util.config.Configs;
 
 public class PusherInRoutine extends Routine {
 
-    @Override
-    public void start() {
+	@Override
+	public void start() {
 
-    }
+	}
 
-    @Override
-    public Commands update(Commands commands) {
-        commands.wantedPusherInOutState = Pusher.PusherState.IN;
-        return commands;
-    }
+	@Override
+	public Commands update(Commands commands) {
+		commands.wantedPusherInOutState = Pusher.PusherState.IN;
+		return commands;
+	}
 
-    @Override
-    public Commands cancel(Commands commands) {
-        return commands;
-    }
+	@Override
+	public Commands cancel(Commands commands) {
+		return commands;
+	}
 
-    @Override
-    public boolean isFinished() {
-        return RobotState.getInstance().pusherPosition < Configs.get(PusherConfig.class).acceptablePositionError;
-    }
+	@Override
+	public boolean isFinished() {
+		return RobotState.getInstance().pusherPosition < Configs.get(PusherConfig.class).acceptablePositionError;
+	}
 
-    @Override
-    public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{mPusher};
-    }
+	@Override
+	public Subsystem[] getRequiredSubsystems() {
+		return new Subsystem[] { mPusher };
+	}
 
-    @Override
-    public String getName() {
-        return "Pusher In Routine";
-    }
+	@Override
+	public String getName() {
+		return "Pusher In Routine";
+	}
 }

@@ -1,5 +1,7 @@
 package com.palyrobotics.frc2019.robot;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -11,266 +13,284 @@ import com.palyrobotics.frc2019.util.control.LazySparkMax;
 import com.palyrobotics.frc2019.util.input.Joystick;
 import com.palyrobotics.frc2019.util.input.XboxController;
 import com.revrobotics.CANError;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.*;
 
-import java.util.List;
-
 /**
- * Represents all hardware components of the robot. Singleton class. Should only be used in robot package, and 254lib. Subdivides hardware into subsystems.
+ * Represents all hardware components of the robot. Singleton class. Should only
+ * be used in robot package, and 254lib. Subdivides hardware into subsystems.
  * Example call: HardwareAdapter.getInstance().getDrivetrain().getLeftMotor()
  *
  * @author Nihar
  */
 public class HardwareAdapter {
 
-    private static final PortConstants sPortConstants = Configs.get(PortConstants.class);
-    // Hardware components at the top for maintenance purposes, variables and getters at bottom
+	private static final PortConstants sPortConstants = Configs.get(PortConstants.class);
+	// Hardware components at the top for maintenance purposes, variables and
+	// getters at bottom
 
-    private static final HardwareAdapter sInstance = new HardwareAdapter();
+	private static final HardwareAdapter sInstance = new HardwareAdapter();
 
-    public static HardwareAdapter getInstance() {
-        return sInstance;
-    }
+	public static HardwareAdapter getInstance() {
+		return sInstance;
+	}
 
-    /**
-     * DRIVETRAIN - 6 CANSparkMax, 1 Gyro
-     */
-    public static class DrivetrainHardware {
-        private static DrivetrainHardware sInstance = new DrivetrainHardware();
+	/**
+	 * DRIVETRAIN - 6 CANSparkMax, 1 Gyro
+	 */
+	public static class DrivetrainHardware {
 
-        private static DrivetrainHardware getInstance() {
-            return sInstance;
-        }
+		private static DrivetrainHardware sInstance = new DrivetrainHardware();
 
-        final LazySparkMax
-                leftMasterSpark, leftSlave1Spark, leftSlave2Spark,
-                rightMasterSpark, rightSlave1Spark, rightSlave2Spark;
+		private static DrivetrainHardware getInstance() {
+			return sInstance;
+		}
 
-        final List<LazySparkMax> sparks;
+		final LazySparkMax leftMasterSpark, leftSlave1Spark, leftSlave2Spark, rightMasterSpark, rightSlave1Spark,
+				rightSlave2Spark;
 
-        final PigeonIMU gyro;
+		final List<LazySparkMax> sparks;
 
-        public void resetSensors() {
-            gyro.setYaw(0, 0);
-            gyro.setFusedHeading(0, 0);
-            gyro.setAccumZAngle(0, 0);
-            sparks.forEach(spark -> spark.getEncoder().setPosition(0.0));
-        }
+		final PigeonIMU gyro;
 
-        DrivetrainHardware() {
-            leftMasterSpark = new LazySparkMax(sPortConstants.vidarLeftDriveMasterDeviceID);
-            leftSlave1Spark = new LazySparkMax(sPortConstants.vidarLeftDriveSlave1DeviceID);
-            leftSlave2Spark = new LazySparkMax(sPortConstants.vidarLeftDriveSlave2DeviceID);
-            rightMasterSpark = new LazySparkMax(sPortConstants.vidarRightDriveMasterDeviceID);
-            rightSlave1Spark = new LazySparkMax(sPortConstants.vidarRightDriveSlave1DeviceID);
-            rightSlave2Spark = new LazySparkMax(sPortConstants.vidarRightDriveSlave2DeviceID);
-            sparks = List.of(leftMasterSpark, leftSlave1Spark, leftSlave2Spark, rightMasterSpark, rightSlave1Spark, rightSlave2Spark);
-            gyro = new PigeonIMU(new WPI_TalonSRX(sPortConstants.vidarShovelDeviceID));
-        }
-    }
+		public void resetSensors() {
+			gyro.setYaw(0, 0);
+			gyro.setFusedHeading(0, 0);
+			gyro.setAccumZAngle(0, 0);
+			sparks.forEach(spark -> spark.getEncoder().setPosition(0.0));
+		}
 
-    /**
-     * Elevator - 2 CANSparkMax, 1 Encoder, 1 DoubleSolenoid
-     */
-    static class ElevatorHardware {
-        private static ElevatorHardware sInstance = new ElevatorHardware();
+		DrivetrainHardware() {
+			leftMasterSpark = new LazySparkMax(sPortConstants.vidarLeftDriveMasterDeviceID);
+			leftSlave1Spark = new LazySparkMax(sPortConstants.vidarLeftDriveSlave1DeviceID);
+			leftSlave2Spark = new LazySparkMax(sPortConstants.vidarLeftDriveSlave2DeviceID);
+			rightMasterSpark = new LazySparkMax(sPortConstants.vidarRightDriveMasterDeviceID);
+			rightSlave1Spark = new LazySparkMax(sPortConstants.vidarRightDriveSlave1DeviceID);
+			rightSlave2Spark = new LazySparkMax(sPortConstants.vidarRightDriveSlave2DeviceID);
+			sparks = List.of(leftMasterSpark, leftSlave1Spark, leftSlave2Spark, rightMasterSpark, rightSlave1Spark,
+					rightSlave2Spark);
+			gyro = new PigeonIMU(new WPI_TalonSRX(sPortConstants.vidarShovelDeviceID));
+		}
+	}
 
-        private static ElevatorHardware getInstance() {
-            return sInstance;
-        }
+	/**
+	 * Elevator - 2 CANSparkMax, 1 Encoder, 1 DoubleSolenoid
+	 */
+	static class ElevatorHardware {
 
-        final LazySparkMax elevatorMasterSpark, elevatorSlaveSpark;
-        final DoubleSolenoid elevatorShifter;
+		private static ElevatorHardware sInstance = new ElevatorHardware();
 
-        void resetSensors() {
-            sInstance.elevatorMasterSpark.getEncoder().setPosition(0);
-            sInstance.elevatorSlaveSpark.getEncoder().setPosition(0);
-        }
+		private static ElevatorHardware getInstance() {
+			return sInstance;
+		}
 
-        ElevatorHardware() {
-            elevatorMasterSpark = new LazySparkMax(sPortConstants.vidarElevatorMasterSparkID);
-            elevatorSlaveSpark = new LazySparkMax(sPortConstants.vidarElevatorSlaveSparkID);
-            elevatorShifter = new DoubleSolenoid(0, sPortConstants.vidarElevatorDoubleSolenoidForwardsID, sPortConstants.vidarElevatorDoubleSolenoidReverseID);
-//            elevatorHolderSolenoid = new Solenoid(1,PortConstants.vidarElevatorHolderSolenoidID);
-        }
-    }
+		final LazySparkMax elevatorMasterSpark, elevatorSlaveSpark;
+		final DoubleSolenoid elevatorShifter;
 
-    /**
-     * Intake - 2 CANSparkMax, 1 WPI_TalonSRX, 2 Ultrasonics
-     */
-    public static class IntakeHardware {
-        private static IntakeHardware sInstance = new IntakeHardware();
+		void resetSensors() {
+			sInstance.elevatorMasterSpark.getEncoder().setPosition(0);
+			sInstance.elevatorSlaveSpark.getEncoder().setPosition(0);
+		}
 
-        private static IntakeHardware getInstance() {
-            return sInstance;
-        }
+		ElevatorHardware() {
+			elevatorMasterSpark = new LazySparkMax(sPortConstants.vidarElevatorMasterSparkID);
+			elevatorSlaveSpark = new LazySparkMax(sPortConstants.vidarElevatorSlaveSparkID);
+			elevatorShifter = new DoubleSolenoid(0, sPortConstants.vidarElevatorDoubleSolenoidForwardsID,
+					sPortConstants.vidarElevatorDoubleSolenoidReverseID);
+			// elevatorHolderSolenoid = new
+			// Solenoid(1,PortConstants.vidarElevatorHolderSolenoidID);
+		}
+	}
 
-        final WPI_TalonSRX intakeTalon;
-        final LazySparkMax intakeMasterSpark;
-        final LazySparkMax intakeSlaveSpark;
-        final Ultrasonic intakeUltrasonicLeft, intakeUltrasonicRight;
-        final AnalogPotentiometer potentiometer;
+	/**
+	 * Intake - 2 CANSparkMax, 1 WPI_TalonSRX, 2 Ultrasonics
+	 */
+	public static class IntakeHardware {
 
-        /**
-         * Set the initial position of the intake arm to be in-line with potentiometer.
-         *
-         * @return The reading from the arm potentiometer.
-         */
-        public double calibrateIntakeEncoderWithPotentiometer() {
-            IntakeConfig intakeConfig = Configs.get(IntakeConfig.class);
-            double intakeStartAngle;
-            if (intakeConfig.useBrokenPotFix) {
-                intakeStartAngle = intakeConfig.maxAngle;
-            } else {
-                double
-                        maxArmAngle = intakeConfig.maxAngle,
-                        potentiometerDegreesPerTick = 1 / IntakeConfig.kArmPotentiometerTicksPerDegree,
-                        potentiometerTicks = potentiometer.get() - intakeConfig.potentiometerMaxAngleTicks;
-                intakeStartAngle = maxArmAngle - potentiometerDegreesPerTick * Math.abs(potentiometerTicks);
-            }
-            Robot.getRobotState().intakeStartAngle = intakeStartAngle;
-            intakeMasterSpark.getEncoder().setPosition(intakeStartAngle);
-            return potentiometer.get();
-        }
+		private static IntakeHardware sInstance = new IntakeHardware();
 
-        IntakeHardware() {
-            intakeTalon = new WPI_TalonSRX(sPortConstants.vidarIntakeTalonDeviceID);
-            intakeMasterSpark = new LazySparkMax(sPortConstants.vidarIntakeMasterDeviceID);
-            intakeSlaveSpark = new LazySparkMax(sPortConstants.vidarIntakeSlaveDeviceID);
-            intakeUltrasonicLeft = new Ultrasonic(sPortConstants.vidarIntakeLeftUltrasonicPing, sPortConstants.vidarIntakeLeftUltrasonicEcho);
-            intakeUltrasonicRight = new Ultrasonic(sPortConstants.vidarIntakeRightUltrasonicPing, sPortConstants.vidarIntakeRightUltrasonicEcho);
-            potentiometer = new AnalogPotentiometer(sPortConstants.vidarAnalogPot);
-        }
-    }
+		private static IntakeHardware getInstance() {
+			return sInstance;
+		}
 
-    /**
-     * Pusher - 1 WPI_VictorSPX, 2 Ultrasonics
-     */
-    public static class PusherHardware {
-        private static PusherHardware sInstance = new PusherHardware();
+		final WPI_TalonSRX intakeTalon;
+		final LazySparkMax intakeMasterSpark;
+		final LazySparkMax intakeSlaveSpark;
+		final Ultrasonic intakeUltrasonicLeft, intakeUltrasonicRight;
+		final AnalogPotentiometer potentiometer;
 
-        private static PusherHardware getInstance() {
-            return sInstance;
-        }
+		/**
+		 * Set the initial position of the intake arm to be in-line with potentiometer.
+		 *
+		 * @return The reading from the arm potentiometer.
+		 */
+		public double calibrateIntakeEncoderWithPotentiometer() {
+			IntakeConfig intakeConfig = Configs.get(IntakeConfig.class);
+			double intakeStartAngle;
+			if (intakeConfig.useBrokenPotFix) {
+				intakeStartAngle = intakeConfig.maxAngle;
+			} else {
+				double maxArmAngle = intakeConfig.maxAngle,
+						potentiometerDegreesPerTick = 1 / IntakeConfig.kArmPotentiometerTicksPerDegree,
+						potentiometerTicks = potentiometer.get() - intakeConfig.potentiometerMaxAngleTicks;
+				intakeStartAngle = maxArmAngle - potentiometerDegreesPerTick * Math.abs(potentiometerTicks);
+			}
+			Robot.getRobotState().intakeStartAngle = intakeStartAngle;
+			intakeMasterSpark.getEncoder().setPosition(intakeStartAngle);
+			return potentiometer.get();
+		}
 
-        final LazySparkMax pusherSpark;
-        final Ultrasonic pusherUltrasonic;
-//		public final Ultrasonic pusherSecondaryUltrasonic;
-//		public final AnalogPotentiometer pusherPotentiometer;
+		IntakeHardware() {
+			intakeTalon = new WPI_TalonSRX(sPortConstants.vidarIntakeTalonDeviceID);
+			intakeMasterSpark = new LazySparkMax(sPortConstants.vidarIntakeMasterDeviceID);
+			intakeSlaveSpark = new LazySparkMax(sPortConstants.vidarIntakeSlaveDeviceID);
+			intakeUltrasonicLeft = new Ultrasonic(sPortConstants.vidarIntakeLeftUltrasonicPing,
+					sPortConstants.vidarIntakeLeftUltrasonicEcho);
+			intakeUltrasonicRight = new Ultrasonic(sPortConstants.vidarIntakeRightUltrasonicPing,
+					sPortConstants.vidarIntakeRightUltrasonicEcho);
+			potentiometer = new AnalogPotentiometer(sPortConstants.vidarAnalogPot);
+		}
+	}
 
-        public boolean resetSensors() {
-            return sInstance.pusherSpark.getEncoder().setPosition(0.0) == CANError.kOk;
-        }
+	/**
+	 * Pusher - 1 WPI_VictorSPX, 2 Ultrasonics
+	 */
+	public static class PusherHardware {
 
-        PusherHardware() {
-            pusherSpark = new LazySparkMax(sPortConstants.vidarPusherSparkID);
-            pusherUltrasonic = new Ultrasonic(sPortConstants.vidarPusherUltrasonicPing, sPortConstants.vidarPusherUltrasonicEcho);
-//			pusherSecondaryUltrasonic = new Ultrasonic(PortConstants.kVidarBackupUltrasonicPing, PortConstants.kVidarBackupUltrasonicEcho);
-//			pusherPotentiometer = new AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
-        }
-    }
+		private static PusherHardware sInstance = new PusherHardware();
 
-    public static class ShooterHardware {
-        private static ShooterHardware sInstance = new ShooterHardware();
+		private static PusherHardware getInstance() {
+			return sInstance;
+		}
 
-        private static ShooterHardware getInstance() {
-            return sInstance;
-        }
+		final LazySparkMax pusherSpark;
+		final Ultrasonic pusherUltrasonic;
+		// public final Ultrasonic pusherSecondaryUltrasonic;
+		// public final AnalogPotentiometer pusherPotentiometer;
 
-        final WPI_VictorSPX shooterMasterVictor, shooterSlaveVictor;
+		public boolean resetSensors() {
+			return sInstance.pusherSpark.getEncoder().setPosition(0.0) == CANError.kOk;
+		}
 
-        ShooterHardware() {
-            shooterMasterVictor = new WPI_VictorSPX(sPortConstants.vidarShooterMasterVictorDeviceID);
-            shooterSlaveVictor = new WPI_VictorSPX(sPortConstants.vidarShooterSlaveVictorDeviceID);
-        }
-    }
+		PusherHardware() {
+			pusherSpark = new LazySparkMax(sPortConstants.vidarPusherSparkID);
+			pusherUltrasonic = new Ultrasonic(sPortConstants.vidarPusherUltrasonicPing,
+					sPortConstants.vidarPusherUltrasonicEcho);
+			// pusherSecondaryUltrasonic = new
+			// Ultrasonic(PortConstants.kVidarBackupUltrasonicPing,
+			// PortConstants.kVidarBackupUltrasonicEcho);
+			// pusherPotentiometer = new
+			// AnalogPotentiometer(PortConstants.kVidarPusherPotID, 360, 0);
+		}
+	}
 
-    public static class FingersHardware {
-        private static FingersHardware sInstance = new FingersHardware();
+	public static class ShooterHardware {
 
-        public static FingersHardware getInstance() {
-            return sInstance;
-        }
+		private static ShooterHardware sInstance = new ShooterHardware();
 
-        final DoubleSolenoid openCloseSolenoid, pusherSolenoid;
+		private static ShooterHardware getInstance() {
+			return sInstance;
+		}
 
-        FingersHardware() {
-            openCloseSolenoid = new DoubleSolenoid(0, sPortConstants.vidarOpenCloseSolenoidForwardID, sPortConstants.vidarOpenCloseSolenoidReverseID);
-            pusherSolenoid = new DoubleSolenoid(0, sPortConstants.vidarExpelSolenoidForwardID, sPortConstants.vidarExpelSolenoidReverseID);
-        }
-    }
+		final WPI_VictorSPX shooterMasterVictor, shooterSlaveVictor;
 
-    public static class Joysticks {
-        private static Joysticks sInstance = new Joysticks();
+		ShooterHardware() {
+			shooterMasterVictor = new WPI_VictorSPX(sPortConstants.vidarShooterMasterVictorDeviceID);
+			shooterSlaveVictor = new WPI_VictorSPX(sPortConstants.vidarShooterSlaveVictorDeviceID);
+		}
+	}
 
-        private static Joysticks getInstance() {
-            return sInstance;
-        }
+	public static class FingersHardware {
 
-        final Joystick driveStick = new Joystick(0), turnStick = new Joystick(1);
-        //        public final Joystick backupStick = new Joystick(3);
-        XboxController operatorXboxController;
+		private static FingersHardware sInstance = new FingersHardware();
 
-        Joysticks() {
-            if (OtherConstants.operatorXBoxController) {
-                operatorXboxController = new XboxController(2);
-            }
-        }
-    }
+		public static FingersHardware getInstance() {
+			return sInstance;
+		}
 
-    /**
-     * Miscellaneous Hardware - Compressor sensor(Analog Input), Compressor, PDP
-     */
-    public static class MiscellaneousHardware {
-        private static MiscellaneousHardware sInstance = new MiscellaneousHardware();
+		final DoubleSolenoid openCloseSolenoid, pusherSolenoid;
 
-        private static MiscellaneousHardware getInstance() {
-            return sInstance;
-        }
+		FingersHardware() {
+			openCloseSolenoid = new DoubleSolenoid(0, sPortConstants.vidarOpenCloseSolenoidForwardID,
+					sPortConstants.vidarOpenCloseSolenoidReverseID);
+			pusherSolenoid = new DoubleSolenoid(0, sPortConstants.vidarExpelSolenoidForwardID,
+					sPortConstants.vidarExpelSolenoidReverseID);
+		}
+	}
 
-        final Compressor compressor;
-        final PowerDistributionPanel pdp;
-        final UsbCamera fisheyeCam;
+	public static class Joysticks {
 
-        MiscellaneousHardware() {
-            compressor = new Compressor();
-            pdp = new PowerDistributionPanel();
-            fisheyeCam = CameraServer.getInstance().startAutomaticCapture();
-        }
-    }
+		private static Joysticks sInstance = new Joysticks();
 
-    // Wrappers to access hardware groups
-    public DrivetrainHardware getDrivetrain() {
-        return DrivetrainHardware.getInstance();
-    }
+		private static Joysticks getInstance() {
+			return sInstance;
+		}
 
-    public ElevatorHardware getElevator() {
-        return ElevatorHardware.getInstance();
-    }
+		final Joystick driveStick = new Joystick(0), turnStick = new Joystick(1);
+		// public final Joystick backupStick = new Joystick(3);
+		XboxController operatorXboxController;
 
-    public IntakeHardware getIntake() {
-        return IntakeHardware.getInstance();
-    }
+		Joysticks() {
+			if (OtherConstants.operatorXBoxController) {
+				operatorXboxController = new XboxController(2);
+			}
+		}
+	}
 
-    public ShooterHardware getShooter() {
-        return ShooterHardware.getInstance();
-    }
+	/**
+	 * Miscellaneous Hardware - Compressor sensor(Analog Input), Compressor, PDP
+	 */
+	public static class MiscellaneousHardware {
 
-    public PusherHardware getPusher() {
-        return PusherHardware.getInstance();
-    }
+		private static MiscellaneousHardware sInstance = new MiscellaneousHardware();
 
-    public FingersHardware getFingers() {
-        return FingersHardware.getInstance();
-    }
+		private static MiscellaneousHardware getInstance() {
+			return sInstance;
+		}
 
-    Joysticks getJoysticks() {
-        return Joysticks.getInstance();
-    }
+		final Compressor compressor;
+		final PowerDistributionPanel pdp;
+		final UsbCamera fisheyeCam;
 
-    MiscellaneousHardware getMiscellaneousHardware() {
-        return MiscellaneousHardware.getInstance();
-    }
+		MiscellaneousHardware() {
+			compressor = new Compressor();
+			pdp = new PowerDistributionPanel();
+			fisheyeCam = CameraServer.getInstance().startAutomaticCapture();
+		}
+	}
+
+	// Wrappers to access hardware groups
+	public DrivetrainHardware getDrivetrain() {
+		return DrivetrainHardware.getInstance();
+	}
+
+	public ElevatorHardware getElevator() {
+		return ElevatorHardware.getInstance();
+	}
+
+	public IntakeHardware getIntake() {
+		return IntakeHardware.getInstance();
+	}
+
+	public ShooterHardware getShooter() {
+		return ShooterHardware.getInstance();
+	}
+
+	public PusherHardware getPusher() {
+		return PusherHardware.getInstance();
+	}
+
+	public FingersHardware getFingers() {
+		return FingersHardware.getInstance();
+	}
+
+	Joysticks getJoysticks() {
+		return Joysticks.getInstance();
+	}
+
+	MiscellaneousHardware getMiscellaneousHardware() {
+		return MiscellaneousHardware.getInstance();
+	}
 }

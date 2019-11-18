@@ -4,18 +4,18 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class WaitForCargoElevator extends WaitRoutine {
 
-    @Override
-    public boolean isCompleted() {
-        return mRobotState.hasPusherCargo;
-    }
+	@Override
+	public boolean isCompleted() {
+		return mRobotState.hasPusherCargo;
+	}
 
-    @Override
-    public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{mElevator};
-    }
+	@Override
+	public Subsystem[] getRequiredSubsystems() {
+		return new Subsystem[] { mElevator };
+	}
 
-    @Override
-    public String getName() {
-        return null;
-    }
+	@Override
+	public String getName() {
+		return null;
+	}
 }

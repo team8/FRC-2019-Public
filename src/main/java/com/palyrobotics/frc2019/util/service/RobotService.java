@@ -2,9 +2,9 @@ package com.palyrobotics.frc2019.util.service;
 
 public interface RobotService {
 
-    void start();
+	void start();
 
-    void update();
+	void update();
 
-    String getConfigName();
+	String getConfigName();
 }

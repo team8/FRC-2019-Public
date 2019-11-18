@@ -5,5 +5,5 @@ import com.palyrobotics.frc2019.util.control.Gains;
 
 public class VisionConfig extends AbstractConfig {
 
-    public Gains gains;
+	public Gains gains;
 }

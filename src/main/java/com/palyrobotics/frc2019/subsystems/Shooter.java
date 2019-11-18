@@ -9,91 +9,89 @@ import com.palyrobotics.frc2019.util.config.Configs;
 
 public class Shooter extends Subsystem {
 
-    private static Shooter sInstance = new Shooter();
+	private static Shooter sInstance = new Shooter();
 
-    public static Shooter getInstance() {
-        return sInstance;
-    }
+	public static Shooter getInstance() {
+		return sInstance;
+	}
 
-    private ShooterConfig mConfig = Configs.get(ShooterConfig.class);
+	private ShooterConfig mConfig = Configs.get(ShooterConfig.class);
 
-    private double mOutput;
+	private double mOutput;
 
-    private double mRumbleLength;
+	private double mRumbleLength;
 
-    private boolean mCachedHasCargo;
+	private boolean mCachedHasCargo;
 
-    private double mExpellingCycles;
+	private double mExpellingCycles;
 
-    public enum ShooterState {
-        SPIN_UP,
-        IDLE
-    }
+	public enum ShooterState {
+		SPIN_UP, IDLE
+	}
 
-    private ShooterState mState = ShooterState.IDLE;
+	private ShooterState mState = ShooterState.IDLE;
 
-    protected Shooter() {
-        super("shooter");
-    }
+	protected Shooter() {
+		super("shooter");
+	}
 
-    @Override
-    public void reset() {
-        mOutput = 0.0;
-        mRumbleLength = -1;
-        mCachedHasCargo = false;
-        mExpellingCycles = 0;
-        mState = ShooterState.IDLE;
-    }
+	@Override
+	public void reset() {
+		mOutput = 0.0;
+		mRumbleLength = -1;
+		mCachedHasCargo = false;
+		mExpellingCycles = 0;
+		mState = ShooterState.IDLE;
+	}
 
-    @Override
-    public void update(Commands commands, RobotState robotState) {
-        mState = commands.wantedShooterState;
+	@Override
+	public void update(Commands commands, RobotState robotState) {
+		mState = commands.wantedShooterState;
 
-        switch (mState) {
-            case IDLE:
-                mOutput = 0;
-                mExpellingCycles = 0;
-                break;
-            case SPIN_UP:
-                if (robotState.elevatorPosition > Configs.get(ElevatorConfig.class).elevatorHeight3 - 8.0) {
-                    mOutput = mConfig.level3MotorVelocity;
-                } else {
-                    mOutput = mConfig.expellingMotorVelocity;
-                }
-                mExpellingCycles++;
-                break;
-        }
+		switch (mState) {
+			case IDLE:
+				mOutput = 0;
+				mExpellingCycles = 0;
+				break;
+			case SPIN_UP:
+				if (robotState.elevatorPosition > Configs.get(ElevatorConfig.class).elevatorHeight3 - 8.0) {
+					mOutput = mConfig.level3MotorVelocity;
+				} else {
+					mOutput = mConfig.expellingMotorVelocity;
+				}
+				mExpellingCycles++;
+				break;
+		}
 
-        // Once enough time passes, ready to expel
-        boolean readyToExpel = 1 / OtherConstants.deltaTime <= mExpellingCycles;
+		// Once enough time passes, ready to expel
+		boolean readyToExpel = 1 / OtherConstants.deltaTime <= mExpellingCycles;
 
-        if (readyToExpel && robotState.hasIntakeCargo) { // Rumble until expelled
-            mRumbleLength = 0.5;
-        }
+		if (readyToExpel && robotState.hasIntakeCargo) { // Rumble until expelled
+			mRumbleLength = 0.5;
+		}
 
-        if (mCachedHasCargo && !robotState.hasIntakeCargo) { // Stop rumbling once you go from cargo -> no cargo
-            mRumbleLength = -1;
-            mExpellingCycles = 0;
-        }
+		if (mCachedHasCargo && !robotState.hasIntakeCargo) { // Stop rumbling once you go from cargo -> no cargo
+			mRumbleLength = -1;
+			mExpellingCycles = 0;
+		}
 
-        mCachedHasCargo = robotState.hasIntakeCargo;
-    }
+		mCachedHasCargo = robotState.hasIntakeCargo;
+	}
 
-    public double getRumbleLength() {
-        return mRumbleLength;
-    }
+	public double getRumbleLength() {
+		return mRumbleLength;
+	}
 
-    public void decreaseRumbleLength() {
-        mRumbleLength -= OtherConstants.deltaTime;
-    }
+	public void decreaseRumbleLength() {
+		mRumbleLength -= OtherConstants.deltaTime;
+	}
 
+	public double getOutput() {
+		return mOutput;
+	}
 
-    public double getOutput() {
-        return mOutput;
-    }
-
-    @Override
-    public String getStatus() {
-        return String.format("Shooter State: %s%nVictor Output: %s", mState, mOutput);
-    }
+	@Override
+	public String getStatus() {
+		return String.format("Shooter State: %s%nVictor Output: %s", mState, mOutput);
+	}
 }

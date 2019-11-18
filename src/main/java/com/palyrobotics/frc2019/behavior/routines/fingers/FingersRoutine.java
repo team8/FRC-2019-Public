@@ -7,25 +7,25 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 public class FingersRoutine extends OneTimeRoutine {
 
-    private Fingers.FingersState mFingerState;
+	private Fingers.FingersState mFingerState;
 
-    public FingersRoutine(Fingers.FingersState fingerState) {
-        mFingerState = fingerState;
-    }
+	public FingersRoutine(Fingers.FingersState fingerState) {
+		mFingerState = fingerState;
+	}
 
-    @Override
-    public Commands doOnce(Commands commands) {
-        commands.wantedFingersOpenCloseState = mFingerState;
-        return commands;
-    }
+	@Override
+	public Commands doOnce(Commands commands) {
+		commands.wantedFingersOpenCloseState = mFingerState;
+		return commands;
+	}
 
-    @Override
-    public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[]{mFingers};
-    }
+	@Override
+	public Subsystem[] getRequiredSubsystems() {
+		return new Subsystem[] { mFingers };
+	}
 
-    @Override
-    public String getName() {
-        return "Fingers Close Routine";
-    }
+	@Override
+	public String getName() {
+		return "Fingers Close Routine";
+	}
 }

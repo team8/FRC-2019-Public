@@ -10,171 +10,170 @@ import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.TrajectoryGains;
 
 /**
- * Used to run on-board position or velocity control of the drivetrain
- * This controller is intended to be used in a cascading manner, with a parent controller that generates realtime set points
+ * Used to run on-board position or velocity control of the drivetrain This
+ * controller is intended to be used in a cascading manner, with a parent
+ * controller that generates realtime set points
  */
 public class OnBoardDriveController implements Drive.DriveController {
-    private final DriveConfig mDriveConfig = Configs.get(DriveConfig.class);
 
-    private RobotState mCachedState;
-    private OnBoardControlType mControlType;
-    private TrajectoryGains mGains;
+	private final DriveConfig mDriveConfig = Configs.get(DriveConfig.class);
 
-    private TrajectorySegment mLeftSetPoint;
-    private TrajectorySegment mRightSetPoint;
+	private RobotState mCachedState;
+	private OnBoardControlType mControlType;
+	private TrajectoryGains mGains;
 
-    private double mLastLeftError, mLastRightError;
+	private TrajectorySegment mLeftSetPoint;
+	private TrajectorySegment mRightSetPoint;
 
-    private boolean reset = true;
-    private SparkDriveSignal mDriveSignal = new SparkDriveSignal();
+	private double mLastLeftError, mLastRightError;
 
-    public enum OnBoardControlType {
-        kPosition,
-        kVelocity,
-        kVelocityWithArbitraryDemand
-    }
+	private boolean reset = true;
+	private SparkDriveSignal mDriveSignal = new SparkDriveSignal();
 
-    OnBoardDriveController(OnBoardControlType controlType, TrajectoryGains gains) {
-        mLeftSetPoint = new TrajectorySegment();
-        mRightSetPoint = new TrajectorySegment();
-        mGains = gains;
-        mControlType = controlType;
-    }
+	public enum OnBoardControlType {
+		kPosition, kVelocity, kVelocityWithArbitraryDemand
+	}
 
-    @Override
-    public SparkDriveSignal update(RobotState state) {
-        mCachedState = state;
-        switch (mControlType) {
-            case kPosition:
-                mDriveSignal = getPositionOutput(state.drivePose);
-                break;
-            case kVelocity:
-                mDriveSignal = getVelocityOutput(state.drivePose);
-                break;
-            case kVelocityWithArbitraryDemand:
-                mDriveSignal = getVelocityWithArbitraryDemand();
-                break;
-            default:
-                throw new RuntimeException("Unexpected control type!");
-        }
-        return mDriveSignal;
-    }
+	OnBoardDriveController(OnBoardControlType controlType, TrajectoryGains gains) {
+		mLeftSetPoint = new TrajectorySegment();
+		mRightSetPoint = new TrajectorySegment();
+		mGains = gains;
+		mControlType = controlType;
+	}
 
-    /**
-     * Should only be called by a parent controller
-     */
-    void updateSetPoint(TrajectorySegment leftSetPoint, TrajectorySegment rightSetPoint, Object handle) throws IllegalAccessException {
-        if (!(handle instanceof Drive.DriveController)) {
-            throw new IllegalAccessException();
-        }
-        mLeftSetPoint = leftSetPoint;
-        mRightSetPoint = rightSetPoint;
-    }
+	@Override
+	public SparkDriveSignal update(RobotState state) {
+		mCachedState = state;
+		switch (mControlType) {
+			case kPosition:
+				mDriveSignal = getPositionOutput(state.drivePose);
+				break;
+			case kVelocity:
+				mDriveSignal = getVelocityOutput(state.drivePose);
+				break;
+			case kVelocityWithArbitraryDemand:
+				mDriveSignal = getVelocityWithArbitraryDemand();
+				break;
+			default:
+				throw new RuntimeException("Unexpected control type!");
+		}
+		return mDriveSignal;
+	}
 
-    private SparkDriveSignal getPositionOutput(Pose drivePose) {
-        double leftSetPoint = mLeftSetPoint.position;
-        double leftPosition = drivePose.leftEncoderPosition;
-        double rightSetPoint = mRightSetPoint.position;
-        double rightPosition = drivePose.rightEncoderPosition;
-        return updateClosedLoopOutputs(leftSetPoint, leftPosition, rightSetPoint, rightPosition);
-    }
+	/**
+	 * Should only be called by a parent controller
+	 */
+	void updateSetPoint(TrajectorySegment leftSetPoint, TrajectorySegment rightSetPoint, Object handle)
+			throws IllegalAccessException {
+		if (!(handle instanceof Drive.DriveController)) {
+			throw new IllegalAccessException();
+		}
+		mLeftSetPoint = leftSetPoint;
+		mRightSetPoint = rightSetPoint;
+	}
 
-    private SparkDriveSignal getVelocityOutput(Pose drivePose) {
-        double leftSetPoint = mLeftSetPoint.velocity;
-        double leftVelocity = drivePose.leftEncoderVelocity;
-        double rightSetPoint = mRightSetPoint.velocity;
-        double rightVelocity = drivePose.rightEncoderVelocity;
-        return updateClosedLoopOutputs(leftSetPoint, leftVelocity, rightSetPoint, rightVelocity);
-    }
+	private SparkDriveSignal getPositionOutput(Pose drivePose) {
+		double leftSetPoint = mLeftSetPoint.position;
+		double leftPosition = drivePose.leftEncoderPosition;
+		double rightSetPoint = mRightSetPoint.position;
+		double rightPosition = drivePose.rightEncoderPosition;
+		return updateClosedLoopOutputs(leftSetPoint, leftPosition, rightSetPoint, rightPosition);
+	}
 
-    private SparkDriveSignal getVelocityWithArbitraryDemand() {
-        SparkDriveSignal signal = updateClosedLoopOutputs(0, 0, 0, 0);
-        signal.leftOutput.setTargetVelocity(mLeftSetPoint.velocity, signal.leftOutput.getReference(), mDriveConfig.velocityGains);
-        signal.rightOutput.setTargetVelocity(mRightSetPoint.velocity, signal.rightOutput.getReference(), mDriveConfig.velocityGains);
-        return signal;
-    }
+	private SparkDriveSignal getVelocityOutput(Pose drivePose) {
+		double leftSetPoint = mLeftSetPoint.velocity;
+		double leftVelocity = drivePose.leftEncoderVelocity;
+		double rightSetPoint = mRightSetPoint.velocity;
+		double rightVelocity = drivePose.rightEncoderVelocity;
+		return updateClosedLoopOutputs(leftSetPoint, leftVelocity, rightSetPoint, rightVelocity);
+	}
 
-    private SparkDriveSignal updateClosedLoopOutputs(double leftSetPoint, double leftPosition, double rightSetPoint, double rightPosition) {
+	private SparkDriveSignal getVelocityWithArbitraryDemand() {
+		SparkDriveSignal signal = updateClosedLoopOutputs(0, 0, 0, 0);
+		signal.leftOutput.setTargetVelocity(mLeftSetPoint.velocity, signal.leftOutput.getReference(),
+				mDriveConfig.velocityGains);
+		signal.rightOutput.setTargetVelocity(mRightSetPoint.velocity, signal.rightOutput.getReference(),
+				mDriveConfig.velocityGains);
+		return signal;
+	}
 
-        // Calculate error
-        double leftError = leftSetPoint - leftPosition;
-        double rightError = rightSetPoint - rightPosition;
+	private SparkDriveSignal updateClosedLoopOutputs(double leftSetPoint, double leftPosition, double rightSetPoint,
+			double rightPosition) {
 
-        // Calculate d_error
-        double dLeftError = (leftError - mLastLeftError) / mLeftSetPoint.dt;
-        double dRightError = (rightError - mLastRightError) / mRightSetPoint.dt;
+		// Calculate error
+		double leftError = leftSetPoint - leftPosition;
+		double rightError = rightSetPoint - rightPosition;
 
-        // Ignore d error on the first cycle
-        if (reset) {
-            dLeftError = 0.0;
-            dRightError = 0.0;
-            reset = false;
-        }
+		// Calculate d_error
+		double dLeftError = (leftError - mLastLeftError) / mLeftSetPoint.dt;
+		double dRightError = (rightError - mLastRightError) / mRightSetPoint.dt;
 
-        // Calculate output
-        // output = kP * error + kD * d_error + kV * velocity + kA * acceleration + sign(velocity)*kS
-        double leftOutput = mGains.p * leftError
-                + mGains.d * dLeftError
-                + mGains.v * mLeftSetPoint.velocity
-                + mGains.a * mLeftSetPoint.acc
-                + Math.signum(mLeftSetPoint.velocity) * mGains.s;
-        double rightOutput = mGains.p * rightError
-                + mGains.d * dRightError
-                + mGains.v * mRightSetPoint.velocity
-                + mGains.a * mRightSetPoint.acc
-                + Math.signum(mRightSetPoint.velocity) * mGains.s;
+		// Ignore d error on the first cycle
+		if (reset) {
+			dLeftError = 0.0;
+			dRightError = 0.0;
+			reset = false;
+		}
 
-        leftOutput = MathUtil.clamp01(leftOutput);
-        rightOutput = MathUtil.clamp01(rightOutput);
+		// Calculate output
+		// output = kP * error + kD * d_error + kV * velocity + kA * acceleration +
+		// sign(velocity)*kS
+		double leftOutput = mGains.p * leftError + mGains.d * dLeftError + mGains.v * mLeftSetPoint.velocity
+				+ mGains.a * mLeftSetPoint.acc + Math.signum(mLeftSetPoint.velocity) * mGains.s;
+		double rightOutput = mGains.p * rightError + mGains.d * dRightError + mGains.v * mRightSetPoint.velocity
+				+ mGains.a * mRightSetPoint.acc + Math.signum(mRightSetPoint.velocity) * mGains.s;
 
-        // Dead band output within (-kS-0.02, kS+0.02) to avoid jitter with kS
-        leftOutput = Math.abs(leftOutput) - mGains.s < 0.02 ? 0.0 : leftOutput;
-        rightOutput = Math.abs(rightOutput) - mGains.s < 0.02 ? 0.0 : rightOutput;
+		leftOutput = MathUtil.clamp01(leftOutput);
+		rightOutput = MathUtil.clamp01(rightOutput);
 
-        mLastLeftError = leftError;
-        mLastRightError = rightError;
+		// Dead band output within (-kS-0.02, kS+0.02) to avoid jitter with kS
+		leftOutput = Math.abs(leftOutput) - mGains.s < 0.02 ? 0.0 : leftOutput;
+		rightOutput = Math.abs(rightOutput) - mGains.s < 0.02 ? 0.0 : rightOutput;
 
-        mDriveSignal.leftOutput.setPercentOutput(leftOutput);
-        mDriveSignal.rightOutput.setPercentOutput(rightOutput);
+		mLastLeftError = leftError;
+		mLastRightError = rightError;
 
-        return mDriveSignal;
-    }
+		mDriveSignal.leftOutput.setPercentOutput(leftOutput);
+		mDriveSignal.rightOutput.setPercentOutput(rightOutput);
 
-    @Override
-    public Pose getSetPoint() {
-        return new Pose();
-    }
+		return mDriveSignal;
+	}
 
-    @Override
-    public boolean onTarget() {
-        // Unimplemented, not used with cascading control
-        return mCachedState != null;
-    }
+	@Override
+	public Pose getSetPoint() {
+		return new Pose();
+	}
 
-    /**
-     * Helper class to represent a set point
-     */
-    public static class TrajectorySegment {
+	@Override
+	public boolean onTarget() {
+		// Unimplemented, not used with cascading control
+		return mCachedState != null;
+	}
 
-        double position, velocity, acc, dt;
+	/**
+	 * Helper class to represent a set point
+	 */
+	public static class TrajectorySegment {
 
-        TrajectorySegment() {
-        }
+		double position, velocity, acc, dt;
 
-        TrajectorySegment(double vel, double acc, double dt) {
-            this(0, vel, acc, dt);
-        }
+		TrajectorySegment() {
+		}
 
-        TrajectorySegment(double position, double vel, double acc, double dt) {
-            this.position = position;
-            this.velocity = vel;
-            this.acc = acc;
-            this.dt = dt;
-        }
+		TrajectorySegment(double vel, double acc, double dt) {
+			this(0, vel, acc, dt);
+		}
 
-        public String toString() {
-            return String.format("pos: %s; vel: %s; acc: %s; dt: %s", position, velocity, acc, dt);
-        }
-    }
+		TrajectorySegment(double position, double vel, double acc, double dt) {
+			this.position = position;
+			this.velocity = vel;
+			this.acc = acc;
+			this.dt = dt;
+		}
+
+		public String toString() {
+			return String.format("pos: %s; vel: %s; acc: %s; dt: %s", position, velocity, acc, dt);
+		}
+	}
 
 }

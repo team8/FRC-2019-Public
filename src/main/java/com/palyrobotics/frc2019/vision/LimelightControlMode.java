@@ -5,193 +5,192 @@ import java.util.Map;
 
 public class LimelightControlMode {
 
-    public enum LedMode {
-        CURRENT_PIPELINE_MODE(0),   // 0	Use the LED Mode set in the current pipeline
-        FORCE_OFF(1),               // 1	Force off
-        FORCE_BLINK(2),             // 2	Force blink
-        FORCE_ON(3);                // 3	Force on
+	public enum LedMode {
 
-        private static final Map<Double, LedMode> MY_MAP = new HashMap<>();
+		CURRENT_PIPELINE_MODE(0), // 0 Use the LED Mode set in the current pipeline
+		FORCE_OFF(1), // 1 Force off
+		FORCE_BLINK(2), // 2 Force blink
+		FORCE_ON(3); // 3 Force on
 
-        static {
-            for (LedMode mode : values()) {
-                MY_MAP.put(mode.getValue(), mode);
-            }
-        }
+		private static final Map<Double, LedMode> MY_MAP = new HashMap<>();
 
-        private double value;
+		static {
+			for (LedMode mode : values()) {
+				MY_MAP.put(mode.getValue(), mode);
+			}
+		}
 
-        LedMode(double value) {
-            this.value = value;
-        }
+		private double value;
 
-        public double getValue() {
-            return value;
-        }
+		LedMode(double value) {
+			this.value = value;
+		}
 
-        public static LedMode getByValue(double value) {
-            return MY_MAP.get(value);
-        }
+		public double getValue() {
+			return value;
+		}
 
-        public String toString() {
-            return name();
-        }
-    }
+		public static LedMode getByValue(double value) {
+			return MY_MAP.get(value);
+		}
 
+		public String toString() {
+			return name();
+		}
+	}
 
-    public enum CamMode {
-        VISION(0),
-        DRIVER(1);
+	public enum CamMode {
 
-        private static final Map<Double, CamMode> MY_MAP = new HashMap<>();
+		VISION(0), DRIVER(1);
 
-        static {
-            for (CamMode mode : values()) {
-                MY_MAP.put(mode.getValue(), mode);
-            }
-        }
+		private static final Map<Double, CamMode> MY_MAP = new HashMap<>();
 
-        private double value;
+		static {
+			for (CamMode mode : values()) {
+				MY_MAP.put(mode.getValue(), mode);
+			}
+		}
 
-        CamMode(double value) {
-            this.value = value;
-        }
+		private double value;
 
-        public double getValue() {
-            return value;
-        }
+		CamMode(double value) {
+			this.value = value;
+		}
 
-        public static CamMode getByValue(double value) {
-            return MY_MAP.get(value);
-        }
+		public double getValue() {
+			return value;
+		}
 
-        public String toString() {
-            return name();
-        }
-    }
+		public static CamMode getByValue(double value) {
+			return MY_MAP.get(value);
+		}
 
-    public enum StreamType {
-        kStandard(0),
-        kPiPMain(1),
-        kPiPSecondary(2);
+		public String toString() {
+			return name();
+		}
+	}
 
-        private static final Map<Double, StreamType> MY_MAP = new HashMap<>();
+	public enum StreamType {
 
-        static {
-            for (StreamType streamType : values()) {
-                MY_MAP.put(streamType.getValue(), streamType);
-            }
-        }
+		kStandard(0), kPiPMain(1), kPiPSecondary(2);
 
-        private double value;
+		private static final Map<Double, StreamType> MY_MAP = new HashMap<>();
 
-        StreamType(double value) {
-            this.value = value;
-        }
+		static {
+			for (StreamType streamType : values()) {
+				MY_MAP.put(streamType.getValue(), streamType);
+			}
+		}
 
-        public double getValue() {
-            return value;
-        }
+		private double value;
 
-        public static StreamType getByValue(double value) {
-            return MY_MAP.get(value);
-        }
+		StreamType(double value) {
+			this.value = value;
+		}
 
-        public String toString() {
-            return name();
-        }
-    }
+		public double getValue() {
+			return value;
+		}
 
-    public enum Snapshot {
+		public static StreamType getByValue(double value) {
+			return MY_MAP.get(value);
+		}
 
-        ON(1), OFF(0);
+		public String toString() {
+			return name();
+		}
+	}
 
-        private static final Map<Double, Snapshot> MY_MAP = new HashMap<>();
+	public enum Snapshot {
 
-        static {
-            for (Snapshot snapshot : values()) {
-                MY_MAP.put(snapshot.getValue(), snapshot);
-            }
-        }
+		ON(1), OFF(0);
 
-        private double value;
+		private static final Map<Double, Snapshot> MY_MAP = new HashMap<>();
 
-        Snapshot(double value) {
-            this.value = value;
-        }
+		static {
+			for (Snapshot snapshot : values()) {
+				MY_MAP.put(snapshot.getValue(), snapshot);
+			}
+		}
 
-        public double getValue() {
-            return value;
-        }
+		private double value;
 
-        public static Snapshot getByValue(double value) {
-            return MY_MAP.get(value);
-        }
+		Snapshot(double value) {
+			this.value = value;
+		}
 
-        public String toString() {
-            return name();
-        }
-    }
+		public double getValue() {
+			return value;
+		}
 
-    public enum AdvancedTarget {
+		public static Snapshot getByValue(double value) {
+			return MY_MAP.get(value);
+		}
 
-        ONE_TARGET(0), TWO_TARGETS(1), THREE_TARGETS(2);
+		public String toString() {
+			return name();
+		}
+	}
 
-        private static final Map<Integer, AdvancedTarget> MY_MAP = new HashMap<>();
+	public enum AdvancedTarget {
 
-        static {
-            for (AdvancedTarget AdvancedTarget : values()) {
-                MY_MAP.put(AdvancedTarget.getValue(), AdvancedTarget);
-            }
-        }
+		ONE_TARGET(0), TWO_TARGETS(1), THREE_TARGETS(2);
 
-        private Integer value;
+		private static final Map<Integer, AdvancedTarget> MY_MAP = new HashMap<>();
 
-        AdvancedTarget(Integer value) {
-            this.value = value;
-        }
+		static {
+			for (AdvancedTarget AdvancedTarget : values()) {
+				MY_MAP.put(AdvancedTarget.getValue(), AdvancedTarget);
+			}
+		}
 
-        public Integer getValue() {
-            return value;
-        }
+		private Integer value;
 
-        public static AdvancedTarget getByValue(Integer value) {
-            return MY_MAP.get(value);
-        }
+		AdvancedTarget(Integer value) {
+			this.value = value;
+		}
 
-        public String toString() {
-            return name();
-        }
-    }
+		public Integer getValue() {
+			return value;
+		}
 
-    public enum AdvancedCrosshair {
+		public static AdvancedTarget getByValue(Integer value) {
+			return MY_MAP.get(value);
+		}
 
-        ONE(0), TWO(1);
+		public String toString() {
+			return name();
+		}
+	}
 
-        private static final Map<Integer, AdvancedCrosshair> MY_MAP = new HashMap<>();
+	public enum AdvancedCrosshair {
 
-        static {
-            for (AdvancedCrosshair crosshair : values()) {
-                MY_MAP.put(crosshair.getValue(), crosshair);
-            }
-        }
+		ONE(0), TWO(1);
 
-        private Integer value;
+		private static final Map<Integer, AdvancedCrosshair> MY_MAP = new HashMap<>();
 
-        AdvancedCrosshair(Integer value) {
-            this.value = value;
-        }
+		static {
+			for (AdvancedCrosshair crosshair : values()) {
+				MY_MAP.put(crosshair.getValue(), crosshair);
+			}
+		}
 
-        public Integer getValue() {
-            return value;
-        }
+		private Integer value;
 
-        public static AdvancedCrosshair getByValue(Integer value) {
-            return MY_MAP.get(value);
-        }
+		AdvancedCrosshair(Integer value) {
+			this.value = value;
+		}
 
-        public String toString() {
-            return name();
-        }
-    }
+		public Integer getValue() {
+			return value;
+		}
+
+		public static AdvancedCrosshair getByValue(Integer value) {
+			return MY_MAP.get(value);
+		}
+
+		public String toString() {
+			return name();
+		}
+	}
 }
