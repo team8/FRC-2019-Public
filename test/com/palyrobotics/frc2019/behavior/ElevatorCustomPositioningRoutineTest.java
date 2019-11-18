@@ -71,7 +71,6 @@ public class ElevatorCustomPositioningRoutineTest {
 		Elevator.resetInstance();
 		MockCommands.reset();
 		commands.addWantedRoutine(routine);
-//		System.out.println(commands.wantedRoutines);
 		routine.start();
 		robotState.elevatorBottomHFX = true;
 		robotState.elevatorPosition = 0;

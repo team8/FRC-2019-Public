@@ -144,7 +144,6 @@ public class ElevatorTest {
 		robotState.elevatorPosition = 500;
 		robotState.elevatorTopHFX = true;
 		elevator.update(commands, robotState);
-//        System.out.println(elevator.getElevatorTopPosition());
 		assertThat("Top encoder position not properly updated!", elevator.getElevatorTopPosition(), equalTo(Optional.of(500.0)));
 		robotState.elevatorTopHFX = false;
 	}
@@ -181,7 +180,6 @@ public class ElevatorTest {
 			commands.wantedElevatorState = ElevatorState.MANUAL_POSITIONING;
 			robotState.operatorStickInput.setY(1.0);
 			elevator.update(commands, robotState);
-//			System.out.println(elevator.getElevatorWantedPosition().orElse(-1.0));
 		}
 	}
 

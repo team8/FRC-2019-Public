@@ -48,7 +48,6 @@ public class LazySparkMax extends CANSparkMax {
         if (isSmart && !(gains instanceof SmartGains))
             throw new IllegalArgumentException("Setting smart motion or smart velocity requires smart gains!");
         // Slot is determined based on control type
-        // TODO add feature to add custom slots
         int slot = sControlTypeToSlot.getOrDefault(type, 0);
         updateGainsIfNeeded(gains, slot);
         boolean areGainsEqual = !requiresGains || Objects.equals(gains, mLastGains.get(slot));
@@ -75,7 +74,7 @@ public class LazySparkMax extends CANSparkMax {
             CANPIDController controller = getPIDController();
             boolean firstInitialization = !mLastGains.containsKey(slot);
             if (firstInitialization) { // Empty gains for default value instead of null
-                mLastGains.put(slot, (slot == 1 || slot == 2) ? new SmartGains() : new Gains()); // TODO a little ugly
+                mLastGains.put(slot, (slot == 1 || slot == 2) ? new SmartGains() : new Gains());
             }
             Gains lastGains = mLastGains.get(slot);
             if (Double.compare(lastGains.p, gains.p) != 0) controller.setP(gains.p, slot);
@@ -83,7 +82,7 @@ public class LazySparkMax extends CANSparkMax {
             if (Double.compare(lastGains.d, gains.d) != 0) controller.setD(gains.d, slot);
             if (Double.compare(lastGains.f, gains.f) != 0) controller.setFF(gains.f, slot);
             if (Double.compare(lastGains.iZone, gains.iZone) != 0) controller.setIZone(gains.iZone, slot);
-            if (gains instanceof SmartGains) { // TODO maybe we could set this up such that we do not check type
+            if (gains instanceof SmartGains) {
                 SmartGains lastSmartGains = (SmartGains) lastGains, smartGains = (SmartGains) gains;
                 if (Double.compare(lastSmartGains.acceleration * mRobotConfig.smartMotionMultiplier, smartGains.acceleration * mRobotConfig.smartMotionMultiplier) != 0)
                     controller.setSmartMotionMaxAccel(smartGains.acceleration * mRobotConfig.smartMotionMultiplier, slot);
@@ -95,7 +94,7 @@ public class LazySparkMax extends CANSparkMax {
                     controller.setSmartMotionMinOutputVelocity(smartGains.minimumOutputVelocity, slot);
                 if (firstInitialization) {
                     controller.setOutputRange(-1.0, 1.0, slot);
-                    controller.setSmartMotionAccelStrategy(CANPIDController.AccelStrategy.kSCurve, slot); // TODO this does not even do anything as of 1.4.1
+                    controller.setSmartMotionAccelStrategy(CANPIDController.AccelStrategy.kSCurve, slot);
                 }
             }
         }

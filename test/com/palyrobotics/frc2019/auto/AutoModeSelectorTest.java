@@ -16,15 +16,7 @@ import static org.junit.Assert.assertThat;
  * Created by Nihar on 1/22/17. Tests {@link AutoModeSelector}
  */
 public class AutoModeSelectorTest {
-	/*
-	 * TODO: possible tests 
-	 * Test that you can get an auto mode 
-	 * Test that the setAutoMode by name works 
-	 * Test that registerAutonomous works 
-	 * Test that you can get the list of auto modes
-	 */
 
-	//TODO add new automodes and test those
 	AutoModeSelector auto;
 	@Before
 	public void setUp() {
@@ -217,8 +209,6 @@ public class AutoModeSelectorTest {
 
 	@Test
 	public void testGetAutoModeList() {
-		//TODO: Hard coded is sketchy
-		//TODO: sometimes test is run individually, "this one is registered during testRegisterAutonomous()"
 		int numberOfAutoModes = 41;
 		auto.registerAutonomous(new TestTrajectoryAutoMode(), 26);
 		auto.registerAutonomous(new TestTrajectoryAutoMode(), 27);

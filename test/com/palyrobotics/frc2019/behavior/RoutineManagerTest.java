@@ -66,10 +66,8 @@ public class RoutineManagerTest {
 		mRoutineManager.addNewRoutine(mRoutine);
 //		mRoutineManager.addNewRoutine(mDriveRoutine);
 
-		//TODO: This throws a null pointer exception!
 		mRoutineManager.update(commands);
 
-		//TODO: Test actual functionality of the reset method
 		mRoutineManager.reset(commands);
 		assertThat("Routines were not emptied", mRoutineManager.getCurrentRoutines().isEmpty(), equalTo(true));
 		assertThat("First routine was not canceled", mRoutine.finished(), equalTo(true));

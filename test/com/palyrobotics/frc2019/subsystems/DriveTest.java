@@ -77,7 +77,6 @@ public class DriveTest {
 	public void testNeutral() throws Exception {
 		drive.setNeutral();
 		assertThat("Drive output not neutral!", drive.getDriveSignal(), equalTo(DriveSignal.getNeutralSignal()));
-		//TODO: Undo neutral and try again
 	}
 
 	@Test

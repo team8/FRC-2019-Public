@@ -45,9 +45,9 @@ public class DriveSensorResetRoutine extends Routine {
 //			Logger.getInstance().logRobotThread(Level.WARNING, "Drive sensor reset routine timed out!");
             return true;
         } else return Math.abs(mDrive.getPose().leftEncoderPosition) <= DrivetrainConstants.kAcceptableEncoderZeroError
-				&& Math.abs(mDrive.getPose().rightEncoderPosition) <= DrivetrainConstants.kAcceptableEncoderZeroError
-				&& Math.abs(mDrive.getPose().heading) <= DrivetrainConstants.kAcceptableGyroZeroError;
-	}
+                && Math.abs(mDrive.getPose().rightEncoderPosition) <= DrivetrainConstants.kAcceptableEncoderZeroError
+                && Math.abs(mDrive.getPose().heading) <= DrivetrainConstants.kAcceptableGyroZeroError;
+    }
 
     @Override
     public Subsystem[] getRequiredSubsystems() {

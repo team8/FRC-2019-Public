@@ -157,9 +157,9 @@ public class DrivePathRoutine extends Routine {
         StringBuilder enumeratedPath = new StringBuilder();
         List<Path.Waypoint> path = mPath.getWayPoints();
         enumeratedPath.append("0,0,0\n");
-		for (Path.Waypoint wayPoint : path) {
-			enumeratedPath.append(wayPoint.position.getX() + offsetX).append(",").append(wayPoint.position.getY() + offsetY).append(",").append(wayPoint.speed).append("\n");
-		}
+        for (Path.Waypoint wayPoint : path) {
+            enumeratedPath.append(wayPoint.position.getX() + offsetX).append(",").append(wayPoint.position.getY() + offsetY).append(",").append(wayPoint.speed).append("\n");
+        }
         return enumeratedPath.toString();
     }
 }

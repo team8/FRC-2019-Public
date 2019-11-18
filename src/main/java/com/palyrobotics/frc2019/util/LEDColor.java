@@ -1,14 +1,14 @@
 package com.palyrobotics.frc2019.util;
 
 public abstract class LEDColor {
-    public enum Color{
+    public enum Color {
         RED, ORANGE, YELLOW, GREEN, BLUE, GREEN_DARK, RAINBOW, BLACK, OFF
     }
 
     private static Color mColor = Color.BLACK;
 
     public static double getValue(Color color) {
-        switch(color) {
+        switch (color) {
             case RED:
                 return 0.61;
             case ORANGE:

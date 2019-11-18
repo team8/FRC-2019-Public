@@ -109,7 +109,6 @@ public class CommandReceiver implements RobotService {
     public String executeCommand(String command) {
         if (command == null) throw new IllegalArgumentException("Command can not be null!");
         String result;
-        // TODO process command and get result
         try {
             Namespace parse = mParser.parseArgs(command.trim().split("\\s+"));
             result = handleParsedCommand(parse);
@@ -136,7 +135,6 @@ public class CommandReceiver implements RobotService {
     }
 
     private String handleParsedCommand(Namespace parse) throws ArgumentParserException {
-        // TODO less nesting >:( refactor into functions
         String commandName = parse.getString("command");
         switch (commandName) {
             case "get":

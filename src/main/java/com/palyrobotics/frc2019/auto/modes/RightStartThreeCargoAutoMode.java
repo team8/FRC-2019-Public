@@ -25,8 +25,7 @@ import java.util.List;
 @SuppressWarnings("Duplicates")
 
 public class RightStartThreeCargoAutoMode extends AutoModeBase {
-    //right start > cargo ship 1 > depot x 3
-    //triplekill
+
     public static int kRunSpeed = 80;
     public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
     public static double kOffsetY = PhysicalConstants.kLevel3Width * .5 + PhysicalConstants.kLevel2Width * .5;
@@ -75,7 +74,7 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
         return new SequentialRoutine(new ReZeroSubAutoMode().ReZero(false), placeCargoStart(), placeCargo(1), takeCargo(1), placeCargo(2));
     }
 
-    public Routine placeCargoStart() { //start to cargo ship front
+    public Routine placeCargoStart() { // start to cargo ship front
         ArrayList<Routine> routines = new ArrayList<>();
 
         List<Waypoint> StartToCargoShip = new ArrayList<>();
@@ -86,12 +85,12 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
 
         routines.add(new CascadingGyroEncoderTurnAngleRoutine(45));
 
-        //move elevator up while driving
-        //elevator constant is a placeholder
+        // move elevator up while driving
+        // elevator constant is a placeholder
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(StartToCargoShip), true),
                 new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorHatchHeight2, 1)));
 
-        //shoot cargo
+        // shoot cargo
         routines.add(new PusherOutRoutine());
         routines.add(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 1));
 
@@ -102,7 +101,7 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
                 kRightDepotY + PhysicalConstants.kRobotLengthInches * .25 + kOffsetY), kRunSpeed));
         CargoShipToDepot.add(new Waypoint(new Translation2d(kRightDepotX + PhysicalConstants.kRobotLengthInches * 1.1 + kOffsetX,
                 kRightDepotY + kOffsetY), 0));
-        //move elevator down while driving
+        // move elevator down while driving
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(CargoShipToDepot), true),
                 new ElevatorCustomPositioningRoutine(0, 1)));
 
@@ -110,7 +109,7 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
         goBackABit.add(new Waypoint(new Translation2d(0, 0), 20, true));
         goBackABit.add(new Waypoint(new Translation2d(-20, 0), 0, true));
 
-        //drive slowly forward and intake hatch
+        // drive slowly forward and intake hatch
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(goBackABit), true),
                 new IntakeBeginCycleRoutine()));
 
@@ -129,16 +128,16 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
                 kRightFirstCargoShipY - PhysicalConstants.kRobotLengthInches + kOffsetY), kRunSpeed));
         StartToCargoShip.add(new Waypoint(new Translation2d(kRightFirstCargoShipX + CargoSlot * PhysicalConstants.kCargoLineGap - PhysicalConstants.kRobotLengthInches * .5 + kOffsetX,
                 kRightFirstCargoShipY - PhysicalConstants.kRobotLengthInches + kOffsetY), kRunSpeed * 0.5));
-        //turn left toward the cargo ship
+        // turn left toward the cargo ship
         StartToCargoShip.add(new Waypoint(new Translation2d(kRightFirstCargoShipX + CargoSlot * PhysicalConstants.kCargoLineGap + PhysicalConstants.kRobotLengthInches + kOffsetX,
                 kRightFirstCargoShipY - PhysicalConstants.kRobotLengthInches * 0.2 + kOffsetY), 0));
 
-        //move elevator up while driving
-        //elevator constant is a placeholder
+        // move elevator up while driving
+        // elevator constant is a placeholder
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(StartToCargoShip), true),
                 new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorHatchHeight2, 1)));
 
-        //shoot cargo
+        // shoot cargo
         routines.add(new PusherOutRoutine());
         routines.add(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 1));
 
@@ -155,7 +154,7 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
                 kRightDepotY + PhysicalConstants.kRobotLengthInches * .25 + kOffsetY), kRunSpeed));
         CargoShipToDepot.add(new Waypoint(new Translation2d(kRightDepotX + DepotSlot * kCargoDiameter + PhysicalConstants.kRobotLengthInches * 1.1 + kOffsetX,
                 kRightDepotY + kOffsetY), 0));
-        //move elevator down while driving
+        // move elevator down while driving
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(CargoShipToDepot), true),
                 new ElevatorCustomPositioningRoutine(0, 1)));
 
@@ -163,7 +162,7 @@ public class RightStartThreeCargoAutoMode extends AutoModeBase {
         goBackABit.add(new Waypoint(new Translation2d(0, 0), 20, true));
         goBackABit.add(new Waypoint(new Translation2d(-20, 0), 0, true));
 
-        //drive slowly forward and intake hatch
+        // drive slowly forward and intake hatch
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(goBackABit), true),
                 new IntakeBeginCycleRoutine()));
 

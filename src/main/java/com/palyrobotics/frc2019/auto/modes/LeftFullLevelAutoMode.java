@@ -26,7 +26,6 @@ import java.util.List;
 
 public class LeftFullLevelAutoMode extends AutoModeBase {
     //Left start > rocket ship close > loading station > rocket ship far > depot > rocket ship mid
-    //TODO: copy the right side one
 
     public static int kRunSpeed = 70;
     public static double kOffsetX = PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches;

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @SuppressWarnings("Duplicates")
 
 public class TestAutoMode extends AutoModeBase {
-    //right start > cargo ship front > loading station > rocket ship far > depot > rocket ship close (fullsend)
+    // right start > cargo ship front > loading station > rocket ship far > depot > rocket ship close
 
     public static int kRunSpeed = 50;
     public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
@@ -67,7 +67,7 @@ public class TestAutoMode extends AutoModeBase {
         return new SequentialRoutine(new RightStartRightFrontCargoAutoMode().placeHatch(), takeHatch());
     }
 
-    public Routine takeHatch() { //cargo ship front to loading station
+    public Routine takeHatch() { // cargo ship front to loading station
         ArrayList<Routine> routines = new ArrayList<>();
 
         ArrayList<Waypoint> BackCargoShipToLoadingStation = new ArrayList<>();
@@ -79,7 +79,7 @@ public class TestAutoMode extends AutoModeBase {
                 kRightLoadingStationY + kOffsetY), 0));
         routines.add(new DrivePathRoutine(new Path(BackCargoShipToLoadingStation), true));
 
-        //turn toward the loading station
+        // turn toward the loading station
         routines.add(new CascadingGyroEncoderTurnAngleRoutine(90));
 
         ArrayList<Waypoint> ForwardCargoShipToLoadingStation = new ArrayList<>();
@@ -88,12 +88,12 @@ public class TestAutoMode extends AutoModeBase {
         ForwardCargoShipToLoadingStation.add(new Waypoint(kRightLoadingStation.translateBy
                 (new Translation2d(PhysicalConstants.kRobotLengthInches, 0)), 0));
 
-        //get fingers ready for hatch intake
+        // get fingers ready for hatch intake
         ArrayList<Routine> getIntakeReady = new ArrayList<>();
         getIntakeReady.add(new PusherOutRoutine());
         getIntakeReady.add(new FingersRoutine(Fingers.FingersState.CLOSE));
 
-        //drive and ready fingers at the same time
+        // drive and ready fingers at the same time
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(ForwardCargoShipToLoadingStation), false),
                 new SequentialRoutine(getIntakeReady)));
 
@@ -102,7 +102,7 @@ public class TestAutoMode extends AutoModeBase {
                 (new Translation2d(PhysicalConstants.kRobotLengthInches, 0)), 20));
         goForwardABit.add(new Waypoint(kRightLoadingStation, 0));
 
-        //drive slowly forward and intake hatch
+        // drive slowly forward and intake hatch
         routines.add(new SequentialRoutine(new DrivePathRoutine(new Path(goForwardABit), false),
                 new FingersRoutine(Fingers.FingersState.OPEN), new PusherInRoutine()));
 

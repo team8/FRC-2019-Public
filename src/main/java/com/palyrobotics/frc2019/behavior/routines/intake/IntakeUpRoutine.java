@@ -14,7 +14,7 @@ public class IntakeUpRoutine extends OneTimeRoutine {
 
     @Override
     public Subsystem[] getRequiredSubsystems() {
-        return new Subsystem[] {mIntake};
+        return new Subsystem[]{mIntake};
     }
 
     @Override

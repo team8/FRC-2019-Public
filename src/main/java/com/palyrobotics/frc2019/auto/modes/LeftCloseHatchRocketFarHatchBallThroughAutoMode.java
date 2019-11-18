@@ -29,7 +29,6 @@ import java.util.List;
 
 public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBase {
     //Left start > cargo ship front > loading station > rocket ship far > depot > close rocket ship (fullsend)
-    //TODO: copy the right side one
 
     public static int kRunSpeed = 50;
     public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
@@ -74,7 +73,6 @@ public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBas
         return new SequentialRoutine(new LeftStartLeftFrontCargoAutoMode().placeHatch(), takeHatch(), placeHatch2(), takeCargo(), placeCargoClose());
     }
 
-    //TODO: make legit
     public Routine takeHatch() { //cargo ship front to loading station
         ArrayList<Routine> routines = new ArrayList<>();
 
@@ -93,53 +91,53 @@ public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBas
         ForwardCargoShipToLoadingStation.add(new Waypoint(kLeftLoadingStation, 0));
 
 
-        //get fingers ready for hatch intake
+        // get fingers ready for hatch intake
         ArrayList<Routine> getIntakeReady = new ArrayList<>();
         getIntakeReady.add(new PusherOutRoutine());
         getIntakeReady.add(new FingersRoutine(Fingers.FingersState.CLOSE));
 
-        //drive and ready fingers at the same time
+        // drive and ready fingers at the same time
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(ForwardCargoShipToLoadingStation), false),
                 new SequentialRoutine(getIntakeReady)));
 
-        //intake hatch
+        // intake hatch
         routines.add(new PusherInRoutine());
         routines.add(new FingersRoutine(Fingers.FingersState.OPEN));
 
         return new SequentialRoutine(routines);
     }
 
-    public Routine placeHatch2() { //loading station to rocket ship close
+    public Routine placeHatch2() { // loading station to rocket ship close
         ArrayList<Routine> routines = new ArrayList<>();
 
         /*
         The robot starts backwards at the loading station after loading a hatch. It then goes around the rocket ship over and shoots it a bit. Then, it lines up with the rocket ship far and places the hatch.
          */
 
-        List<Waypoint> backLoadingStationToRocketShip = new ArrayList<>(); //robot starts going backwards
+        List<Waypoint> backLoadingStationToRocketShip = new ArrayList<>(); // robot starts going backwards
         backLoadingStationToRocketShip.add(new Waypoint(new Translation2d(kLeftLoadingStationX + PhysicalConstants.kRobotLengthInches + kOffsetX,
-                kLeftLoadingStationY + kOffsetY), 180)); //backs up a bit
+                kLeftLoadingStationY + kOffsetY), 180)); // backs up a bit
         backLoadingStationToRocketShip.add(new Waypoint(new Translation2d(kLeftRocketShipMidX + kOffsetX,
                 findLineFar(kLeftRocketShipMidX + PhysicalConstants.kRobotLengthInches * 1.8) + kOffsetY), kRunSpeed)); //goes around the rocket ship
         backLoadingStationToRocketShip.add(new Waypoint(new Translation2d(kLeftRocketShipFarX + PhysicalConstants.kRobotLengthInches * 1.9 + kOffsetX,
                 findLineFar(kLeftRocketShipMidX + PhysicalConstants.kRobotLengthInches * 1.9) + PhysicalConstants.kRobotLengthInches * .2 + kOffsetY), 0));
-        routines.add(new DrivePathRoutine(new Path(backLoadingStationToRocketShip), true)); //robot turns and then moves forward to the rocket ship
+        routines.add(new DrivePathRoutine(new Path(backLoadingStationToRocketShip), true)); // robot turns and then moves forward to the rocket ship
 
-        List<Waypoint> forwardLoadingStationToRocketShip = new ArrayList<>(); //robot turns and then moves forward
+        List<Waypoint> forwardLoadingStationToRocketShip = new ArrayList<>(); // robot turns and then moves forward
         forwardLoadingStationToRocketShip.add(new Waypoint(new Translation2d(kLeftRocketShipFarX + PhysicalConstants.kRobotLengthInches * 1.6 + kOffsetX,
                 findLineFar(kLeftRocketShipMidX + PhysicalConstants.kRobotLengthInches * 1.6) + PhysicalConstants.kRobotLengthInches * .3 + kOffsetY), kRunSpeed)); //line up with rocket ship far
-        forwardLoadingStationToRocketShip.add(new Waypoint(kLeftRocketShipFar, 0)); //ends in front of the rocket ship far
+        forwardLoadingStationToRocketShip.add(new Waypoint(kLeftRocketShipFar, 0)); // ends in front of the rocket ship far
 
-        //moves elevator up while driving
+        // moves elevator up while driving
         routines.add(new DrivePathRoutine(new Path(forwardLoadingStationToRocketShip), false));
 
-        //place hatch
+        // place hatch
         routines.add(new FingersCycleRoutine(1));
 
         return new SequentialRoutine(routines);
     }
 
-    public Routine takeCargo() { //rocket ship close to depot
+    public Routine takeCargo() { // rocket ship close to depot
         ArrayList<Routine> routines = new ArrayList<>();
 
         /*
@@ -153,11 +151,11 @@ public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBas
                 kLeftDepotY - PhysicalConstants.kRobotLengthInches * .2 + kOffsetY), kRunSpeed));
         RocketShipToDepot.add(new Waypoint(kLeftDepot, 0));
 
-        //moves elevator down while driving
+        // moves elevator down while driving
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(RocketShipToDepot), true),
                 new ElevatorCustomPositioningRoutine(0, 1)));
 
-        //intake cargo
+        // intake cargo
         routines.add(new IntakeBeginCycleRoutine());
         routines.add(new WaitForCargoElevator());
 
@@ -175,11 +173,11 @@ public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBas
         DepotToRocketShip.add(new Waypoint(new Translation2d(kLeftRocketShipCloseX * .8 + kOffsetX,
                 findLineClose(kLeftRocketShipCloseX * .8) + kOffsetY), kRunSpeed));
         DepotToRocketShip.add(new Waypoint(kLeftRocketShipClose, 0));
-        //move elevator up while driving
+        // move elevator up while driving
         routines.add(new ParallelRoutine(new DrivePathRoutine(new Path(DepotToRocketShip), false),
                 new ElevatorCustomPositioningRoutine(Configs.get(ElevatorConfig.class).elevatorHeight1, 1)));
 
-        //shoot cargo
+        // shoot cargo
         routines.add(new PusherOutRoutine());
         routines.add(new ShooterExpelRoutine(Shooter.ShooterState.SPIN_UP, 1));
 
@@ -188,11 +186,11 @@ public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBas
 
     public double findLineClose(double cordX) {
         return 0.54862 * cordX - 0.54862 * kLeftRocketShipCloseX + kLeftRocketShipCloseY; //slope is derived from the angle of the rocket ship sides - constants derived from math
-    } //the y cord of an invisible line extending from rocket ship close
+    } // the y cord of an invisible line extending from rocket ship close
 
     public double findLineFar(double cordX) {
         return -0.54862 * cordX + 0.54862 * kLeftRocketShipFarX + kLeftRocketShipFarY; //slope is derived from the angle of the rocket ship sides - constants derived from math
-    } //the y cord of an invisible line extending from rocket ship close
+    } // the y cord of an invisible line extending from rocket ship close
 
     @Override
     public String getKey() {

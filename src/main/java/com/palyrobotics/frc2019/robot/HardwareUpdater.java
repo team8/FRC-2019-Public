@@ -16,7 +16,6 @@ import com.palyrobotics.frc2019.util.LoopOverrunDebugger;
 import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.control.LazySparkMax;
-import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -126,7 +125,6 @@ class HardwareUpdater {
 
         masterElevatorSpark.setClosedLoopRampRate(0.1);
 
-        // TODO refactor into constants
         masterElevatorSpark.setSoftLimit(SoftLimitDirection.kForward, 0.0f);
         masterElevatorSpark.setSoftLimit(SoftLimitDirection.kReverse, ElevatorConfig.kMaxHeightInches);
         masterElevatorSpark.enableSoftLimit(SoftLimitDirection.kForward, false);
@@ -218,7 +216,7 @@ class HardwareUpdater {
 
     private void configureMiscellaneousHardware() {
         UsbCamera fisheyeCam = HardwareAdapter.getInstance().getMiscellaneousHardware().fisheyeCam;
-        fisheyeCam.setResolution(640,360); // Original is 1920 x 1080
+        fisheyeCam.setResolution(640, 360); // Original is 1920 x 1080
     }
 
     private void startUltrasonics() {
@@ -485,7 +483,6 @@ class HardwareUpdater {
         ControlType controlType = output.getControlType();
         if (!Configs.get(RobotConfig.class).disableSparkOutput) {
             spark.set(controlType, output.getReference(), output.getArbitraryDemand(), output.getGains());
-//            System.out.printf("%s,%s%n", output.getControlType(), output.getReference());
         }
     }
 }

@@ -30,7 +30,7 @@ public class OtherConstants {
 
     // Time Constants (these might exist elsewhere but whatever)
     public static final double updatesPerSecond = 50.0;
-    public static final double deltaTime = 1/ updatesPerSecond;
+    public static final double deltaTime = 1 / updatesPerSecond;
 
 
     public static double kGroundToCarriageInches = 10.5625; // Distance from ground to the bottom of the carriage in the lowest position

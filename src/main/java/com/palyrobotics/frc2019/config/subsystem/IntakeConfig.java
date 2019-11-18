@@ -50,5 +50,5 @@ public class IntakeConfig extends AbstractSubsystemConfig {
     public static final double
             kArmPotentiometerTicksPerDegree = (4.5 / 1.0) * ((1.0 / 5.0) / 360.0),
             kArmDegreesPerRevolution = (360.0) / ((68.0 / 14.0) * (38.0 / 18.0) * (36.0 / 14.0) * (54.0 / 12.0)), // rev → deg
-            kArmDegreesPerMinutePerRpm = kArmDegreesPerRevolution; // rev/min → deg/min TODO fix once we figure out velocity conversion
+            kArmDegreesPerMinutePerRpm = kArmDegreesPerRevolution; // rev/min → deg/min
 }
