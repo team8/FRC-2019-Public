@@ -16,14 +16,14 @@ import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 
 public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 
-	final int kRunSpeed = 50;
-
-	final double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
-	final double kOffsetY = 0; // starts at center so the offset is 0
-	final double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength
-			+ PhysicalConstants.kUpperPlatformLength;
-	final double kCargoShipLeftFrontY = sDistances.fieldWidth * .5 - (sDistances.cargoLeftY + sDistances.cargoOffsetY);
-	final double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
+//	final int kRunSpeed = 50;
+//
+//	final double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
+//	final double kOffsetY = 0; // starts at center so the offset is 0
+//	final double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength
+//			+ PhysicalConstants.kUpperPlatformLength;
+//	final double kCargoShipLeftFrontY = sDistances.fieldWidth * .5 - (sDistances.cargoLeftY + sDistances.cargoOffsetY);
+//	final double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
 
 	@Override
 	public String toString() {
@@ -37,11 +37,20 @@ public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 
 	@Override
 	public Routine getRoutine() {
-		return new SequentialRoutine(placeHatch());
+
+		ArrayList<Routine> routines = new ArrayList<>();
+		List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
+		StartToCargoShip.add(new Waypoint(new Translation2d(0, 0), 50));
+		StartToCargoShip.add(new Waypoint(new Translation2d(100, 0), 50));
+		StartToCargoShip.add(new Waypoint(new Translation2d(1000, 0), 0));
+		routines.add(new DrivePathRoutine(new Path(StartToCargoShip), false));
+
+
+		return new SequentialRoutine(routines);
 	}
 
-	public Routine placeHatch() {
-		ArrayList<Routine> routines = new ArrayList<>();
+//	public Routine placeHatch() {
+//		ArrayList<Routine> routines = new ArrayList<>();
 
 		// rezero
 		// routines.add(new ReZeroSubAutoMode().ReZero(false));
@@ -49,10 +58,10 @@ public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 		// List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
 		// StartToCargoShip.add(new Waypoint(
 		// new Translation2d(kHabLineX + PhysicalConstants.kRobotLengthInches +
-		// kOffsetX, 0), kRunSpeed));
+		// kOffsetX, 0), 50));
 		// StartToCargoShip.add(new Waypoint(
 		// new Translation2d(kCargoShipLeftFrontX * .6 + kOffsetX, kCargoShipLeftFrontY
-		// + kOffsetY), kRunSpeed));
+		// + kOffsetY), 50));
 		// StartToCargoShip.add(new Waypoint(
 		// new Translation2d(kCargoShipLeftFrontX - PhysicalConstants.kRobotLengthInches
 		// * .6 + kOffsetX,
@@ -68,14 +77,14 @@ public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 		// // place hatch on cargo ship
 		// routines.add(new FingersCycleRoutine(1));
 
-		List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
-		StartToCargoShip.add(new Waypoint(new Translation2d(0, 0), kRunSpeed));
-		StartToCargoShip.add(new Waypoint(new Translation2d(100, 0), kRunSpeed));
-		StartToCargoShip.add(new Waypoint(new Translation2d(1000, 0), 0));
-		routines.add(new DrivePathRoutine(new Path(StartToCargoShip), false));
-
-		return new SequentialRoutine(routines);
-	}
+//		List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
+//		StartToCargoShip.add(new Waypoint(new Translation2d(0, 0), 50));
+//		StartToCargoShip.add(new Waypoint(new Translation2d(100, 0), 50));
+//		StartToCargoShip.add(new Waypoint(new Translation2d(1000, 0), 0));
+//		routines.add(new DrivePathRoutine(new Path(StartToCargoShip), false));
+//
+//		return new SequentialRoutine(routines);
+//	}
 
 	@Override
 	public String getKey() {
