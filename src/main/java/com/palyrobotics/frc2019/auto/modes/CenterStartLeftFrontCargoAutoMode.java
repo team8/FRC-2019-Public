@@ -7,6 +7,7 @@ import com.palyrobotics.frc2019.auto.AutoModeBase;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
+import com.palyrobotics.frc2019.config.constants.PhysicalConstants;
 import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
@@ -15,18 +16,13 @@ import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 
 public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 
-	// final int kRunSpeed = 50;
-	//
-	// final double kOffsetX = -PhysicalConstants.kLowerPlatformLength -
-	// PhysicalConstants.kRobotLengthInches * 0.6;
-	// final double kOffsetY = 0; // starts at center so the offset is 0
-	// final double kCargoShipLeftFrontX = sDistances.level1CargoX +
-	// PhysicalConstants.kLowerPlatformLength
-	// + PhysicalConstants.kUpperPlatformLength;
-	// final double kCargoShipLeftFrontY = sDistances.fieldWidth * .5 -
-	// (sDistances.cargoLeftY + sDistances.cargoOffsetY);
-	// final double kHabLineX = PhysicalConstants.kUpperPlatformLength +
-	// PhysicalConstants.kLowerPlatformLength;
+	 final int kRunSpeed = 50;
+
+	 final double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
+	 final double kOffsetY = 0; // starts at center so the offset is 0
+	 final double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength + PhysicalConstants.kUpperPlatformLength;
+	 final double kCargoShipLeftFrontY = sDistances.fieldWidth * .5 - (sDistances.cargoLeftY + sDistances.cargoOffsetY);
+	 final double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
 
 	@Override
 	public String toString() {
@@ -44,8 +40,8 @@ public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 		ArrayList<Routine> routines = new ArrayList<>();
 		List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
 		StartToCargoShip.add(new Waypoint(new Translation2d(0, 0), 50));
-		StartToCargoShip.add(new Waypoint(new Translation2d(100, 0), 50));
-		StartToCargoShip.add(new Waypoint(new Translation2d(1000, 0), 0));
+        StartToCargoShip.add(new Waypoint(new Translation2d(kHabLineX, kCargoShipLeftFrontY), 50));
+        StartToCargoShip.add(new Waypoint(new Translation2d(kCargoShipLeftFrontX, kCargoShipLeftFrontY), 0));
 		routines.add(new DrivePathRoutine(new Path(StartToCargoShip), false));
 
 		return new SequentialRoutine(routines);

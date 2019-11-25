@@ -371,6 +371,19 @@ function getPoint(i) {
         return waypoints[i];
 }
 
+var depotFromLeftY = 71.5, depotFromRightY = 72.0, level2FromRightY = 97.5, level2FromLeftY = 97.75,
+    level1FromLeftY = 86.75, level1FromRightY = 89.75, cargoOffsetX = 40.0, cargoOffsetY = 14.0,
+    level1CargoX = 126.75, cargoLeftY = 133.0, cargoRightY = 134.75, midLineLeftRocketFarX = 70.5,
+    midLineRightRocketFarX = 73.25, habLeftRocketCloseX = 117.0, habRightRocketCloseX = 113.0,
+    habLeftRocketMidX = 133.5, habRightRocketMidX = 134.5, leftRocketFarY = 12.25, rightRocketFarY = 22.5,
+    leftRocketMidY = 24.75, rightRocketMidY = 34.5, leftRocketCloseY = 13.25, rightRocketCloseY = 21.75,
+    leftLoadingY = 26.0, rightLoadingY = 25.5, fieldWidth = 324.0, kUpperPlatformLength = 48.0, kLevel1Width = 150.0,
+    kLevel2Width = 40.0,
+    kLevel3Width = 48.0,
+    kLowerPlatformLength = 48.0,
+    kCargoLineGap = 21.5,
+    kRobotWidthInches = 32.5, kRobotLengthInches = 40.25;
+
 function importData() {
     $('#upl').click();
     let u = $('#upl')[0];
@@ -388,7 +401,7 @@ function importData() {
             //
             // var blue = NaN
 
-            console.log(name[name.length - 5])
+            // console.log(name[name.length - 5])
 
             // if (name[name.length - 5] == "d") {
             // 	// red
@@ -411,33 +424,62 @@ function importData() {
             // 	y = 56
             // }
 
-            // var x = 100;
-            // var y = height / 2;
-            var x = 0;
-            var y = 0;
-            var cordinate;
             lines = c.split(/\r?\n/);
-            console.log(lines)
+            // console.log(lines)
+            const constants = new Map();
             $("tbody").empty();
             lines.forEach((wpd) => {
                 data = wpd;
-                if (data.includes(".add(new Path.Waypoint(new Translation2d(")) {
-                    data = data.split(".add(new Path.Waypoint(new Translation2d(");
-                    cordinate = data[1];
-                    cordinate = cordinate.split(", ");
-                    cordinate[1] = cordinate[1].replace(")", '');
-                    cordinate[2] = cordinate[2].replace("));", '');
-                    console.log("LOADED")
-                    console.log(data)
-                    // var wp = undefined
-                    // if (blue) {
-                    wp = new Waypoint(new Translation2d(parseFloat(cordinate[0]) + x, parseFloat(cordinate[1]) + y), cordinate[2], 0, "No Comment");
+
+                if (data.includes("//")) {
+                    // skip comments
+                } else if (data.includes("final double ")) {
+                    var v = data.replace("final double ", '');
+                    v = v.split(" = ");
+                    v[1] = v[1].replace(/sDistances./g, '');
+                    v[1] = v[1].replace(/PhysicalConstants./g, '');
+                    console.log(typeof(eval(v[1])));
+                    v[0] = v[0].split('k');
+                    v[0][1] = "k" + v[0][1];
+                    constants.set(v[0][1], eval(v[1]));
+                    console.log(constants)
+                } else if (data.includes(".add(new Path.")) {
+                    data.split("add.");
+                    var wp = data;
+                    wp = wp.replace("Path.", " ");
+                    wp = wp.replace("StartToCargoShip.add", " ");
+                    var keys = constants.keys();
+                    var i;
+                    var check = constants.keys();
+                    console.log(constants.get("kHabLineX"));
+                    console.log(constants);
+                    for (i = 0; i < constants.size; i++) {
+                        check = keys.next().value;
+                        console.log(check);
+                        if (wp.includes(String(check))) {
+                            var a = constants.get(check);
+                            wp = wp.replace(String(check), a);
+                        }
+                    }
+                    console.log(wp);
+                    wp = eval(wp);
+
+                    // wp = eval("(new Waypoint(new Translation2d(0,0),0,));");
+                    // data = data.split(".add(new Path.Waypoint(new Translation2d(");
+                    // cordinate = data[1];
+                    // cordinate = cordinate.split(", ");
+                    // cordinate[1] = cordinate[1].replace(")", '');
+                    // cordinate[2] = cordinate[2].replace("));", '');
+                    // console.log("LOADED")
+                    // console.log(data)
+                    // // var wp = undefined
+                    // // if (blue) {
+                    // wp = new Waypoint(new Translation2d(parseFloat(cordinate[0]) + x, parseFloat(cordinate[1]) + y), cordinate[2], 0, "No Comment");
                     // }
                     // else {
                     // 	var x_off_red = 652
                     // 	wp = new Waypoint(new Translation2d(-1*parseFloat(data[0])-x + x_off_red, parseFloat(data[1])+y), data[2], 20, "No Comment");
                     // }
-
 
                     // console.log(wp);
                     $("tbody").append("<tr>"
