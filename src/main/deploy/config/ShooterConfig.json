@@ -1,4 +1,5 @@
 {
-    "expellingMotorVelocity": -0.25,
-    "level3MotorVelocity": -0.2
+  "expellingMotorVelocity" : -0.25,
+  "level3MotorVelocity" : -0.2,
+  "test" : [ 69.86689167271055, 38.464688552086265, 79.13517952021414, 69.40093792796524 ]
 }
