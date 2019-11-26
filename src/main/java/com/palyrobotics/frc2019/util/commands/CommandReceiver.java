@@ -1,9 +1,9 @@
 package com.palyrobotics.frc2019.util.commands;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,7 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -44,6 +45,10 @@ public class CommandReceiver implements RobotService {
 		set.addArgument("config_name");
 		set.addArgument("config_field");
 		set.addArgument("config_value");
+		Subparser editArray = subparsers.addParser("editArray");
+		editArray.addArgument("config_name");
+		editArray.addArgument("config_field");
+		editArray.addArgument("config_value");
 		Subparser get = subparsers.addParser("get");
 		get.addArgument("config_name");
 		get.addArgument("config_field").nargs("?"); // "?" means this is optional, and will default to null if not
@@ -132,6 +137,9 @@ public class CommandReceiver implements RobotService {
 		return "commandReceiver";
 	}
 
+	/**
+	 * Allows us to get fields that belong to super-classes as well
+	 */
 	private Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
 		Map<String, Field> fields = new HashMap<>();
 		for (Class<?> c = clazz; c != null; c = c.getSuperclass()) {
@@ -147,6 +155,7 @@ public class CommandReceiver implements RobotService {
 			case "get":
 			case "set":
 			case "save":
+			case "editArray":
 			case "reload": {
 				String configName = parse.getString("config_name");
 				if (commandName.equals("get") && configName.equals("Configs")) {
@@ -205,6 +214,85 @@ public class CommandReceiver implements RobotService {
 										throw new RuntimeException();
 									}
 								}
+							}
+							case "editArray": {
+								String[] fieldNames = allFieldNames == null ? null : allFieldNames.split("\\.");
+
+								Field field = null;
+								field = getField(field == null ? configClass : field.getType(), fieldNames[0]);
+								Object fieldValue = configObject, fieldParentValue = null;
+								fieldParentValue = fieldValue;
+								fieldValue = field.get(fieldValue);
+								JSONObject jObject;
+								/*
+								 * if (jString == null) return "bruh"; try { jObject = new JSONObject(jString);
+								 * } catch (org.json.JSONException JSONException) { return "nope"; } if (jString
+								 * == null) return "bruh"; try { Object test = jObject.get("test"); if(test
+								 * instanceof JSONArray){ JSONArray test1 = (JSONArray)test; test1.put(0, 1);
+								 * return test1.toString() + "test1"; } } catch (org.json.JSONException
+								 * JSONException) { return "nope"; }
+								 */
+
+								/*
+								 * if (stringValue == null) return "Must provide a value to set!"; try { File
+								 * testFile = new
+								 * File("Desktop/git/FRC-2019-Public/src/main/deploy/config/ShooterConfig.json")
+								 * ; field = sMapper.readValue(testFile,String.class); return field.toString();
+								 * } catch (IOException parseException) { return stringValue + "string"; }
+								 */
+								File testFile = Paths.get(System.getProperty("user.dir"), "src/main/deploy/config",
+										configName + ".json").toFile();
+								// File testFile = new
+								// File("C:\\Users\\Nerdu\\Desktop\\git\\FRC-2019-Public\\src\\main\\deploy\\config\\ShooterConfig.json");
+								if (testFile == null) {
+									return "bruh";
+								}
+								try {
+									BufferedReader bR = new BufferedReader(new FileReader(testFile));
+									String fullString = "";
+									/*
+									 * for(var i = 0; i < testFile.length();i++){ }
+									 */
+									// String line = bR.readLine();
+									// while(line != null){
+									//
+									// fullString += line;
+									// line = bR.readLine();
+									// }
+									if (fullString == null) {
+										return "bruh";
+									} else {
+
+										Array jArray = sMapper.readValue(testFile, Array.class);
+										return jArray.toString();
+										// if(jArray instanceof ArrayList){
+										/*
+										 * ArrayList test1 = A; test1.put(test1.length(), Math.random() * 100); jArray =
+										 * test1;
+										 */
+										// ArrayList newVal = new ArrayList();
+										/*
+										 * for(var i = 0;i < test1.length();i++){ newVal.add(test1.get(i)); }
+										 */
+										// return configClass.toString();
+										// Configs.set(configObject, fieldParentValue, field, newVal);
+
+										// return jArray.toString();
+
+										/*
+										 * }else{ return "nope nope"; }
+										 */
+									}
+
+								} catch (FileNotFoundException FileNotFoundException) {
+									return "nope";
+								} catch (IOException e) {
+									e.printStackTrace();
+									return testFile.toString();
+								}
+
+								// return "nope";
+								// sMapper.readValue(fieldNames[0], JSONArray.class);
 							}
 							case "save": {
 								try {
