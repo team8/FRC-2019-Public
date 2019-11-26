@@ -6,6 +6,7 @@ import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositio
 import com.palyrobotics.frc2019.behavior.routines.intake.IntakeUpRoutine;
 import com.palyrobotics.frc2019.behavior.routines.pusher.PusherInRoutine;
 import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
+import com.palyrobotics.frc2019.behavior.routines.vision.CargoAutoAlign;
 import com.palyrobotics.frc2019.behavior.routines.waits.WaitForElevatorCanMove;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
@@ -164,7 +165,9 @@ public class OperatorInterface {
 		// newCommands.cancelCurrentRoutines = false;
 		// newCommands.addWantedRoutine(hatchCycle);
 		// }
-
+		if (mDriveStick.getRawButton(4)) {
+			commands.addWantedRoutine(new CargoAutoAlign());
+		}
 		/*
 		 * Elevator Control
 		 */

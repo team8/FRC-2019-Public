@@ -107,6 +107,7 @@ public class CommandReceiver implements RobotService {
 				return;
 			String result = executeCommand(command);
 			// System.out.println(String.format("Result: %s", result));
+
 			mResult.setAndNotify(result);
 		});
 	}
