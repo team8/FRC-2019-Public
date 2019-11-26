@@ -2,6 +2,7 @@ package com.palyrobotics.frc2019.subsystems;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
+import com.palyrobotics.frc2019.config.RoutineTestConfig;
 import com.palyrobotics.frc2019.config.constants.OtherConstants;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.ShooterConfig;
@@ -16,7 +17,7 @@ public class Shooter extends Subsystem {
 	}
 
 	private ShooterConfig mConfig = Configs.get(ShooterConfig.class);
-
+	private RoutineTestConfig testConfig = Configs.get(RoutineTestConfig.class);
 	private double mOutput;
 
 	private double mRumbleLength;
@@ -24,6 +25,7 @@ public class Shooter extends Subsystem {
 	private boolean mCachedHasCargo;
 
 	private double mExpellingCycles;
+	private int testVar = testConfig.testValue;
 
 	public enum ShooterState {
 		SPIN_UP, IDLE
@@ -37,6 +39,7 @@ public class Shooter extends Subsystem {
 
 	@Override
 	public void reset() {
+
 		mOutput = 0.0;
 		mRumbleLength = -1;
 		mCachedHasCargo = false;

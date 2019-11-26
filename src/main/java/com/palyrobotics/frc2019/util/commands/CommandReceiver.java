@@ -49,6 +49,7 @@ public class CommandReceiver implements RobotService {
 		editArray.addArgument("config_name");
 		editArray.addArgument("config_field");
 		editArray.addArgument("config_value");
+		editArray.addArgument("config_value_two");
 		Subparser get = subparsers.addParser("get");
 		get.addArgument("config_name");
 		get.addArgument("config_field").nargs("?"); // "?" means this is optional, and will default to null if not
@@ -253,9 +254,13 @@ public class CommandReceiver implements RobotService {
 									}
 
 								}
-								newVal.add(Math.random() * 100);
+								ArrayList waypoint = new ArrayList();
+								waypoint.add(Double.valueOf(parse.getString("config_value")));
+								waypoint.add(Double.valueOf(parse.getString("config_value_two")));
+
+								newVal.add(waypoint);
 								Configs.set(configObject, fieldParentValue, field, newVal);
-								return jArray.toString();
+								return parse.getString("config_value") + parse.getString("config_value_two");
 								// return fieldValue.toString();
 							}
 							case "save": {
