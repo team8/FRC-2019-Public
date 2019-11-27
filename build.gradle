@@ -84,6 +84,8 @@ dependencies {
     compile 'com.esotericsoftware:kryo:4.0.2'
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest:2.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
