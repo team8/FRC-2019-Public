@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 			mEnabledSubsystems;
 	private HardwareUpdater mHardwareUpdater = new HardwareUpdater(mDrive, mElevator, mShooter, mPusher, mFingers,
 			mIntake);
-	//private List<RobotService> mEnabledServices;
+	// private List<RobotService> mEnabledServices;
 	private int mTick;
 
 	public static RobotState getRobotState() {
@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 
 		DriveTeam.configConstants();
 
-		//mEnabledServices.forEach(RobotService::start);
+		// mEnabledServices.forEach(RobotService::start);
 
 		if (RobotBase.isSimulation())
 			sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
-		//mEnabledServices.forEach(RobotService::update);
+		// mEnabledServices.forEach(RobotService::update);
 	}
 
 	@Override
@@ -175,8 +175,9 @@ public class Robot extends TimedRobot {
 
 	private void setupSubsystemsAndServices() {
 		Map<String, Supplier<RobotService>> configToService = Map.of("commandReceiver", CommandReceiver::new);
-		//mEnabledServices = mConfig.enabledServices.stream().map(serviceName -> configToService.get(serviceName).get())
-		//		.collect(Collectors.toList());
+		// mEnabledServices = mConfig.enabledServices.stream().map(serviceName ->
+		// configToService.get(serviceName).get())
+		// .collect(Collectors.toList());
 		Map<String, Subsystem> configToSubsystem = mSubsystems.stream()
 				.collect(Collectors.toMap(Subsystem::getConfigName, Function.identity()));
 		mEnabledSubsystems = mConfig.enabledSubsystems.stream().map(configToSubsystem::get)
