@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.palyrobotics.frc2019.util.Pose;
-import com.palyrobotics.frc2019.util.commands.CommandReceiver;
 import com.palyrobotics.frc2019.util.trajectory.*;
 
 import edu.wpi.first.wpilibj.CircularBuffer;
