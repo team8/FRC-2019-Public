@@ -25,8 +25,6 @@ public class RobotState {
 
 	private static RobotState sInstance = new RobotState();
 
-	public double matchStartTimeSeconds;
-
 	public static RobotState getInstance() {
 		return sInstance;
 	}
@@ -37,13 +35,13 @@ public class RobotState {
 	// Updated by autoInit, teleopInit, disabledInit
 	public GamePeriod gamePeriod = GamePeriod.DISABLED;
 
+	public double matchStartTimeSeconds;
+
 	public double robotVelocity, robotAcceleration;
 
 	public boolean isQuickTurning;
 
 	public double leftDriveVelocity, rightDriveVelocity;
-
-	public CommandReceiver commandReceiver = new CommandReceiver();
 
 	// Intake
 	public boolean hasIntakeCargo;

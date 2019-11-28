@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.palyrobotics.frc2019.config.RobotState;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
@@ -36,8 +37,8 @@ public class CommandReceiver implements RobotService {
 	private final ArgumentParser mParser;
 	private Server mServer;
 	private AtomicString mResult = new AtomicString(), mCommand = new AtomicString();
-
-	public CommandReceiver() {
+	private static CommandReceiver sInstance = new CommandReceiver();
+	protected CommandReceiver() {
 		mParser = ArgumentParsers.newFor("rio-terminal").build();
 		Subparsers subparsers = mParser.addSubparsers().dest("command");
 		Subparser set = subparsers.addParser("set");
@@ -264,5 +265,8 @@ public class CommandReceiver implements RobotService {
 				throw new RuntimeException();
 			}
 		}
+	}
+	public static CommandReceiver getInstance(){
+		return sInstance;
 	}
 }
