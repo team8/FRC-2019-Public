@@ -50,6 +50,9 @@ public class CommandReceiver implements RobotService {
 		editArray.addArgument("config_field");
 		editArray.addArgument("config_value");
 		editArray.addArgument("config_value_two");
+		Subparser getRoutine = subparsers.addParser("getRoutine");
+		getRoutine.addArgument("routine_name");
+		getRoutine.addArgument("routine_package");
 		Subparser get = subparsers.addParser("get");
 		get.addArgument("config_name");
 		get.addArgument("config_field").nargs("?"); // "?" means this is optional, and will default to null if not
@@ -150,6 +153,32 @@ public class CommandReceiver implements RobotService {
 	private String handleParsedCommand(Namespace parse) throws ArgumentParserException {
 		String commandName = parse.getString("command");
 		switch (commandName) {
+			case "getRoutine": {
+				String routineName = parse.getString("routine_name");
+				String routinePackage = parse.getString("routine_package");
+
+				File routineFile;
+				String test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routinePackage + "/"
+						+ routineName + ".java";
+				routineFile = new File(System.getProperty("user.dir") + test);
+				try {
+					BufferedReader bR = new BufferedReader(new FileReader(routineFile));
+					String line = bR.readLine();
+					String jsonString = "";
+					while (line != null) {
+						if (line.contains("public " + routineName)) {
+							return line;
+						}
+					}
+					return "No Parameters";
+					// return line;
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
 			case "get":
 			case "set":
 			case "save":

@@ -21,7 +21,6 @@ import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 
 	public static int kRunSpeed = 50;
-
 	public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength
 			- PhysicalConstants.kRobotLengthInches * 0.6;
 	public static double kOffsetY = 0; // starts at center so the offset is 0

@@ -1,7 +1,5 @@
 {
-  "expellingMotorVelocity" : -0.25,
+  "expellingMotorVelocity" : -3.0,
   "level3MotorVelocity" : -0.2,
-  "test" : [ {
-    "myArrayList" : [ 4.0, 5.0 ]
-  }, [ 6.0, 19.0 ] ]
+  "test" : [ [ "p", 7, 6 ], [ "reee", 7, 6 ] ]
 }
