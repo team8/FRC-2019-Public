@@ -1,9 +1,9 @@
 var waypoints = [];
 var ctx;
 var width = 1085; //pixels
-var height = 530; //pixels
-var fieldWidth = 652; // in inches
-var fieldHeight = 324.0; // in inches
+var height = 575; //pixels
+var kFieldWidth = 652; // in inches
+var kFieldHeight = 324.0; // in inches
 var robotWidth = 27.0; //inches
 var robotHeight = 32.0; //inches
 var pointRadius = 5;
@@ -12,6 +12,8 @@ var kEpsilon = 1E-9;
 var image;
 var imageFlipped;
 var wto;
+
+var routines = [];
 
 
 var maxSpeed = 120;
@@ -58,11 +60,11 @@ class Translation2d {
     }
 
     get drawX() {
-        return this.x * (width / fieldWidth);
+        return this.x * (width / kFieldWidth);
     }
 
     get drawY() {
-        return height - this.y * (height / fieldHeight);
+        return height - this.y * (height / kFieldHeight);
     }
 
     get angle() {
@@ -86,6 +88,19 @@ class Translation2d {
     }
 }
 
+class DrivePathRoutine {
+    constructor(name, isReversed) {
+        this.name = name;
+        this.isReversed = isReversed;
+    }
+    getName() {
+        return this.name;
+    }
+    getReversed() {
+        return this.isReversed;
+    }
+}
+
 class Waypoint {
     constructor(position, speed, radius, comment) {
         this.position = position;
@@ -100,7 +115,7 @@ class Waypoint {
 
     toString() {
         var comment = (this.comment.length > 0) ? " //" + this.comment : "";
-        return "sWaypoints.add(new Waypoint(" + this.position.x + "," + this.position.y + "," + this.radius + "," + this.speed + "));" + comment;
+        return "Waypoints.add(new Translation2d(" + this.position.x + "," + this.position.y + "," + this.radius + "," + this.speed + "));" + comment;
     }
 }
 
@@ -196,7 +211,7 @@ class Arc {
         this.lineA.draw();
         this.lineB.draw();
         ctx.beginPath();
-        ctx.arc(this.center.drawX, this.center.drawY, this.radius * (width / fieldWidth), sAngle, eAngle);
+        ctx.arc(this.center.drawX, this.center.drawY, this.radius * (width / kFieldWidth), sAngle, eAngle);
         ctx.strokeStyle = getColorForSpeed(this.lineB.pointB.speed);
         ctx.stroke();
     }
@@ -292,23 +307,33 @@ function addPoint() {
     });
 }
 
+var marker = 0;
 function update() {
+    const offsetX = 70;
+    const offsetY = 165;
     waypoints = [];
+
     $('tbody').children('tr').each(function () {
-        var x = parseInt($($($(this).children()).children()[0]).val()) + 60;
-        console.log(x);
-        var y = parseInt($($($(this).children()).children()[1]).val()) + 165;
-        var radius = parseInt($($($(this).children()).children()[2]).val());
-        var speed = parseInt($($($(this).children()).children()[3]).val());
-        if (isNaN(radius) || isNaN(speed)) {
-            radius = 0;
-            speed = 0;
+        if (Number.isInteger($($($(this).children()).children()[3]).val()) !== undefined) {
+            var x = parseInt($($($(this).children()).children()[0]).val()) + offsetX;
+            console.log(x);
+            var y = parseInt($($($(this).children()).children()[1]).val()) + offsetY;
+            var radius = parseInt($($($(this).children()).children()[2]).val());
+            var speed = parseInt($($($(this).children()).children()[3]).val());
+            if (isNaN(radius) || isNaN(speed)) {
+                radius = 0;
+                speed = 0;
+            }
+            console.log($($($(this).children()).children()[3]).val());
+        } else {
+            routines.add()
         }
-        var comment = ($($($(this).children()).children()[4]).val())
+        var comment = ($($($(this).children()).children()[4]).val());
         waypoints.push(new Waypoint(new Translation2d(x, y), speed, radius, comment));
     });
     drawPoints();
     drawRobot();
+    console.log(routines)
 }
 
 function drawRobot() {
@@ -322,8 +347,8 @@ function drawRobot() {
 }
 
 function drawRotatedRect(pos, w, h, angle, strokeColor, fillColor, noFill) {
-    w = w * (width / fieldWidth);
-    h = h * (height / fieldHeight);
+    w = w * (width / kFieldWidth);
+    h = h * (height / kFieldHeight);
     fillColor = fillColor || "rgba(0,0,0,0)";
     //ctx.save();
     if (noFill == null || !noFill)
@@ -371,17 +396,22 @@ function getPoint(i) {
         return waypoints[i];
 }
 
-var depotFromLeftY = 71.5, depotFromRightY = 72.0, level2FromRightY = 97.5, level2FromLeftY = 97.75,
+function split() {
+    routines.push("split");
+    $("tbody").append("<tr>"
+        + "<td colspan=\"5\"><input placeholder='Drive Path Routine' style=\"width: 300px;\"></td>"
+        + "<td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td></tr>"
+    );
+}
+
+const depotFromLeftY = 71.5, depotFromRightY = 72.0, level2FromRightY = 97.5, level2FromLeftY = 97.75,
     level1FromLeftY = 86.75, level1FromRightY = 89.75, cargoOffsetX = 40.0, cargoOffsetY = 14.0,
     level1CargoX = 126.75, cargoLeftY = 133.0, cargoRightY = 134.75, midLineLeftRocketFarX = 70.5,
     midLineRightRocketFarX = 73.25, habLeftRocketCloseX = 117.0, habRightRocketCloseX = 113.0,
     habLeftRocketMidX = 133.5, habRightRocketMidX = 134.5, leftRocketFarY = 12.25, rightRocketFarY = 22.5,
     leftRocketMidY = 24.75, rightRocketMidY = 34.5, leftRocketCloseY = 13.25, rightRocketCloseY = 21.75,
     leftLoadingY = 26.0, rightLoadingY = 25.5, fieldWidth = 324.0, kUpperPlatformLength = 48.0, kLevel1Width = 150.0,
-    kLevel2Width = 40.0,
-    kLevel3Width = 48.0,
-    kLowerPlatformLength = 48.0,
-    kCargoLineGap = 21.5,
+    kLevel2Width = 40.0, kLevel3Width = 48.0, kLowerPlatformLength = 48.0, kCargoLineGap = 21.5,
     kRobotWidthInches = 32.5, kRobotLengthInches = 40.25;
 
 function importData() {
@@ -515,39 +545,48 @@ function getDataString() {
     var startPoint = "new Translation2d(" + waypoints[0].position.x + ", " + waypoints[0].position.y + ")";
     var importStr = "WAYPOINT_DATA: " + JSON.stringify(waypoints);
     var isReversed = $("#isReversed").is(':checked');
-    var str = `package com.team254.frc2017.paths;
+    var strStart = `package com.palyrobotics.frc2019.auto.modes;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.team254.frc2017.paths.PathBuilder.Waypoint;
-import com.team254.lib.util.control.Path;
-import com.team254.lib.util.math.RigidTransform2d;
-import com.team254.lib.util.math.Rotation2d;
-import com.team254.lib.util.math.Translation2d;
+import com.palyrobotics.frc2019.auto.AutoModeBase;
+import com.palyrobotics.frc2019.behavior.Routine;
+import com.palyrobotics.frc2019.behavior.SequentialRoutine;
+import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
+import com.palyrobotics.frc2019.config.constants.PhysicalConstants;
+import com.palyrobotics.frc2019.util.trajectory.Path;
+import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 
-public class ${title} implements PathContainer {
-    
+public class ${title} extends AutoModeBase {
+
     @Override
-    public Path buildPath() {
-        ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-${pathInit}
-        return PathBuilder.buildPathFromWaypoints(sWaypoints);
+    public String toString() {
+        return sAlliance + this.getClass().toString();
+    }
+
+    @Override
+    public void preStart() {
+
     }
     
     @Override
-    public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(${startPoint}, Rotation2d.fromDegrees(180.0)); 
+    public Routine getRoutine() {
+        return new SequentialRoutine(); 
     }
-
-    @Override
-    public boolean isReversed() {
-        return ${isReversed}; 
+`;
+    var strRoutines = `
+    `;
+    var strEnd = `@Override
+    public String getKey() {
+        return sAlliance.toString();
     }
+    
 	// ${importStr}
 	// IS_REVERSED: ${isReversed}
 	// FILE_NAME: ${title}
-}`
-    return str;
+}`;
+    return strStart + strRoutines + strEnd;
 }
 
 function exportData() {

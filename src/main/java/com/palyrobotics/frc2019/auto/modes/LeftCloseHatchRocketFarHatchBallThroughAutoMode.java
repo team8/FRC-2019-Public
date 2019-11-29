@@ -31,39 +31,37 @@ public class LeftCloseHatchRocketFarHatchBallThroughAutoMode extends AutoModeBas
 	// Left start > cargo ship front > loading station > rocket ship far > depot >
 	// close rocket ship (fullsend)
 
-	public static int kRunSpeed = 50;
-	public static double kOffsetX = -PhysicalConstants.kLowerPlatformLength
-			- PhysicalConstants.kRobotLengthInches * 0.6;
-	public static double kOffsetY = -PhysicalConstants.kLevel3Width * .5 - PhysicalConstants.kLevel2Width * .5;
-	public static double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength
+	final int kRunSpeed = 50;
+	final double kOffsetX = -PhysicalConstants.kLowerPlatformLength - PhysicalConstants.kRobotLengthInches * 0.6;
+	final double kOffsetY = -PhysicalConstants.kLevel3Width * .5 - PhysicalConstants.kLevel2Width * .5;
+	final double kCargoShipLeftFrontX = sDistances.level1CargoX + PhysicalConstants.kLowerPlatformLength
 			+ PhysicalConstants.kUpperPlatformLength;
-	public static double kCargoShipLeftFrontY = sDistances.fieldWidth * .5
-			- (sDistances.cargoLeftY + sDistances.cargoOffsetY);
-	public static double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
-	public static double kLeftLoadingStationX = 0;
-	public static double kLeftLoadingStationY = sDistances.fieldWidth * .5 - sDistances.leftLoadingY;
-	public static double kLeftDepotX = PhysicalConstants.kUpperPlatformLength;
-	public static double kLeftDepotY = sDistances.fieldWidth * .5 - sDistances.depotFromLeftY;
-	public static double kLeftRocketShipCloseX = sDistances.habLeftRocketCloseX + kHabLineX;
-	public static double kLeftRocketShipCloseY = sDistances.fieldWidth * .5 - sDistances.leftRocketCloseY;
-	public static double kLeftRocketShipMidX = kHabLineX + sDistances.habLeftRocketMidX;
-	public static double kLeftRocketShipMidY = sDistances.fieldWidth * .5 - sDistances.leftRocketMidY;
-	public static double kLeftRocketShipFarX = sDistances.fieldWidth - sDistances.midLineLeftRocketFarX;
-	public static double kLeftRocketShipFarY = sDistances.fieldWidth * .5 - sDistances.leftRocketFarY;
+	final double kCargoShipLeftFrontY = sDistances.fieldWidth * .5 - (sDistances.cargoLeftY + sDistances.cargoOffsetY);
+	final double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
+	final double kLeftLoadingStationX = 0;
+	final double kLeftLoadingStationY = sDistances.fieldWidth * .5 - sDistances.leftLoadingY;
+	final double kLeftDepotX = PhysicalConstants.kUpperPlatformLength;
+	final double kLeftDepotY = sDistances.fieldWidth * .5 - sDistances.depotFromLeftY;
+	final double kLeftRocketShipCloseX = sDistances.habLeftRocketCloseX + kHabLineX;
+	final double kLeftRocketShipCloseY = sDistances.fieldWidth * .5 - sDistances.leftRocketCloseY;
+	final double kLeftRocketShipMidX = kHabLineX + sDistances.habLeftRocketMidX;
+	final double kLeftRocketShipMidY = sDistances.fieldWidth * .5 - sDistances.leftRocketMidY;
+	final double kLeftRocketShipFarX = sDistances.fieldWidth - sDistances.midLineLeftRocketFarX;
+	final double kLeftRocketShipFarY = sDistances.fieldWidth * .5 - sDistances.leftRocketFarY;
 
-	public Translation2d kCargoShipLeftFront = new Translation2d(
+	final Translation2d kCargoShipLeftFront = new Translation2d(
 			kCargoShipLeftFrontX + PhysicalConstants.kRobotWidthInches * .2 + kOffsetX,
 			kCargoShipLeftFrontY - PhysicalConstants.kRobotLengthInches * .05 + kOffsetY);
-	public Translation2d kLeftLoadingStation = new Translation2d(
+	final Translation2d kLeftLoadingStation = new Translation2d(
 			kLeftLoadingStationX + PhysicalConstants.kRobotLengthInches + kOffsetX,
 			kLeftLoadingStationY - PhysicalConstants.kRobotLengthInches * .2 + kOffsetY);
-	public Translation2d kLeftRocketShipFar = new Translation2d(
+	final Translation2d kLeftRocketShipFar = new Translation2d(
 			kLeftRocketShipFarX + PhysicalConstants.kRobotLengthInches * 1 + kOffsetX,
 			kLeftRocketShipFarY - PhysicalConstants.kRobotLengthInches * .05 + kOffsetY);
-	public Translation2d kLeftDepot = new Translation2d(
+	final Translation2d kLeftDepot = new Translation2d(
 			kLeftDepotX + PhysicalConstants.kRobotLengthInches * 1.1 + kOffsetX,
 			kLeftDepotY - PhysicalConstants.kRobotLengthInches * .25 + kOffsetY);
-	public Translation2d kLeftRocketShipClose = new Translation2d(
+	final Translation2d kLeftRocketShipClose = new Translation2d(
 			kLeftRocketShipCloseX + PhysicalConstants.kRobotLengthInches * .3 + kOffsetX,
 			kLeftRocketShipCloseY - PhysicalConstants.kRobotLengthInches * .5 + kOffsetY);
 
