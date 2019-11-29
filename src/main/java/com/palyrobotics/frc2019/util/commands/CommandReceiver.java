@@ -53,6 +53,9 @@ public class CommandReceiver implements RobotService {
 		Subparser getRoutine = subparsers.addParser("getRoutine");
 		getRoutine.addArgument("routine_name");
 		getRoutine.addArgument("routine_package");
+		Subparser getEnumValues = subparsers.addParser("getEnumValues");
+		getEnumValues.addArgument("class_name");
+		getEnumValues.addArgument("enum_name");
 		Subparser get = subparsers.addParser("get");
 		get.addArgument("config_name");
 		get.addArgument("config_field").nargs("?"); // "?" means this is optional, and will default to null if not
@@ -153,22 +156,50 @@ public class CommandReceiver implements RobotService {
 	private String handleParsedCommand(Namespace parse) throws ArgumentParserException {
 		String commandName = parse.getString("command");
 		switch (commandName) {
+			case "getEnumValues": {
+				String subsystemName = parse.getString("class_name");
+				String enumName = parse.get("enum_name");
+				try {
+					Class subClass = Class.forName("com.palyrobotics.frc2019.subsystems." + subsystemName);
+					// Field enumVar = subClass.getField(enumName);
+					Class[] classes = subClass.getClasses();
+					for (var i = 0; i < classes.length; i++) {
+						String simpleName = classes[i].getSimpleName();
+						if (simpleName.equals(enumName)) {
+							String enumString = "";
+							for (var x = 0; x < classes[i].getEnumConstants().length; x++) {
+								enumString += classes[x].getEnumConstants()[x].toString() + " ";
+							}
+							return enumString;
+						}
+
+					}
+					// return subClass.getEnumConstants().toString();
+					// return enumVar.toString();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+					return "error";
+				}
+				return "enum not found";
+
+			}
 			case "getRoutine": {
 				String routineName = parse.getString("routine_name");
 				String routinePackage = parse.getString("routine_package");
 
 				File routineFile;
+
 				String test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routinePackage + "/"
 						+ routineName + ".java";
 				routineFile = new File(System.getProperty("user.dir") + test);
 				try {
 					BufferedReader bR = new BufferedReader(new FileReader(routineFile));
 					String line = bR.readLine();
-					String jsonString = "";
 					while (line != null) {
 						if (line.contains("public " + routineName)) {
 							return line;
 						}
+						line = bR.readLine();
 					}
 					return "No Parameters";
 					// return line;
@@ -177,7 +208,7 @@ public class CommandReceiver implements RobotService {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
+				return "error";
 			}
 			case "get":
 			case "set":
