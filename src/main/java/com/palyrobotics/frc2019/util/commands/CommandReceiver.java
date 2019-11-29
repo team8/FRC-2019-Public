@@ -53,6 +53,7 @@ public class CommandReceiver implements RobotService {
 		Subparser getRoutine = subparsers.addParser("getRoutine");
 		getRoutine.addArgument("routine_name");
 		getRoutine.addArgument("routine_package");
+		Subparser getAllRoutines = subparsers.addParser("getAllRoutines");
 		Subparser getEnumValues = subparsers.addParser("getEnumValues");
 		getEnumValues.addArgument("class_name");
 		getEnumValues.addArgument("enum_name");
@@ -161,6 +162,7 @@ public class CommandReceiver implements RobotService {
 				String enumName = parse.get("enum_name");
 				try {
 					Class subClass = Class.forName("com.palyrobotics.frc2019.subsystems." + subsystemName);
+
 					// Field enumVar = subClass.getField(enumName);
 					Class[] classes = subClass.getClasses();
 					for (var i = 0; i < classes.length; i++) {
@@ -209,6 +211,36 @@ public class CommandReceiver implements RobotService {
 					e.printStackTrace();
 				}
 				return "error";
+			}
+			case "getAllRoutines": {
+				File routinesFile = new File(
+						System.getProperty("user.dir") + "/src/main/java/com/palyrobotics/frc2019/behavior/routines/");
+				String allRoutines = "";
+				for (var i = 0; i < routinesFile.listFiles().length; i++) {
+					if (routinesFile.listFiles()[i].toString().contains(".java")) {
+						String[] splitFileName = routinesFile.list()[i].split("\\.");
+						try {
+							allRoutines += (splitFileName[0]) + " ";
+						} catch (ArrayIndexOutOfBoundsException e) {
+							return "index out of bounds";
+						}
+					} else {
+						File subFolder = routinesFile.listFiles()[i];
+						for (var x = 0; x < subFolder.listFiles().length; x++) {
+							if (subFolder.listFiles()[x].toString().contains(".java")) {
+								String[] splitFileName = subFolder.list()[x].split("\\.");
+								try {
+									allRoutines += (splitFileName[0]) + "." + routinesFile.list()[i] + " ";
+								} catch (ArrayIndexOutOfBoundsException e) {
+									return "index out of bounds";
+								}
+
+							}
+						}
+					}
+				}
+				System.out.println(routinesFile.list()[1]);
+				return allRoutines;
 			}
 			case "get":
 			case "set":
