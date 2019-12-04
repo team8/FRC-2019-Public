@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.palyrobotics.frc2019.auto.ParseAutos;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotConfig;
@@ -59,6 +60,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+		ParseAutos pA = new ParseAutos();
+		System.out.println(pA.parseAuto("RoutineTestConfig"));
 		setupSubsystemsAndServices();
 
 		mHardwareUpdater.initHardware();

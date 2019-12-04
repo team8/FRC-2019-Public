@@ -34,6 +34,7 @@ public class Elevator extends Subsystem {
 		mWantedPosition = null;
 		mWantedVelocity = null;
 		mOutput = new SparkMaxOutput();
+
 	}
 
 	/**
