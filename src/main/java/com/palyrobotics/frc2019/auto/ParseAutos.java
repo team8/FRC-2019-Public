@@ -35,6 +35,7 @@ public class ParseAutos {
 		}
 		String getRoutineFunc = "";
 		String routineSetup = "";
+		String routineVars = "";
 		String allRoutinesString = "";
 		String imports = "";
 		imports += "package com.palyrobotics.frc2019.auto.modes;\n" + "\n"
@@ -95,9 +96,9 @@ public class ParseAutos {
 						case "SparkDriveSignal": {
 
 							String[] outputs = valueStringArray[k + 1].split("\\.");
-							routineSetup += "\t\tSparkMaxOutput left" + i + k + " = new SparkMaxOutput(); \n";
+							routineVars += "\t\tSparkMaxOutput left" + i + k + " = new SparkMaxOutput(); \n";
 							routineSetup += "\t\tleft" + i + k + ".setPercentOutput(" + outputs[0] + ");\n";
-							routineSetup += "\t\tSparkMaxOutput right" + i + k + " = new SparkMaxOutput(); \n";
+							routineVars += "\t\tSparkMaxOutput right" + i + k + " = new SparkMaxOutput(); \n";
 							routineSetup += "\t\tright" + i + k + ".setPercentOutput(" + outputs[1] + ");\n";
 							routineParameterString += "new SparkDriveSignal(left" + i + k + ", right" + i + k + ")";
 							imports += "import com.palyrobotics.frc2019.util.SparkDriveSignal;\n"
@@ -110,7 +111,7 @@ public class ParseAutos {
 						case "Path": {
 							String noQuotes = valueStringArray[k + 1].substring(1,
 									valueStringArray[k + 1].length() - 1);
-							routineSetup += "\tList<Path.Waypoint> Path" + i + k + " = new ArrayList<>();\n";
+							routineVars += "\tList<Path.Waypoint> path" + i + k + " = new ArrayList<>();\n";
 							String[] pathSplit = noQuotes.split("\\.");
 							for (var l = 0; l < pathSplit.length; l++) {
 								String[] waypointSplit = pathSplit[l].split("/");
@@ -118,11 +119,11 @@ public class ParseAutos {
 								// StartToCargoShip.add(new Waypoint(
 								// new Translation2d(kHabLineX + PhysicalConstants.kRobotLengthInches +
 								// kOffsetX, 0), kRunSpeed));
-								routineSetup += "\t\tPath" + i + k + ".add(new Path.Waypoint(\n";
+								routineSetup += "\t\tpath" + i + k + ".add(new Path.Waypoint(\n";
 								routineSetup += "\t\t\t\t\t\tnew Translation2d(" + waypointSplit[0] + ", "
 										+ waypointSplit[1] + "), 50));\n";
 							}
-							routineParameterString += "new Path(Path" + i + k + ")";
+							routineParameterString += "new Path(path" + i + k + ")";
 							imports += "import com.palyrobotics.frc2019.util.trajectory.*;\n";
 							imports += "import java.util.ArrayList;\n" + "import java.util.List;\n";
 							if (k < parameters.length - 1) {
@@ -166,7 +167,7 @@ public class ParseAutos {
 			String preStartFunc = "";
 			preStartFunc += "\t@Override\n" + "\tpublic void preStart() {}\n" + "\n";
 
-			getRoutineFunc += "\t@Override\n" + "\tpublic Routine getRoutine() {\n" + routineSetup
+			getRoutineFunc += "\t@Override\n" + "\tpublic Routine getRoutine() {\n" + routineVars + routineSetup
 					+ "\t\treturn new SequentialRoutine(" + allRoutinesString + ");\n" + "\t}\n";
 			String getKeyFunc = "";
 			getKeyFunc += "\t@Override\n" + "\tpublic String getKey() {\n" + "\t\treturn sAlliance.toString();\n"

@@ -28,19 +28,19 @@ public class test1 extends AutoModeBase {
 
 	@Override
 	public Routine getRoutine() {
-		List<Path.Waypoint> Path00 = new ArrayList<>();
-		Path00.add(new Path.Waypoint(new Translation2d(54, 23), 50));
-		Path00.add(new Path.Waypoint(new Translation2d(54, 345), 50));
-		Path00.add(new Path.Waypoint(new Translation2d(59, 345), 50));
+		List<Path.Waypoint> path00 = new ArrayList<>();
 		SparkMaxOutput left11 = new SparkMaxOutput();
-		left11.setPercentOutput(1);
 		SparkMaxOutput right11 = new SparkMaxOutput();
-		right11.setPercentOutput(1);
 		SparkMaxOutput left21 = new SparkMaxOutput();
-		left21.setPercentOutput(1);
 		SparkMaxOutput right21 = new SparkMaxOutput();
+		path00.add(new Path.Waypoint(new Translation2d(54, 23), 50));
+		path00.add(new Path.Waypoint(new Translation2d(54, 345), 50));
+		path00.add(new Path.Waypoint(new Translation2d(59, 345), 50));
+		left11.setPercentOutput(1);
+		right11.setPercentOutput(1);
+		left21.setPercentOutput(1);
 		right21.setPercentOutput(1);
-		return new SequentialRoutine(new DrivePathRoutine(new Path(Path00), false),
+		return new SequentialRoutine(new DrivePathRoutine(new Path(path00), false),
 				new DriveTimeRoutine(0, new SparkDriveSignal(left11, right11)),
 				new DriveTimeRoutine(0, new SparkDriveSignal(left21, right21)),
 				new FingersRoutine(Fingers.FingersState.OPEN), new BBTurnAngleRoutine(0));
