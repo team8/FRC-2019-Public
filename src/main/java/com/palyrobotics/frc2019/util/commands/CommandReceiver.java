@@ -167,10 +167,11 @@ public class CommandReceiver implements RobotService {
 					Class[] classes = subClass.getClasses();
 					for (var i = 0; i < classes.length; i++) {
 						String simpleName = classes[i].getSimpleName();
+						System.out.println(simpleName + enumName);
 						if (simpleName.equals(enumName)) {
 							String enumString = "";
 							for (var x = 0; x < classes[i].getEnumConstants().length; x++) {
-								enumString += classes[x].getEnumConstants()[x].toString() + " ";
+								enumString += classes[i].getEnumConstants()[x].toString() + " ";
 							}
 							return enumString;
 						}

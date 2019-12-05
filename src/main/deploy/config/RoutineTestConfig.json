@@ -1,3 +1,3 @@
 {
-  "sequentialRoutine" : [ [ "DrivePathRoutine.drive", "54/23.54/345.59/345", false ], [ "DriveTimeRoutine.drive", 0, 1.1 ], [ "DriveTimeRoutine.drive", 0, 1.1 ], [ "FingersRoutine.fingers", "EXPELLING" ], [ "BBTurnAngleRoutine.drive", 0 ] ]
+  "sequentialRoutine" : [ [ "DrivePathRoutine.drive", "54/23.54/345.59/345", false ], [ "DriveTimeRoutine.drive", 0, 1.1 ], [ "DriveTimeRoutine.drive", 0, 1.1 ], [ "FingersRoutine.fingers", "OPEN" ], [ "BBTurnAngleRoutine.drive", 0 ] ]
 }
