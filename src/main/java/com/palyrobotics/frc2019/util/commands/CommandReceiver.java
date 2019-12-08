@@ -192,13 +192,12 @@ public class CommandReceiver implements RobotService {
 				System.out.println(routinePackage);
 				File routineFile;
 				String test = "";
-				if(routinePackage.equals("null") == false){
+				if (routinePackage.equals("null") == false) {
 					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routinePackage + "/"
 							+ routineName + ".java";
 
-				}else{
-					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/"
-							+ routineName + ".java";
+				} else {
+					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routineName + ".java";
 				}
 
 				routineFile = new File(System.getProperty("user.dir") + test);

@@ -51,12 +51,11 @@ public class ParseAutos {
 				// return Class.forName(classString.split("\\.")[0]).toString();
 				File routineFile;
 				String test;
-				if(classStringSplit.length > 1){
+				if (classStringSplit.length > 1) {
 					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + classStringSplit[1] + "/"
 							+ classStringSplit[0] + ".java";
-				}else{
-					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/"
-							+ classStringSplit[0] + ".java";
+				} else {
+					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + classStringSplit[0] + ".java";
 				}
 
 				routineFile = new File(System.getProperty("user.dir") + test);
@@ -102,7 +101,8 @@ public class ParseAutos {
 						}
 						case "SparkDriveSignal": {
 
-							String[] outputs = valueStringArray[k + 1].substring(1,valueStringArray[k+1].length()-1).split("/");
+							String[] outputs = valueStringArray[k + 1]
+									.substring(1, valueStringArray[k + 1].length() - 1).split("/");
 							routineVars += "\t\tSparkMaxOutput left" + i + k + " = new SparkMaxOutput(); \n";
 							routineSetup += "\t\tleft" + i + k + ".setPercentOutput(" + outputs[0] + ");\n";
 							routineVars += "\t\tSparkMaxOutput right" + i + k + " = new SparkMaxOutput(); \n";
@@ -150,12 +150,11 @@ public class ParseAutos {
 
 				}
 				allRoutinesString += "new " + classStringSplit[0] + "(" + routineParameterString + ")";
-				if(classStringSplit.length > 1){
+				if (classStringSplit.length > 1) {
 					imports += "import com.palyrobotics.frc2019.behavior.routines." + classStringSplit[1] + "."
 							+ classStringSplit[0] + ";\n";
-				}else{
-					imports += "import com.palyrobotics.frc2019.behavior.routines."
-							+ classStringSplit[0] + ";\n";
+				} else {
+					imports += "import com.palyrobotics.frc2019.behavior.routines." + classStringSplit[0] + ";\n";
 				}
 
 				if (i < seqRoutine.length() - 1) {
