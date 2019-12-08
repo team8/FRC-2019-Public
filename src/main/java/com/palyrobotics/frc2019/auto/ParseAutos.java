@@ -50,8 +50,15 @@ public class ParseAutos {
 				String[] classStringSplit = classString.split("\\.");
 				// return Class.forName(classString.split("\\.")[0]).toString();
 				File routineFile;
-				String test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + classStringSplit[1] + "/"
-						+ classStringSplit[0] + ".java";
+				String test;
+				if(classStringSplit.length > 1){
+					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + classStringSplit[1] + "/"
+							+ classStringSplit[0] + ".java";
+				}else{
+					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/"
+							+ classStringSplit[0] + ".java";
+				}
+
 				routineFile = new File(System.getProperty("user.dir") + test);
 				String parameterLine = "";
 				try {
@@ -95,7 +102,7 @@ public class ParseAutos {
 						}
 						case "SparkDriveSignal": {
 
-							String[] outputs = valueStringArray[k + 1].split("\\.");
+							String[] outputs = valueStringArray[k + 1].substring(1,valueStringArray[k+1].length()-1).split("/");
 							routineVars += "\t\tSparkMaxOutput left" + i + k + " = new SparkMaxOutput(); \n";
 							routineSetup += "\t\tleft" + i + k + ".setPercentOutput(" + outputs[0] + ");\n";
 							routineVars += "\t\tSparkMaxOutput right" + i + k + " = new SparkMaxOutput(); \n";
@@ -121,7 +128,7 @@ public class ParseAutos {
 								// kOffsetX, 0), kRunSpeed));
 								routineSetup += "\t\tpath" + i + k + ".add(new Path.Waypoint(\n";
 								routineSetup += "\t\t\t\t\t\tnew Translation2d(" + waypointSplit[0] + ", "
-										+ waypointSplit[1] + "), 50));\n";
+										+ waypointSplit[1] + "), " + waypointSplit[2] + "));\n";
 							}
 							routineParameterString += "new Path(path" + i + k + ")";
 							imports += "import com.palyrobotics.frc2019.util.trajectory.*;\n";
@@ -143,8 +150,14 @@ public class ParseAutos {
 
 				}
 				allRoutinesString += "new " + classStringSplit[0] + "(" + routineParameterString + ")";
-				imports += "import com.palyrobotics.frc2019.behavior.routines." + classStringSplit[1] + "."
-						+ classStringSplit[0] + ";\n";
+				if(classStringSplit.length > 1){
+					imports += "import com.palyrobotics.frc2019.behavior.routines." + classStringSplit[1] + "."
+							+ classStringSplit[0] + ";\n";
+				}else{
+					imports += "import com.palyrobotics.frc2019.behavior.routines."
+							+ classStringSplit[0] + ";\n";
+				}
+
 				if (i < seqRoutine.length() - 1) {
 					allRoutinesString += ", ";
 				}

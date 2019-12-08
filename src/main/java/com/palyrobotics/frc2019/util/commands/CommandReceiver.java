@@ -189,11 +189,18 @@ public class CommandReceiver implements RobotService {
 			case "getRoutine": {
 				String routineName = parse.getString("routine_name");
 				String routinePackage = parse.getString("routine_package");
-
+				System.out.println(routinePackage);
 				File routineFile;
+				String test = "";
+				if(routinePackage.equals("null") == false){
+					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routinePackage + "/"
+							+ routineName + ".java";
 
-				String test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routinePackage + "/"
-						+ routineName + ".java";
+				}else{
+					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/"
+							+ routineName + ".java";
+				}
+
 				routineFile = new File(System.getProperty("user.dir") + test);
 				try {
 					BufferedReader bR = new BufferedReader(new FileReader(routineFile));
