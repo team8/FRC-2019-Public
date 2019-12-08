@@ -145,6 +145,9 @@ public class ParseAutos {
 								+ valueStringArray[k + 1].substring(1, valueStringArray[k + 1].length() - 1);
 						imports += "import com.palyrobotics.frc2019.subsystems." + parameterSplit[0].split("\\.")[0]
 								+ ";\n";
+						if (k < parameters.length - 1) {
+							routineParameterString += ", ";
+						}
 						continue;
 					}
 
