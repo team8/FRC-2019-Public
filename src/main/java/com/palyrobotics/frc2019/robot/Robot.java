@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		ParseAutos pA = new ParseAutos();
-		System.out.println(pA.parseAuto("RoutineTestConfig"));
+		System.out.println(pA.parseAuto("RoutineTest"));
 		setupSubsystemsAndServices();
 
 		mHardwareUpdater.initHardware();

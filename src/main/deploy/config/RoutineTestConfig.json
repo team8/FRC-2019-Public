@@ -1,3 +1,0 @@
-{
-  "sequentialRoutine" : [ [ "PusherInRoutine.pusher" ], [ "TimeoutRoutine", 0 ], [ "DriveTimeRoutine.drive", 0, "0.522398810855226/1.0" ], [ "BBTurnAngleRoutine.drive", 0 ], [ "BBTurnAngleRoutine.drive", 0 ], [ "PusherOutRoutine.pusher" ], [ "ShooterExpelRoutine.shooter", "IDLE", 15 ] ]
-}

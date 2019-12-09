@@ -292,7 +292,18 @@ public class Configs {
 	}
 
 	private static Path resolveConfigPath(String name) {
-		return CONFIG_FOLDER.resolve(String.format("%s.json", name));
+		Path tempFolder;
+		if (name.contains("Routine")) {
+			tempFolder = (RobotBase.isReal() ? Paths.get(Filesystem.getDeployDirectory().toString(), "jsonAuto")
+					: Paths.get(Filesystem.getOperatingDirectory().toString(), "src", "main", "deploy", "jsonAuto"))
+							.toAbsolutePath();
+		} else {
+			tempFolder = (RobotBase.isReal() ? Paths.get(Filesystem.getDeployDirectory().toString(), "config")
+					: Paths.get(Filesystem.getOperatingDirectory().toString(), "src", "main", "deploy", "config"))
+							.toAbsolutePath();
+		}
+
+		return tempFolder.resolve(String.format("%s.json", name));
 	}
 
 	private static Path getFileForConfig(Class<? extends AbstractConfig> configClass) {

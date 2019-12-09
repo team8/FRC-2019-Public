@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
-import com.palyrobotics.frc2019.config.RoutineTestConfig;
 import com.palyrobotics.frc2019.config.constants.OtherConstants;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.config.subsystem.ShooterConfig;
+import com.palyrobotics.frc2019.jsonAuto.RoutineTest;
+import com.palyrobotics.frc2019.jsonAuto.RoutineTwoConfig;
 import com.palyrobotics.frc2019.util.config.Configs;
 
 public class Shooter extends Subsystem {
@@ -19,7 +20,8 @@ public class Shooter extends Subsystem {
 	}
 
 	private ShooterConfig mConfig = Configs.get(ShooterConfig.class);
-	private RoutineTestConfig testConfig = Configs.get(RoutineTestConfig.class);
+	private RoutineTest testConfig = Configs.get(RoutineTest.class);
+	private RoutineTwoConfig testConfigTwo = Configs.get(RoutineTwoConfig.class);
 	private double mOutput;
 
 	private double mRumbleLength;
@@ -28,6 +30,7 @@ public class Shooter extends Subsystem {
 
 	private double mExpellingCycles;
 	private ArrayList testVar = testConfig.sequentialRoutine;
+	private ArrayList testVarTwo = testConfigTwo.sequentialRoutine;
 
 	public enum ShooterState {
 		SPIN_UP, IDLE

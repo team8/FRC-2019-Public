@@ -53,6 +53,8 @@ public class CommandReceiver implements RobotService {
 		Subparser getRoutine = subparsers.addParser("getRoutine");
 		getRoutine.addArgument("routine_name");
 		getRoutine.addArgument("routine_package");
+		Subparser getClassFromName = subparsers.addParser("getConfigFromName");
+		getClassFromName.addArgument("config_name");
 		Subparser getAllRoutines = subparsers.addParser("getAllRoutines");
 		Subparser getEnumValues = subparsers.addParser("getEnumValues");
 		getEnumValues.addArgument("class_name");
@@ -185,6 +187,12 @@ public class CommandReceiver implements RobotService {
 				}
 				return "enum not found";
 
+			}
+			case "getConfigFromName": {
+				String configName = parse.getString("config_name");
+				Class<? extends AbstractConfig> configClass = Configs.getClassFromName(configName);
+				System.out.println(configClass.toString());
+				return "temp";
 			}
 			case "getRoutine": {
 				String routineName = parse.getString("routine_name");

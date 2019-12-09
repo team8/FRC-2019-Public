@@ -23,4 +23,5 @@ public class PusherConfig extends AbstractSubsystemConfig {
 			kTicksPerInch = 42.0 / (1.0 * Math.PI),
 			kPusherPotSpeedUnitConversion = (1.0 / kTicksPerInch) / OtherConstants.deltaTime, // ticks/20ms -> in/s
 			kPusherPotentiometerTicksPerDegree = 4096.0 / (360.0 * 10.0);
+
 }

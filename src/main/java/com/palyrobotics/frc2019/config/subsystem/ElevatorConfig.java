@@ -17,4 +17,5 @@ public class ElevatorConfig extends AbstractSubsystemConfig {
 	public static final double kElevatorInchesPerRevolution = (kSpoolEffectiveDiameter * Math.PI) * (12.0 / 52.0)
 			* (26.0 / 50.0) * (40.0 / 60.0), // rev → in
 			kElevatorInchesPerMinutePerRpm = kElevatorInchesPerRevolution; // rev/min → in/min
+
 }

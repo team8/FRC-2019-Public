@@ -8,4 +8,5 @@ public class ShooterConfig extends AbstractSubsystemConfig {
 
 	public double expellingMotorVelocity, level3MotorVelocity;
 	public ArrayList test;
+
 }

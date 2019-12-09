@@ -36,4 +36,5 @@ public class IntakeConfig extends AbstractSubsystemConfig {
 																													// →
 																													// deg
 			kArmDegreesPerMinutePerRpm = kArmDegreesPerRevolution; // rev/min → deg/min
+
 }
