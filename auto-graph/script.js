@@ -15,12 +15,15 @@ var wto;
 
 var routines = [];
 
+var onWhich = 0;
 
 var maxSpeed = 120;
 var maxSpeedColor = [0, 255, 0];
 var minSpeed = 0;
 var minSpeedColor = [255, 0, 0];
 var pathFillColor = "rgba(150, 150, 150, 0.5)";
+
+var counter = 0;
 
 class Translation2d {
     constructor(x, y) {
@@ -89,8 +92,9 @@ class Translation2d {
 }
 
 class DrivePathRoutine {
-    constructor(name, isReversed) {
+    constructor(name, paths, isReversed) {
         this.name = name;
+        this.paths = paths;
         this.isReversed = isReversed;
     }
     getName() {
@@ -99,14 +103,23 @@ class DrivePathRoutine {
     getReversed() {
         return this.isReversed;
     }
+    getPaths() {
+        return this.paths;
+    }
+    addPath(newPath) {
+        this.paths.push(newPath);
+    }
+    setPaths(newPaths) {
+        this.paths = newPaths;
+    }
 }
 
 class Waypoint {
-    constructor(position, speed, radius, comment) {
+    constructor(position, speed, comment) {
         this.position = position;
         this.speed = speed;
-        this.radius = radius;
         this.comment = comment;
+        this.radius = 0;
     }
 
     draw() {
@@ -235,7 +248,39 @@ class Arc {
         return new Arc(new Line(a, b), new Line(b, c));
     }
 }
-
+function addDrivePathRoutine() {
+    routines.push(new DrivePathRoutine());
+    var tables = document.getElementById("Routines");
+    var newRow = tables.insertRow();
+    var tableHTML = '<td><table id="' + counter + '">';
+    tableHTML +=`
+        <thead>
+            <tr>
+                <td class='name'><input placeholder='Name' style=\"width: 150px;\"></td>
+                <th>X</th>
+                <th>Y</th>
+                <th>Speed</th>
+                <th>Comments</th>
+                <td><button onclick='$(this).parent().parent().parent().parent().remove();update()'>Delete</button></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td><input placeholder='X'></td>
+                <td><input placeholder='Y'></td>
+                <td><input placeholder='Speed'></td>
+                <td class='comments'><input placeholder='Comments'></td>
+                <td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <td colspan=\"6\"><div><button onclick=\"addPoint(counter)\">Add Waypoint</button></div></td>
+        </tfoot></td>`;
+    newRow.innerHTML = tableHTML;
+    console.log(counter);
+    counter++;
+}
 
 function init() {
     $("#field").css("width", (width / 1.5) + "px");
@@ -282,27 +327,31 @@ function create() {
     f = new Arc(d, e);
 }
 
-function addPoint() {
+function addPoint(counter) {
     var prev;
     if (waypoints.length > 0)
         prev = waypoints[waypoints.length - 1].position;
     else
         prev = new Translation2d(50, 50);
-    $("tbody").append("<tr>"
-        + "<td><input value='" + (prev.x + 70) + "'></td>"
-        + "<td><input value='" + (prev.y + 70) + "'></td>"
-        + "<td><input value='0'></td>"
-        + "<td><input value='60'></td>"
-        + "<td class='comments'><input placeholder='Comments'></td>"
-        + "<td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td></tr>"
-    );
+    //TODO: add prev
+    var input = counter - 1;
+    var tables = document.getElementById(input);
+    console.log(document.getElementById(input));
+    var newRow = tables.insertRow(tables.rows.length - 1);
+    newRow.innerHTML = `
+        <td></td>
+        <td><input placeholder='X'></td>
+        <td><input placeholder='Y'></td>
+        <td><input placeholder='Speed'></td>
+        <td class='comments'><input placeholder='Comments'></td>
+        <td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td>`;
     update();
     $('input').unbind("change paste keyup");
     $('input').bind("change paste keyup", function () {
         console.log("change");
         clearTimeout(wto);
         wto = setTimeout(function () {
-            update();
+            // update();
         }, 500);
     });
 }
@@ -311,29 +360,22 @@ var marker = 0;
 function update() {
     const offsetX = 70;
     const offsetY = 165;
-    waypoints = [];
-
-    $('tbody').children('tr').each(function () {
-        if (Number.isInteger($($($(this).children()).children()[3]).val()) !== undefined) {
-            var x = parseInt($($($(this).children()).children()[0]).val()) + offsetX;
-            console.log(x);
-            var y = parseInt($($($(this).children()).children()[1]).val()) + offsetY;
-            var radius = parseInt($($($(this).children()).children()[2]).val());
-            var speed = parseInt($($($(this).children()).children()[3]).val());
-            if (isNaN(radius) || isNaN(speed)) {
-                radius = 0;
-                speed = 0;
-            }
-            console.log($($($(this).children()).children()[3]).val());
-        } else {
-            routines.add()
+    waypoints = [[]];
+    var i;
+    for (i = 0; i < counter; i++) {
+        var tables = document.getElementById(i);
+        var rowNum = 0;
+        for (rowNum = 0; rowNum < tables.rows.length - 1; rowNum++) {
+            var x = tables.rows[1].cells[1].querySelector('input').value;
+            var y = tables.rows[1].cells[2].querySelector('input').value;
+            var speed = tables.rows[1].cells[3].querySelector('input').value;
+            var comment = tables.rows[1].cells[4].querySelector('input').value;
+            waypoints[i].push(new Waypoint(new Translation2d(parseFloat(x) + offsetX, parseFloat(y) + offsetY), speed, comment));
         }
-        var comment = ($($($(this).children()).children()[4]).val());
-        waypoints.push(new Waypoint(new Translation2d(x, y), speed, radius, comment));
-    });
+    }
+    console.log(waypoints);
     drawPoints();
     drawRobot();
-    console.log(routines)
 }
 
 function drawRobot() {
@@ -378,14 +420,14 @@ function drawPoints() {
         var a = Arc.fromPoints(getPoint(i), getPoint(i + 1), getPoint(i + 2));
         a.fill();
         i++;
-    } while (i < waypoints.length - 2);
+    } while (i < waypoints.length[0] - 2);
     ctx.fill();
     i = 0;
     do {
         var a = Arc.fromPoints(getPoint(i), getPoint(i + 1), getPoint(i + 2));
         a.draw();
         i++;
-    } while (i < waypoints.length - 2);
+    } while (i < waypoints.length[0] - 2);
 
 }
 
@@ -424,7 +466,7 @@ function importData() {
         fr.onload = function (e) {
             var c = fr.result;
 
-            var name = file.name
+            var name = file.name;
 
             // var x = NaN
             // var y = NaN
@@ -512,10 +554,10 @@ function importData() {
                     // }
 
                     // console.log(wp);
+                    //TODO: need fixing
                     $("tbody").append("<tr>"
                         + "<td><input value='" + wp.position.x + "'></td>"
                         + "<td><input value='" + wp.position.y + "'></td>"
-                        + "<td><input value='" + wp.radius + "'></td>"
                         + "<td><input value='" + wp.speed + "'></td>"
                         + "<td class='comments'><input placeholder='Comments' value='" + wp.comment + "'></td>"
                         + "<td><button onclick='$(this).parent().parent().remove();''>Delete</button></td></tr>"

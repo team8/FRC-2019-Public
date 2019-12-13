@@ -32,7 +32,6 @@ public class AutoGrapherTestAutoMode extends AutoModeBase {
 
 	@Override
 	public Routine getRoutine() {
-		// 							spotless test
 		ArrayList<Routine> routines = new ArrayList<>();
 		List<Path.Waypoint> StartToCargoShip = new ArrayList<>();
 		StartToCargoShip.add(new Path.Waypoint(new Translation2d(0, 0), 50));
