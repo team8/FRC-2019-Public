@@ -3,6 +3,10 @@ package com.palyrobotics.frc2019.behavior.routines.drive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.constants.DrivetrainConstants;
@@ -13,12 +17,17 @@ import com.palyrobotics.frc2019.util.trajectory.Path;
 /**
  * Created by Nihar on 4/5/17.
  */
+@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class DrivePathRoutine extends Routine {
 
+	@JsonSerialize
+	@JsonProperty ("path")
 	private Path mPath;
 	private ArrayList<Path.Waypoint> mPathList;
 	private double mLookAhead;
 	private double mStartSpeed;
+	@JsonSerialize
+	@JsonProperty ("inverted")
 	private boolean mInverted;
 	private double mTolerance;
 	private boolean mRelative;

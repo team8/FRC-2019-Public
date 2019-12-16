@@ -1,5 +1,8 @@
 package com.palyrobotics.frc2019.behavior.routines.drive;
 
+import org.codehaus.jackson.annotate.*;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Drive;
@@ -7,6 +10,7 @@ import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 import edu.wpi.first.wpilibj.Timer;
 
+@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class BBTurnAngleRoutine extends Routine {
 
 	@Override
@@ -14,6 +18,8 @@ public class BBTurnAngleRoutine extends Routine {
 		return new Subsystem[] { mDrive };
 	}
 
+	@JsonSerialize
+	@JsonProperty ("angle")
 	private double mAngle;
 
 	private GyroBBState mState = GyroBBState.START;

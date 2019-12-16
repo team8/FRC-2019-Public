@@ -1,13 +1,25 @@
 package com.palyrobotics.frc2019.robot;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Arrays.*;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.codehaus.jackson.Version;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.module.SimpleModule;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.palyrobotics.frc2019.auto.ParseAutos;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
+import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
@@ -17,8 +29,11 @@ import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.commands.CommandReceiver;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import com.palyrobotics.frc2019.util.serializers.PathSerializer;
 import com.palyrobotics.frc2019.util.service.RobotService;
+import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
+import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -60,8 +75,31 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+
 		ParseAutos pA = new ParseAutos();
 		System.out.println(pA.parseAuto("RoutineTest"));
+		ObjectMapper mapper = new ObjectMapper().configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+
+		mapper.enableDefaultTyping();
+		mapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, false);
+		mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+		SimpleModule module = new SimpleModule("bruh", Version.unknownVersion());
+		module.addSerializer(Path.class, new PathSerializer(Path.class));
+		mapper.registerModule(module);
+		// mapper.registerModule(new Parameter);
+		Path path1 = new Path(new ArrayList<Path.Waypoint>(Arrays.asList(
+				new Path.Waypoint(new Translation2d(30, 0), 53), new Path.Waypoint(new Translation2d(50, 0), 0),
+				new Path.Waypoint(new Translation2d(60, 0), 34))));
+		path1.getWayPoints().add(new Path.Waypoint(new Translation2d(45, 21), 21));
+		DrivePathRoutine t = new DrivePathRoutine(path1, false);
+		System.out.println(path1.getWayPoints().get(0).position.getX());
+		try {
+			JSONObject jObject = new JSONObject(mapper.writeValueAsString(t));
+			System.out.println(new JSONObject(jObject.get("path").toString()).getJSONArray("path"));
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
+		}
+
 		setupSubsystemsAndServices();
 
 		mHardwareUpdater.initHardware();
