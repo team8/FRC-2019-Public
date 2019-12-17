@@ -2,7 +2,6 @@ package com.palyrobotics.frc2019.robot;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Arrays.*;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +9,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.palyrobotics.frc2019.auto.modes.CenterStartLeftFrontCargoAutoMode;
-import com.palyrobotics.frc2019.util.deserializers.PathDeserializer;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -31,6 +28,7 @@ import com.palyrobotics.frc2019.subsystems.*;
 import com.palyrobotics.frc2019.util.commands.CommandReceiver;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
+import com.palyrobotics.frc2019.util.deserializers.PathDeserializer;
 import com.palyrobotics.frc2019.util.serializers.PathSerializer;
 import com.palyrobotics.frc2019.util.service.RobotService;
 import com.palyrobotics.frc2019.util.trajectory.Path;
@@ -95,10 +93,8 @@ public class Robot extends TimedRobot {
 		List<Waypoint> path1 = new ArrayList<>();
 		path1.add(new Waypoint(new Translation2d(45, 21), 21));
 		path1.add(new Waypoint(new Translation2d(30, 21), 31));
-		path1.add(new Waypoint(new Translation2d(40,30),40));
+		path1.add(new Waypoint(new Translation2d(40, 30), 40));
 		Path path2 = new Path(path1);
-
-
 
 		DrivePathRoutine t = new DrivePathRoutine(path2, false);
 		System.out.println(path1.get(1).speed + "bruh");
@@ -107,9 +103,10 @@ public class Robot extends TimedRobot {
 			Path y = mapper.readValue(jObject.get("path").toString(), Path.class);
 
 			System.out.println(y.getWayPoints().get(0).speed + "speed");
-			//System.out.println(y.getWayPoints().get(1).speed);
+			// System.out.println(y.getWayPoints().get(1).speed);
 			// System.out.println(new
-			//System.out.println(new JSONObject(jObject.get("path").toString()).getJSONArray("path").toString());
+			// System.out.println(new
+			// JSONObject(jObject.get("path").toString()).getJSONArray("path").toString());
 
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
