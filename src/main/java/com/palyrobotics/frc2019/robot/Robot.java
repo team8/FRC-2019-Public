@@ -10,6 +10,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.palyrobotics.frc2019.auto.modes.CenterStartLeftFrontCargoAutoMode;
+import com.palyrobotics.frc2019.util.deserializers.PathDeserializer;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -32,6 +34,7 @@ import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
 import com.palyrobotics.frc2019.util.serializers.PathSerializer;
 import com.palyrobotics.frc2019.util.service.RobotService;
 import com.palyrobotics.frc2019.util.trajectory.Path;
+import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import com.palyrobotics.frc2019.vision.Limelight;
@@ -85,17 +88,29 @@ public class Robot extends TimedRobot {
 		mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
 		SimpleModule module = new SimpleModule("bruh", Version.unknownVersion());
 		module.addSerializer(Path.class, new PathSerializer(Path.class));
+		module.addDeserializer(Path.class, new PathDeserializer(Path.class));
 		mapper.registerModule(module);
 		// mapper.registerModule(new Parameter);
-		Path path1 = new Path(new ArrayList<Path.Waypoint>(Arrays.asList(
-				new Path.Waypoint(new Translation2d(30, 0), 53), new Path.Waypoint(new Translation2d(50, 0), 0),
-				new Path.Waypoint(new Translation2d(60, 0), 34))));
-		path1.getWayPoints().add(new Path.Waypoint(new Translation2d(45, 21), 21));
-		DrivePathRoutine t = new DrivePathRoutine(path1, false);
-		System.out.println(path1.getWayPoints().get(0).position.getX());
+		// ;
+		List<Waypoint> path1 = new ArrayList<>();
+		path1.add(new Waypoint(new Translation2d(45, 21), 21));
+		path1.add(new Waypoint(new Translation2d(30, 21), 31));
+		path1.add(new Waypoint(new Translation2d(40,30),40));
+		Path path2 = new Path(path1);
+
+
+
+		DrivePathRoutine t = new DrivePathRoutine(path2, false);
+		System.out.println(path1.get(1).speed + "bruh");
 		try {
 			JSONObject jObject = new JSONObject(mapper.writeValueAsString(t));
-			System.out.println(new JSONObject(jObject.get("path").toString()).getJSONArray("path"));
+			Path y = mapper.readValue(jObject.get("path").toString(), Path.class);
+
+			System.out.println(y.getWayPoints().get(0).speed + "speed");
+			//System.out.println(y.getWayPoints().get(1).speed);
+			// System.out.println(new
+			//System.out.println(new JSONObject(jObject.get("path").toString()).getJSONArray("path").toString());
+
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
