@@ -45,6 +45,15 @@ public class DrivePathRoutine extends Routine {
 		mRelative = false;
 	}
 
+	public DrivePathRoutine(String name, Path path, boolean inverted){
+		mPath = path;
+		mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
+		mStartSpeed = 0.0;
+		mInverted = inverted;
+		mTolerance = DrivetrainConstants.kPathFollowingTolerance;
+		mRelative = false;
+	}
+
 	/**
 	 * @param path      the path to follow
 	 * @param lookAhead the lookahead distance desired

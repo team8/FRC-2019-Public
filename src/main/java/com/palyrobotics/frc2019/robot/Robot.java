@@ -9,16 +9,22 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.palyrobotics.frc2019.behavior.Routine;
+import com.palyrobotics.frc2019.behavior.SequentialRoutine;
+import com.palyrobotics.frc2019.behavior.routines.drive.DriveTimeRoutine;
+import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.jsontype.NamedType;
 import org.codehaus.jackson.map.module.SimpleModule;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.palyrobotics.frc2019.auto.ParseAutos;
+//import com.palyrobotics.frc2019.auto.ParseAutos;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
-import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
+import com.palyrobotics.frc2019.behavior.routines.drive.BBTurnAngleRoutine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
@@ -77,8 +83,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 
-		ParseAutos pA = new ParseAutos();
-		System.out.println(pA.parseAuto("RoutineTest"));
+//		ParseAutos pA = new ParseAutos();
+//		System.out.println(pA.parseAuto("RoutineTest"));
 		ObjectMapper mapper = new ObjectMapper().configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
 
 		mapper.enableDefaultTyping();
@@ -88,6 +94,8 @@ public class Robot extends TimedRobot {
 		module.addSerializer(Path.class, new PathSerializer(Path.class));
 		module.addDeserializer(Path.class, new PathDeserializer(Path.class));
 		mapper.registerModule(module);
+		mapper.registerSubtypes(new NamedType(BBTurnAngleRoutine.class, "BBTurnAngleRoutine"));
+		mapper.registerSubtypes(new NamedType(ElevatorCustomPositioningRoutine.class, "ElevatorCustomPositioningRoutine"));
 		// mapper.registerModule(new Parameter);
 		// ;
 		List<Waypoint> path1 = new ArrayList<>();
@@ -96,13 +104,17 @@ public class Robot extends TimedRobot {
 		path1.add(new Waypoint(new Translation2d(40, 30), 40));
 		Path path2 = new Path(path1);
 
-		DrivePathRoutine t = new DrivePathRoutine(path2, false);
+		BBTurnAngleRoutine t = new BBTurnAngleRoutine(51);
+        ElevatorCustomPositioningRoutine f = new ElevatorCustomPositioningRoutine(50,50);
+		ShooterExpelRoutine i = new ShooterExpelRoutine(Shooter.ShooterState.IDLE, 0);
+        SequentialRoutine g = new SequentialRoutine(t,f,i);
 		System.out.println(path1.get(1).speed + "bruh");
 		try {
-			JSONObject jObject = new JSONObject(mapper.writeValueAsString(t));
-			Path y = mapper.readValue(jObject.get("path").toString(), Path.class);
-
-			System.out.println(y.getWayPoints().get(0).speed + "speed");
+			JSONObject jObject = new JSONObject(mapper.writeValueAsString(g));
+			System.out.println(jObject);
+			//BBTurnAngleRoutine y = mapper.readValue(jObject.toString(), BBTurnAngleRoutine.class);
+			Routine h = mapper.readValue(jObject.toString(), Routine.class);
+			System.out.println(h.getClass());
 			// System.out.println(y.getWayPoints().get(1).speed);
 			// System.out.println(new
 			// System.out.println(new

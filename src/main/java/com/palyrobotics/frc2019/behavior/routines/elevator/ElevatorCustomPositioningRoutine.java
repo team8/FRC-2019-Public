@@ -6,13 +6,25 @@ import com.palyrobotics.frc2019.subsystems.Elevator;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 import edu.wpi.first.wpilibj.Timer;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ElevatorCustomPositioningRoutine extends Routine {
-
-	private double mPosition, mTimeout, mStartTime;
+	@JsonSerialize
+	@JsonProperty("position")
+	private double mPosition;
+	@JsonSerialize
+	@JsonProperty("timeout")
+	private double mTimeout;
+	private double mStartTime;
 	private boolean mHasSetAllCommands;
 
-	public ElevatorCustomPositioningRoutine(double position, double timeout) {
+
+	@JsonCreator
+	public ElevatorCustomPositioningRoutine(@JsonProperty("position")double position, @JsonProperty("double timeout")double timeout) {
 		mPosition = position;
 		mTimeout = timeout;
 	}

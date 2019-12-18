@@ -6,15 +6,24 @@ import com.palyrobotics.frc2019.subsystems.Shooter;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
 
 import edu.wpi.first.wpilibj.Timer;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * @author Jason, Alan
+ * literally why is this in italics ALA:b:
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ShooterExpelRoutine extends Routine {
-
+	@JsonSerialize
+	@JsonProperty("wantedShooterState")
 	private Shooter.ShooterState mWantedShooterState;
 
 	// How long the wheels spin for (seconds)
+	@JsonSerialize
+	@JsonProperty("timeout")
 	private double mTimeout;
 
 	private double mStartTime;
@@ -22,8 +31,10 @@ public class ShooterExpelRoutine extends Routine {
 	/**
 	 * @param wantedShooterState the desired state
 	 * @param timeout            how long (seconds) to run for
+	 *                           ok boomer
 	 */
-	public ShooterExpelRoutine(Shooter.ShooterState wantedShooterState, double timeout) {
+	@JsonCreator
+	public ShooterExpelRoutine(@JsonProperty("wantedShooterState")Shooter.ShooterState wantedShooterState, @JsonProperty("timeout")double timeout) {
 		mWantedShooterState = wantedShooterState;
 		mTimeout = timeout;
 	}
