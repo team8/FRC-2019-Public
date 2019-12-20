@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.TypeSerializer;
 import org.codehaus.jackson.map.ser.SerializerBase;
 
 import com.palyrobotics.frc2019.util.trajectory.Path;
@@ -21,8 +22,9 @@ public class PathSerializer extends SerializerBase<Path> {
 	@Override
 	public void serialize(Path value, JsonGenerator jgen, SerializerProvider provider)
 			throws IOException, JsonProcessingException {
-		jgen.writeStartObject();
-		jgen.writeFieldName("path");
+		// jgen.writeStartObject();
+
+		// jgen.writeFieldName("path");
 		jgen.writeStartArray();
 		for (var i = 0; i < value.getWayPoints().size(); i++) {
 			jgen.writeStartObject();
@@ -48,13 +50,21 @@ public class PathSerializer extends SerializerBase<Path> {
 		}
 		jgen.writeEndArray();
 
-		jgen.writeEndObject();
+		// jgen.writeEndObject();
 
 	}
 
 	@Override
+	public void serializeWithType(Path value, JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer)
+			throws IOException, JsonProcessingException {
+		typeSer.writeTypePrefixForScalar(value, jgen);
+		serialize(value, jgen, provider);
+		typeSer.writeTypeSuffixForScalar(value, jgen);
+	}
+
+	@Override
 	public JsonNode getSchema(SerializerProvider provider, Type typeHint) throws JsonMappingException {
-		return createSchemaNode("string", true);
+		return createSchemaNode("array", true);
 	}
 
 }

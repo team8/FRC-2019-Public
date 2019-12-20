@@ -30,7 +30,7 @@ public class BBTurnAngleRoutine extends Routine {
 	}
 
 	@JsonCreator
-	public BBTurnAngleRoutine(@JsonProperty("angle")double angle) {
+	public BBTurnAngleRoutine(@JsonProperty ("angle") double angle) {
 		mAngle = angle;
 	}
 

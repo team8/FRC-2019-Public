@@ -1,13 +1,15 @@
 package com.palyrobotics.frc2019.behavior;
 
-import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
-import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import com.palyrobotics.frc2019.behavior.routines.drive.BBTurnAngleRoutine;
 import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
+import com.palyrobotics.frc2019.behavior.routines.drive.DriveTimeRoutine;
+import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
+import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.subsystems.*;
@@ -18,18 +20,19 @@ import com.palyrobotics.frc2019.subsystems.*;
  * Each routine takes in Commands and returns modified set points Requires the
  * specific subsystems
  *
- * @author Nihar; Team 254 - stop baiting mate
- * aight chill finna change this class for json
+ * @author Nihar; Team 254 - stop baiting mate aight chill finna change this
+ *         class for json
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes({
-		@JsonSubTypes.Type(value = BBTurnAngleRoutine.class, name = "BBTurnAngleRoutine"),
+@JsonPropertyOrder ({ "@type" })
+@JsonIgnoreProperties (ignoreUnknown = true)
+@JsonTypeInfo (use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes ({ @JsonSubTypes.Type (value = BBTurnAngleRoutine.class, name = "BBTurnAngleRoutine"),
 
-		@JsonSubTypes.Type(value = ElevatorCustomPositioningRoutine.class, name = "ElevatorCustomPositioningRoutine"),
-		@JsonSubTypes.Type(value = SequentialRoutine.class, name = "SequentialRoutine"),
-		@JsonSubTypes.Type(value = ShooterExpelRoutine.class, name = "ShooterExpelRoutine.java")}
-
+		@JsonSubTypes.Type (value = ElevatorCustomPositioningRoutine.class, name = "ElevatorCustomPositioningRoutine"),
+		@JsonSubTypes.Type (value = SequentialRoutine.class, name = "SequentialRoutine"),
+		@JsonSubTypes.Type (value = ShooterExpelRoutine.class, name = "ShooterExpelRoutine"),
+		@JsonSubTypes.Type (value = DriveTimeRoutine.class, name = "DriveTimeRoutine"),
+		@JsonSubTypes.Type (value = DrivePathRoutine.class, name = "DrivePathRoutine") }
 
 )
 public abstract class Routine {
@@ -66,6 +69,5 @@ public abstract class Routine {
 	public String toString() {
 		return getName();
 	}
-
 
 }

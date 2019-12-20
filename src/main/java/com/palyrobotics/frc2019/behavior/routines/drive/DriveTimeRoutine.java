@@ -1,5 +1,11 @@
 package com.palyrobotics.frc2019.behavior.routines.drive;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Drive;
@@ -8,9 +14,15 @@ import com.palyrobotics.frc2019.util.SparkDriveSignal;
 
 import edu.wpi.first.wpilibj.Timer;
 
+@JsonPropertyOrder ({ "time", "drivePower" })
+@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class DriveTimeRoutine extends Routine {
 
+	@JsonSerialize
+	@JsonProperty ("time")
 	private long mEndTime;
+	@JsonSerialize
+	@JsonProperty ("drivePower")
 	private SparkDriveSignal mDrivePower;
 
 	/**
@@ -19,7 +31,8 @@ public class DriveTimeRoutine extends Routine {
 	 * @param time       How long to drive (seconds)
 	 * @param drivePower LegacyDrive signal to output (left/right speeds -1 to 1)
 	 */
-	public DriveTimeRoutine(double time, SparkDriveSignal drivePower) {
+	@JsonCreator
+	public DriveTimeRoutine(@JsonProperty ("time") double time, @JsonProperty ("drivePower") SparkDriveSignal drivePower) {
 		// Keeps the offset prepared, when routine starts, will add FPGA timestamp
 		mEndTime = (long) (1000 * time);
 		mDrivePower = drivePower;

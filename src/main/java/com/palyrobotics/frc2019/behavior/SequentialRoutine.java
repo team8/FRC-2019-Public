@@ -3,29 +3,31 @@ package com.palyrobotics.frc2019.behavior;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.subsystems.Subsystem;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.subsystems.Subsystem;
+
 /**
- * Created by Nihar on 12/27/16.
- * woah big brain Nihar, edited by Vedanth on 12/18/19 for UI stuffs
+ * Created by Nihar on 12/27/16. woah big brain Nihar, edited by Vedanth on
+ * 12/18/19 for UI stuffs
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-//@JsonTypeInfo(include= JsonTypeInfo.As.WRAPPER_OBJECT, use= JsonTypeInfo.Id.NAME)
+@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+// @JsonTypeInfo(include= JsonTypeInfo.As.WRAPPER_OBJECT, use=
+// JsonTypeInfo.Id.NAME)
 public class SequentialRoutine extends Routine {
+
 	@JsonSerialize
-	@JsonProperty("routines")
+	@JsonProperty ("routines")
 	private final ArrayList<Routine> mRoutines;
 	private int mRunningRoutineIndex;
 	private boolean mIsDone;
 
 	@JsonCreator
-	public SequentialRoutine(@JsonProperty("routine")ArrayList<Routine> routines) {
+	public SequentialRoutine(@JsonProperty ("routine") ArrayList<Routine> routines) {
 		mRoutines = routines;
 	}
 

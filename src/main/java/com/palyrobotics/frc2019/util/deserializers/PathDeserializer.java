@@ -9,7 +9,6 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.deser.StdDeserializer;
-import org.json.JSONArray;
 
 import com.palyrobotics.frc2019.util.trajectory.Path;
 import com.palyrobotics.frc2019.util.trajectory.Translation2d;
@@ -22,9 +21,6 @@ public class PathDeserializer extends StdDeserializer<Path> {
 
 	@Override
 	public Path deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-
-		// pathList.add(new Path.Waypoint(new Translation2d(0,0),0));
-		JSONArray pathArray = new JSONArray();
 
 		JsonToken temp = jp.nextValue();
 		String jsonString = "";
@@ -47,7 +43,6 @@ public class PathDeserializer extends StdDeserializer<Path> {
 		for (var i = 0; i < waypointNum + 1; i++) {
 			pathList.add(i, new Path.Waypoint(new Translation2d(0, 0), 0));
 		}
-		// pathList.set(0, new Path.Waypoint(new Translation2d(50,0),0));
 		System.out.println(jsonString);
 		String[] jsonSplit = jsonString.split("#");
 		int currentWaypoint = 0;
@@ -78,32 +73,6 @@ public class PathDeserializer extends StdDeserializer<Path> {
 								pathList.get(currentWaypoint).position.getY()), targetSpeed));
 			}
 		}
-
-		// for(var i = 0;i < jp.getTextLength();i++){
-		// jp.nextValue();
-		//
-		//
-		//
-		// //System.out.println(jp.getTextCharacters());
-		// }
-		// jp.nextValue();
-		// System.out.println(jp.getTextCharacters());
-		// jp.nextValue();
-		// System.out.println(jp.getTextCharacters());
-		// jp.nextValue();
-		// System.out.println(jp.getTextCharacters());
-		// jp.nextValue();
-		// System.out.println(jp.getTextCharacters());
-		// jp.nextValue();
-		// System.out.println(jp.getTextCharacters());
-		// JsonToken temp = ctxt.getParser().nextValue();
-		// while(temp != null){
-		// System.out.println(jp.getTextCharacters());
-		// temp = ctxt.getParser().nextValue();
-		//
-		//
-		//
-		// }
 		return new Path(pathList);
 	}
 }

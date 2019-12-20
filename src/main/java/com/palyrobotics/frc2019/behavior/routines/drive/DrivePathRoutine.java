@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -36,7 +37,8 @@ public class DrivePathRoutine extends Routine {
 	 * @param path     Path to follow
 	 * @param inverted Whether or not to drive backwards
 	 */
-	public DrivePathRoutine(Path path, boolean inverted) {
+	@JsonCreator
+	public DrivePathRoutine(@JsonProperty ("path") Path path, @JsonProperty ("inverted") boolean inverted) {
 		mPath = path;
 		mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
 		mStartSpeed = 0.0;
@@ -45,7 +47,7 @@ public class DrivePathRoutine extends Routine {
 		mRelative = false;
 	}
 
-	public DrivePathRoutine(String name, Path path, boolean inverted){
+	public DrivePathRoutine(String name, Path path, boolean inverted) {
 		mPath = path;
 		mLookAhead = DrivetrainConstants.kPathFollowingLookahead;
 		mStartSpeed = 0.0;
