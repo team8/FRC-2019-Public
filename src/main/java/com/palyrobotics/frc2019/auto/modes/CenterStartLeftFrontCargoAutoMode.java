@@ -30,6 +30,10 @@ public class CenterStartLeftFrontCargoAutoMode extends AutoModeBase {
 			- (sDistances.cargoLeftY + sDistances.cargoOffsetY);
 	public static double kHabLineX = PhysicalConstants.kUpperPlatformLength + PhysicalConstants.kLowerPlatformLength;
 
+	public CenterStartLeftFrontCargoAutoMode() {
+
+	}
+
 	@Override
 	public String toString() {
 		return sAlliance + this.getClass().toString();

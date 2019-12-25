@@ -26,11 +26,11 @@ public class test1 extends AutoModeBase {
 		List<Path.Waypoint> path00 = new ArrayList<>();
 		List<Path.Waypoint> path10 = new ArrayList<>();
 		List<Path.Waypoint> path40 = new ArrayList<>();
-		path00.add(new Path.Waypoint(new Translation2d(0, 0), 0));
-		path10.add(new Path.Waypoint(new Translation2d(0, 0), 0));
-		path40.add(new Path.Waypoint(new Translation2d(0, 0), 0));
+		path00.add(new Path.Waypoint(new Translation2d(51, 0), 0));
+		path10.add(new Path.Waypoint(new Translation2d(0, 0), 33));
+		path40.add(new Path.Waypoint(new Translation2d(0, 56), 0));
 		return new SequentialRoutine(new DrivePathRoutine(new Path(path00), false),
-				new DrivePathRoutine(new Path(path10), false), new BBTurnAngleRoutine(0), new BBTurnAngleRoutine(0),
+				new DrivePathRoutine(new Path(path10), false), new BBTurnAngleRoutine(36), new BBTurnAngleRoutine(369),
 				new DrivePathRoutine(new Path(path40), false));
 	}
 

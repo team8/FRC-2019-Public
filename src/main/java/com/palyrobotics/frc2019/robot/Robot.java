@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.module.SimpleModule;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.palyrobotics.frc2019.auto.AutoModeSelector;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
@@ -122,10 +123,11 @@ public class Robot extends TimedRobot {
 		leftSO.setPercentOutput(0.6);
 		DriveTimeRoutine l = new DriveTimeRoutine(100, new SparkDriveSignal(leftSO, sO));
 		SequentialRoutine g = new SequentialRoutine(t, f, i, l, m);
+		Routine routineRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(0).getRoutine();
 		System.out.println(path1.get(1).speed + "bruh");
 		try {
-			JSONObject jObject = new JSONObject(mapper.writeValueAsString(g));
-			System.out.println(jObject);
+			JSONObject jObject = new JSONObject(mapper.writeValueAsString(routineRoutine));
+			System.out.println(AutoModeSelector.getInstance().getAutoModeByIndex(0).getClass().getSimpleName());
 			// BBTurnAngleRoutine y = mapper.readValue(jObject.toString(),
 			// BBTurnAngleRoutine.class);
 			Routine h = mapper.readValue(jObject.getJSONArray("routines").get(0).toString(), Routine.class);
