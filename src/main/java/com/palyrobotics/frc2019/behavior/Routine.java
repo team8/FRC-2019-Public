@@ -26,13 +26,14 @@ import com.palyrobotics.frc2019.subsystems.*;
 @JsonPropertyOrder ({ "@type" })
 @JsonIgnoreProperties (ignoreUnknown = true)
 @JsonTypeInfo (use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes ({ @JsonSubTypes.Type (value = BBTurnAngleRoutine.class, name = "BBTurnAngleRoutine"),
+@JsonSubTypes ({ @JsonSubTypes.Type (value = BBTurnAngleRoutine.class, name = "drive.BBTurnAngleRoutine"),
 
-		@JsonSubTypes.Type (value = ElevatorCustomPositioningRoutine.class, name = "ElevatorCustomPositioningRoutine"),
+		@JsonSubTypes.Type (value = ElevatorCustomPositioningRoutine.class, name = "elevator.ElevatorCustomPositioningRoutine"),
 		@JsonSubTypes.Type (value = SequentialRoutine.class, name = "SequentialRoutine"),
-		@JsonSubTypes.Type (value = ShooterExpelRoutine.class, name = "ShooterExpelRoutine"),
-		@JsonSubTypes.Type (value = DriveTimeRoutine.class, name = "DriveTimeRoutine"),
-		@JsonSubTypes.Type (value = DrivePathRoutine.class, name = "DrivePathRoutine") }
+		@JsonSubTypes.Type (value = ShooterExpelRoutine.class, name = "shooter.ShooterExpelRoutine"),
+		@JsonSubTypes.Type (value = DriveTimeRoutine.class, name = "drive.DriveTimeRoutine"),
+		@JsonSubTypes.Type (value = DrivePathRoutine.class, name = "drive.DrivePathRoutine"),
+        @JsonSubTypes.Type (value = ParallelRoutine.class, name = "ParallelRoutine"),}
 
 )
 public abstract class Routine {

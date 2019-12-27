@@ -1,19 +1,33 @@
 package com.palyrobotics.frc2019.util.commands;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.palyrobotics.frc2019.auto.AutoModeSelector;
+import com.palyrobotics.frc2019.behavior.Routine;
+import com.palyrobotics.frc2019.util.SparkDriveSignal;
+import com.palyrobotics.frc2019.util.deserializers.PathDeserializer;
+import com.palyrobotics.frc2019.util.deserializers.SparkDriveSignalDeserializer;
+import com.palyrobotics.frc2019.util.serializers.PathSerializer;
+import com.palyrobotics.frc2019.util.serializers.SparkDriveSignalSerializer;
+import com.palyrobotics.frc2019.util.trajectory.Path;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.Version;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.module.SimpleModule;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +59,11 @@ public class CommandReceiver implements RobotService {
 		set.addArgument("config_name");
 		set.addArgument("config_field");
 		set.addArgument("config_value");
+		Subparser getAuto = subparsers.addParser("getAuto");
+		getAuto.addArgument("auto_index");
+		Subparser getAutoCount = subparsers.addParser("getAutoCount");
+		Subparser getAutoName = subparsers.addParser("getAutoName");
+		getAutoName.addArgument("auto_index");
 		Subparser editArray = subparsers.addParser("editArray");
 		editArray.addArgument("config_name");
 		editArray.addArgument("config_field");
@@ -194,38 +213,72 @@ public class CommandReceiver implements RobotService {
 				System.out.println(configClass.toString());
 				return "temp";
 			}
+			case "getAuto": {
+
+				String autoIndex = parse.getString("auto_index");
+				int autoIndexInt = Integer.parseInt(autoIndex);
+
+				ObjectMapper mapper = new ObjectMapper().configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+
+				mapper.enableDefaultTyping();
+				mapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, false);
+				mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+				SimpleModule module = new SimpleModule("routineSerialization", Version.unknownVersion());
+				module.addSerializer(Path.class, new PathSerializer(Path.class));
+				module.addSerializer(SparkDriveSignal.class, new SparkDriveSignalSerializer(SparkDriveSignal.class));
+				mapper.registerModule(module);
+				Routine autoRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(autoIndexInt).getRoutine();
+				try{
+					return mapper.writeValueAsString(autoRoutine);
+				}catch(IOException e ){
+					return "cannot parse this routine";
+				}
+
+
+			}
 			case "getRoutine": {
 				String routineName = parse.getString("routine_name");
 				String routinePackage = parse.getString("routine_package");
-				System.out.println(routinePackage);
-				File routineFile;
-				String test = "";
-				if (routinePackage.equals("null") == false) {
-					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routinePackage + "/"
-							+ routineName + ".java";
-
-				} else {
-					test = "/src/main/java/com/palyrobotics/frc2019/behavior/routines/" + routineName + ".java";
-				}
-
-				routineFile = new File(System.getProperty("user.dir") + test);
-				try {
-					BufferedReader bR = new BufferedReader(new FileReader(routineFile));
-					String line = bR.readLine();
-					while (line != null) {
-						if (line.contains("public " + routineName)) {
-							return line;
-						}
-						line = bR.readLine();
+				try{
+					Class aClass;
+					if(routinePackage != "null"){
+						aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
+					}else{
+						aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routineName);
 					}
-					return "No Parameters";
-					// return line;
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+
+					String paramTypes = "";
+					int constructorIndex = -1;
+					for(var j = 0;j < aClass.getConstructors().length;j++){
+						if(aClass.getConstructors()[j].getDeclaredAnnotations().length > 0){
+							Annotation annot = aClass.getConstructors()[j].getAnnotation(JsonCreator.class);
+							if(annot instanceof JsonCreator){
+								constructorIndex = j;
+							}
+						}
+					}
+					if(constructorIndex != -1){
+						for(var i = 0;i < aClass.getConstructors()[constructorIndex].getParameterTypes().length;i++){
+							paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i].getSimpleName() + ",";
+
+						}
+						return paramTypes;
+					}else{
+						return "constructor not found";
+					}
+
+				}catch (ClassNotFoundException e){
+					return "e";
 				}
-				return "error";
+
+
+			}
+			case "getAutoCount": {
+				return Integer.toString(AutoModeSelector.getInstance().getAutoModeList().size());
+			}
+			case "getAutoName": {
+				String autoIndex = parse.getString("auto_index");
+				return (AutoModeSelector.getInstance().getAutoModeByIndex(Integer.parseInt(autoIndex)).getClass().getSimpleName());
 			}
 			case "getAllRoutines": {
 				File routinesFile = new File(

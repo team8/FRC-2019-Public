@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.palyrobotics.frc2019.behavior.ParallelRoutine;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -122,16 +123,16 @@ public class Robot extends TimedRobot {
 		sO.setPercentOutput(0.1);
 		leftSO.setPercentOutput(0.6);
 		DriveTimeRoutine l = new DriveTimeRoutine(100, new SparkDriveSignal(leftSO, sO));
-		SequentialRoutine g = new SequentialRoutine(t, f, i, l, m);
+		ParallelRoutine g = new ParallelRoutine(t, f, i, l, m);
+		SequentialRoutine nm = new SequentialRoutine(g,t,f);
 		Routine routineRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(0).getRoutine();
 		System.out.println(path1.get(1).speed + "bruh");
 		try {
-			JSONObject jObject = new JSONObject(mapper.writeValueAsString(routineRoutine));
-			System.out.println(AutoModeSelector.getInstance().getAutoModeByIndex(0).getClass().getSimpleName());
+			JSONObject jObject = new JSONObject(mapper.writeValueAsString(nm));
+			System.out.println(jObject.toString());
 			// BBTurnAngleRoutine y = mapper.readValue(jObject.toString(),
 			// BBTurnAngleRoutine.class);
-			Routine h = mapper.readValue(jObject.getJSONArray("routines").get(0).toString(), Routine.class);
-			h.getRequiredSubsystems();
+
 			// System.out.println(y.getWayPoints().get(1).speed);
 			// System.out.println(new
 			// System.out.println(new

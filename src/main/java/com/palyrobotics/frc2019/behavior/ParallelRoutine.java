@@ -5,18 +5,26 @@ import java.util.Arrays;
 
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.subsystems.Subsystem;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Created by Nihar on 12/27/16.
+ * Created by Nihar on 12/27/16. Bro thats a grind, im editing this exactly 3 years later 12/27/19, Vedanth
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ParallelRoutine extends Routine {
 
+	@JsonSerialize
+	@JsonProperty("routines")
 	private ArrayList<Routine> mRoutines;
 
 	/**
 	 * Runs all routines at the same time. Finishes when all routines finish.
 	 */
-	public ParallelRoutine(ArrayList<Routine> routines) {
+	@JsonCreator
+	public ParallelRoutine(@JsonProperty ("routine") ArrayList<Routine> routines) {
 		mRoutines = routines;
 	}
 
