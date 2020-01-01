@@ -37,9 +37,11 @@ public class test1 extends AutoModeBase {
 		right.setPercentOutput(0.6);
 		SparkMaxOutput left = new SparkMaxOutput();
 		left.setPercentOutput(0.6);
-		return new SequentialRoutine(new ParallelRoutine(new DrivePathRoutine(new Path(path00), false),
-				new DrivePathRoutine(new Path(path10), false)), new BBTurnAngleRoutine(36), new BBTurnAngleRoutine(369),
-				new DrivePathRoutine(new Path(path40), false), new DriveTimeRoutine(100, new SparkDriveSignal(left,right)));
+		return new SequentialRoutine(
+				new ParallelRoutine(new DrivePathRoutine(new Path(path00), false),
+						new DrivePathRoutine(new Path(path10), false)),
+				new BBTurnAngleRoutine(36), new BBTurnAngleRoutine(369), new DrivePathRoutine(new Path(path40), false),
+				new DriveTimeRoutine(100, new SparkDriveSignal(left, right)));
 	}
 
 	@Override

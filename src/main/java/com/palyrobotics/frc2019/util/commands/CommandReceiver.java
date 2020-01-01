@@ -8,22 +8,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.palyrobotics.frc2019.auto.AutoModeSelector;
-import com.palyrobotics.frc2019.behavior.Routine;
-import com.palyrobotics.frc2019.util.SparkDriveSignal;
-import com.palyrobotics.frc2019.util.deserializers.PathDeserializer;
-import com.palyrobotics.frc2019.util.deserializers.SparkDriveSignalDeserializer;
-import com.palyrobotics.frc2019.util.serializers.PathSerializer;
-import com.palyrobotics.frc2019.util.serializers.SparkDriveSignalSerializer;
-import com.palyrobotics.frc2019.util.trajectory.Path;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.Version;
+import org.codehaus.jackson.*;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -35,13 +26,20 @@ import org.json.JSONObject;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.palyrobotics.frc2019.auto.AutoModeSelector;
+import com.palyrobotics.frc2019.auto.DeserializeAutos;
+import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorMeasureSpeedAtOutputRoutine;
 import com.palyrobotics.frc2019.config.subsystem.ElevatorConfig;
 import com.palyrobotics.frc2019.robot.HardwareAdapter;
+import com.palyrobotics.frc2019.util.SparkDriveSignal;
 import com.palyrobotics.frc2019.util.config.AbstractConfig;
 import com.palyrobotics.frc2019.util.config.Configs;
+import com.palyrobotics.frc2019.util.serializers.PathSerializer;
+import com.palyrobotics.frc2019.util.serializers.SparkDriveSignalSerializer;
 import com.palyrobotics.frc2019.util.service.RobotService;
+import com.palyrobotics.frc2019.util.trajectory.Path;
 
 public class CommandReceiver implements RobotService {
 
@@ -61,6 +59,8 @@ public class CommandReceiver implements RobotService {
 		set.addArgument("config_value");
 		Subparser getAuto = subparsers.addParser("getAuto");
 		getAuto.addArgument("auto_index");
+		Subparser deserializeAuto = subparsers.addParser("deserializeAuto");
+		deserializeAuto.addArgument("auto_string");
 		Subparser getAutoCount = subparsers.addParser("getAutoCount");
 		Subparser getAutoName = subparsers.addParser("getAutoName");
 		getAutoName.addArgument("auto_index");
@@ -207,6 +207,19 @@ public class CommandReceiver implements RobotService {
 				return "enum not found";
 
 			}
+			case "deserializeAuto": {
+				String autoString = parse.getString("auto_string");
+				ObjectMapper mapper = new ObjectMapper();
+				try {
+					JsonNode node = mapper.readTree(autoString);
+					DeserializeAutos.getInstance().deserialize("test1", node);
+					return "success";
+				} catch (IOException | JSONException e) {
+					e.printStackTrace();
+					return "failure";
+				}
+
+			}
 			case "getConfigFromName": {
 				String configName = parse.getString("config_name");
 				Class<? extends AbstractConfig> configClass = Configs.getClassFromName(configName);
@@ -229,49 +242,51 @@ public class CommandReceiver implements RobotService {
 				mapper.registerModule(module);
 				Routine autoRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(autoIndexInt).getRoutine();
 				System.out.println(autoRoutine);
-				try{
+				try {
 					return mapper.writeValueAsString(autoRoutine);
-				}catch(IOException e ){
+				} catch (IOException e) {
 					return "cannot parse this routine";
 				}
-
 
 			}
 			case "getRoutine": {
 				String routineName = parse.getString("routine_name");
 				String routinePackage = parse.getString("routine_package");
-				try{
+				try {
 					Class aClass;
-					if(routinePackage != "null"){
-						aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
-					}else{
+					if (routinePackage != "null") {
+						aClass = Class.forName(
+								"com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
+					} else {
 						aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routineName);
 					}
 
 					String paramTypes = "";
 					int constructorIndex = -1;
-					for(var j = 0;j < aClass.getConstructors().length;j++){
-						if(aClass.getConstructors()[j].getDeclaredAnnotations().length > 0){
+					for (var j = 0; j < aClass.getConstructors().length; j++) {
+						if (aClass.getConstructors()[j].getDeclaredAnnotations().length > 0) {
 							Annotation annot = aClass.getConstructors()[j].getAnnotation(JsonCreator.class);
-							if(annot instanceof JsonCreator){
+							if (annot instanceof JsonCreator) {
 								constructorIndex = j;
 							}
 						}
 					}
-					if(constructorIndex != -1){
-						for(var i = 0;i < aClass.getConstructors()[constructorIndex].getParameterTypes().length;i++){
-							paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i].getSimpleName() + ",";
-
+					if (constructorIndex != -1) {
+						for (var i = 0; i < aClass.getConstructors()[constructorIndex]
+								.getParameterTypes().length; i++) {
+							paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i]
+									.getSimpleName() + ",";
+							System.out.println(aClass.getConstructors()[constructorIndex].getParameters()[i]
+									.getAnnotation(JsonProperty.class).value());
 						}
 						return paramTypes;
-					}else{
+					} else {
 						return "constructor not found";
 					}
 
-				}catch (ClassNotFoundException e){
+				} catch (ClassNotFoundException e) {
 					return "e";
 				}
-
 
 			}
 			case "getAutoCount": {
@@ -279,7 +294,8 @@ public class CommandReceiver implements RobotService {
 			}
 			case "getAutoName": {
 				String autoIndex = parse.getString("auto_index");
-				return (AutoModeSelector.getInstance().getAutoModeByIndex(Integer.parseInt(autoIndex)).getClass().getSimpleName());
+				return (AutoModeSelector.getInstance().getAutoModeByIndex(Integer.parseInt(autoIndex)).getClass()
+						.getSimpleName());
 			}
 			case "getAllRoutines": {
 				File routinesFile = new File(

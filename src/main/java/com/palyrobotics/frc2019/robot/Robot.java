@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.palyrobotics.frc2019.behavior.ParallelRoutine;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -18,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.palyrobotics.frc2019.auto.AutoModeSelector;
+import com.palyrobotics.frc2019.behavior.ParallelRoutine;
 import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
 import com.palyrobotics.frc2019.behavior.SequentialRoutine;
@@ -124,7 +124,7 @@ public class Robot extends TimedRobot {
 		leftSO.setPercentOutput(0.6);
 		DriveTimeRoutine l = new DriveTimeRoutine(100, new SparkDriveSignal(leftSO, sO));
 		ParallelRoutine g = new ParallelRoutine(t, f, i, l, m);
-		SequentialRoutine nm = new SequentialRoutine(g,t,f);
+		SequentialRoutine nm = new SequentialRoutine(g, t, f);
 		Routine routineRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(0).getRoutine();
 		System.out.println(path1.get(1).speed + "bruh");
 		try {

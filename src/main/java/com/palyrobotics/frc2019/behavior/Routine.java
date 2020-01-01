@@ -33,7 +33,7 @@ import com.palyrobotics.frc2019.subsystems.*;
 		@JsonSubTypes.Type (value = ShooterExpelRoutine.class, name = "shooter.ShooterExpelRoutine"),
 		@JsonSubTypes.Type (value = DriveTimeRoutine.class, name = "drive.DriveTimeRoutine"),
 		@JsonSubTypes.Type (value = DrivePathRoutine.class, name = "drive.DrivePathRoutine"),
-        @JsonSubTypes.Type (value = ParallelRoutine.class, name = "ParallelRoutine"),}
+		@JsonSubTypes.Type (value = ParallelRoutine.class, name = "ParallelRoutine"), }
 
 )
 public abstract class Routine {

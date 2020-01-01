@@ -3,21 +3,23 @@ package com.palyrobotics.frc2019.behavior;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.palyrobotics.frc2019.config.Commands;
-import com.palyrobotics.frc2019.subsystems.Subsystem;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.palyrobotics.frc2019.config.Commands;
+import com.palyrobotics.frc2019.subsystems.Subsystem;
+
 /**
- * Created by Nihar on 12/27/16. Bro thats a grind, im editing this exactly 3 years later 12/27/19, Vedanth
+ * Created by Nihar on 12/27/16. Bro thats a grind, im editing this exactly 3
+ * years later 12/27/19, Vedanth
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ParallelRoutine extends Routine {
 
 	@JsonSerialize
-	@JsonProperty("routines")
+	@JsonProperty ("routines")
 	private ArrayList<Routine> mRoutines;
 
 	/**

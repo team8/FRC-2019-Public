@@ -3,10 +3,10 @@ package com.palyrobotics.frc2019.auto;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.palyrobotics.frc2019.auto.modes.test2;
 import org.json.simple.JSONArray;
 
 import com.palyrobotics.frc2019.auto.modes.test1;
+import com.palyrobotics.frc2019.auto.modes.test2;
 
 /**
  * @author Nihar, based off Team 254 2015
