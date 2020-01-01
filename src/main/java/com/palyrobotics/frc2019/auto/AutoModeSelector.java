@@ -3,6 +3,7 @@ package com.palyrobotics.frc2019.auto;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.palyrobotics.frc2019.auto.modes.test2;
 import org.json.simple.JSONArray;
 
 import com.palyrobotics.frc2019.auto.modes.test1;
@@ -26,6 +27,7 @@ public class AutoModeSelector {
 	protected AutoModeSelector() {
 		// left to right, blue alliance to red alliance
 		/* 0 */ registerAutonomous(new test1(), 0);
+		registerAutonomous(new test2(), 1);
 
 	}
 

@@ -228,6 +228,7 @@ public class CommandReceiver implements RobotService {
 				module.addSerializer(SparkDriveSignal.class, new SparkDriveSignalSerializer(SparkDriveSignal.class));
 				mapper.registerModule(module);
 				Routine autoRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(autoIndexInt).getRoutine();
+				System.out.println(autoRoutine);
 				try{
 					return mapper.writeValueAsString(autoRoutine);
 				}catch(IOException e ){

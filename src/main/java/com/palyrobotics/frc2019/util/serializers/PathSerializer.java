@@ -25,10 +25,11 @@ public class PathSerializer extends SerializerBase<Path> {
 		// jgen.writeStartObject();
 
 		// jgen.writeFieldName("path");
+		System.out.println(value.getWayPoints().get(value.getWayPoints().size()-1).position.getX());
 		jgen.writeStartArray();
 		for (var i = 0; i < value.getWayPoints().size(); i++) {
 			jgen.writeStartObject();
-			jgen.writeFieldName("Waypoint " + i);
+			jgen.writeFieldName("Waypoint");
 			jgen.writeStartArray();
 			// pos x
 			jgen.writeStartObject();
