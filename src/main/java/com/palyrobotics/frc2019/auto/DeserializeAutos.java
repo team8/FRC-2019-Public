@@ -77,6 +77,108 @@ public class DeserializeAutos {
 			JSONObject routineObject = autoArray.getJSONObject(i);
 			String type = (String) routineObject.get("@type");
 			if (type.equals("ParallelRoutine")) {
+				JSONArray autoArrayParallel = routineObject.getJSONArray("routines");
+				String routineStringParallel = "new ParallelRoutine(";
+				for (var l = 0; l < autoArrayParallel.length(); l++) {
+					JSONObject routineObjectParallel = autoArrayParallel.getJSONObject(l);
+					String typeParallel = (String) routineObjectParallel.get("@type");
+					String[] typeSplit = typeParallel.split("\\.");
+					String[] paramNames;
+					String[] paramTypes;
+					String newRoutineString = "new ";
+					if (typeSplit.length > 1) {
+						paramNames = getParamNames(typeSplit[1], typeSplit[0]).split(",");
+						paramTypes = getParamTypes(typeSplit[1], typeSplit[0]).split(",");
+						imports += "import com.palyrobotics.frc2019.behavior.routines." + typeSplit[0] + "."
+								+ typeSplit[1] + ";\n";
+						newRoutineString += typeSplit[1] + "(";
+					} else {
+						paramNames = getParamNames(typeSplit[0], "null").split(",");
+						paramTypes = getParamTypes(typeSplit[0], "null").split(",");
+						newRoutineString += typeSplit[0] + "(";
+						imports += "import com.palyrobotics.frc2019.behavior.routines." + typeSplit[0] + ";\n";
+					}
+
+					for (var j = 0; j < paramTypes.length; j++) {
+						switch (paramTypes[j]) {
+							case "double":
+							case "boolean":
+							case "int": {
+								newRoutineString += routineObjectParallel.get(paramNames[j]);
+								if (j != paramTypes.length - 1) {
+									newRoutineString += ",";
+								}
+								continue;
+							}
+							case "String": {
+								newRoutineString += "\"" + routineObjectParallel.get(paramNames[j]) + "\"";
+								if (j != paramTypes.length - 1) {
+									newRoutineString += ",";
+								}
+								continue;
+							}
+							case "Path": {
+								JSONArray pathArray = routineObjectParallel.getJSONArray(paramNames[j]);
+								String makePathVar = "List<Path.Waypoint> path" + i + l + j + " = new ArrayList<>();\n";
+								imports += "import java.util.ArrayList;\n" + "import java.util.List;\n";
+								imports += "import com.palyrobotics.frc2019.util.trajectory.*;\n";
+								routineSetup += makePathVar;
+								for (var k = 0; k < pathArray.length(); k++) {
+									JSONArray waypointArray = pathArray.getJSONObject(k).getJSONArray("Waypoint");
+									String addWayPoint = "path" + i + l + j
+											+ ".add(new Path.Waypoint(new Translation2d("
+											+ waypointArray.getJSONObject(0).get("x") + ","
+											+ waypointArray.getJSONObject(1).get("y") + "),"
+											+ waypointArray.getJSONObject(2).get("speed") + "));\n";
+									routineSetup += addWayPoint;
+								}
+								newRoutineString += "new Path(path" + i + l + j + ")\n";
+								if (j != paramTypes.length - 1) {
+									newRoutineString += ",";
+								}
+								continue;
+							}
+							case "SparkDriveSignal": {
+								JSONArray sparkDriveArray = routineObjectParallel.getJSONArray(paramNames[j]);
+								double leftOut = sparkDriveArray.getJSONObject(0).getDouble("leftOutput");
+								double rightOut = sparkDriveArray.getJSONObject(1).getDouble("rightOutput");
+								routineSetup += "SparkMaxOutput left" + i + l + j + " = new SparkMaxOutput();\n";
+								routineSetup += "left" + i + l + j + ".setPercentOutput(" + leftOut + ");\n";
+								routineSetup += "SparkMaxOutput right" + i + l + j + " = new SparkMaxOutput();\n";
+								routineSetup += "right" + i + l + j + ".setPercentOutput(" + rightOut + ");\n";
+								newRoutineString += "new SparkDriveSignal(left" + i + l + j + ", right" + i + l + j
+										+ ")\n";
+								imports += "import com.palyrobotics.frc2019.util.SparkDriveSignal;\n"
+										+ "import com.palyrobotics.frc2019.util.SparkMaxOutput;\n";
+								if (j != paramTypes.length - 1) {
+									newRoutineString += ",";
+								}
+								continue;
+							}
+
+						}
+
+
+							newRoutineString += paramNames[j] + routineObjectParallel.get(paramNames[j]);
+						if (j != paramTypes.length - 1) {
+							newRoutineString += ",";
+						}
+
+					}
+					newRoutineString += ")";
+					if (l == autoArrayParallel.length() - 1) {
+						routineStringParallel += newRoutineString + ")";
+					} else {
+						newRoutineString += ",";
+						routineStringParallel += newRoutineString;
+					}
+				}
+				if (i == autoArray.length() - 1) {
+					routineString += routineStringParallel + ");";
+				} else {
+					routineStringParallel += ",";
+					routineString += routineStringParallel;
+				}
 
 			} else {
 				String[] typeSplit = type.split("\\.");
@@ -145,9 +247,20 @@ public class DeserializeAutos {
 							newRoutineString += "new SparkDriveSignal(left" + i + j + ", right" + i + j + ")\n";
 							imports += "import com.palyrobotics.frc2019.util.SparkDriveSignal;\n"
 									+ "import com.palyrobotics.frc2019.util.SparkMaxOutput;\n";
+							if (j != paramTypes.length - 1) {
+								newRoutineString += ",";
+							}
+							continue;
 						}
 
+
 					}
+					System.out.println(paramTypes[j] + j);
+						newRoutineString += paramTypes[j] + "." + routineObject.get(paramNames[j]);
+					if (j != paramTypes.length - 1) {
+						newRoutineString += ",";
+					}
+
 				}
 				newRoutineString += ")";
 				if (i == autoArray.length() - 1) {
