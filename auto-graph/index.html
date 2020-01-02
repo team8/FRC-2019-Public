@@ -4,6 +4,8 @@
 	<title>Pure Pursuit Auto Grapher</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="drag.js"></script>
+	<script type="text/javascript" src="draw.js"></script>
 	<script src="blob.js"></script>
     <script src="filesaver.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -165,9 +167,6 @@
 	td > button:hover {
 		background-color: #f85a4b;
 	}
-	#middle {
-		text-align: center;
-	}
 	</style>
 </head>
 <body onload="init()">
@@ -181,11 +180,11 @@
 <!--		<button onclick="flipField()">Flip Field</button>-->
 <!--		<span style="font-size: 15px; float: right; color:#ffffff;">Is reversed: <input type="checkbox" id="isReversed"></span>-->
 	</div>
-	<table>
+	<table id="Routines">
 		<thead>
 			<tr><th>Routines</th></tr>
 		</thead>
-		<tbody id="Routines"></tbody>
+		<tbody></tbody>
 	</table>
 	<div style="text-align: center;">
 		<button onclick="addDrivePathRoutine()">Add Routine</button>

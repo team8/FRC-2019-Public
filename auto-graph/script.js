@@ -13,7 +13,7 @@ var image;
 var imageFlipped;
 var wto;
 
-var routines = [];
+var routines = [[]];
 
 var onWhich = 0;
 
@@ -52,9 +52,7 @@ class Translation2d {
     }
 
     draw(color) {
-        color = color || "#f72c1c";
         ctx.beginPath();
-        ctx.arc(this.drawX, this.drawY, pointRadius, 0, 2 * Math.PI, false);
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
         ctx.fill();
@@ -249,9 +247,9 @@ class Arc {
     }
 }
 function addDrivePathRoutine() {
-    routines.push(new DrivePathRoutine());
     var tables = document.getElementById("Routines");
     var newRow = tables.insertRow();
+    var tbodyID = "tbody" + counter;
     var tableHTML = '<td><table id="' + counter + '">';
     tableHTML +=`
         <thead>
@@ -275,7 +273,7 @@ function addDrivePathRoutine() {
             </tr>
         </tbody>
         <tfoot>
-            <td colspan=\"6\"><div><button onclick=\"addPoint(counter)\">Add Waypoint</button></div></td>
+            <td colspan=\"6\"><div><button onclick=\"addPoint(Number(counter))\">Add Waypoint</button></div></td>
         </tfoot></td>`;
     newRow.innerHTML = tableHTML;
     console.log(counter);
@@ -285,7 +283,7 @@ function addDrivePathRoutine() {
 function init() {
     $("#field").css("width", (width / 1.5) + "px");
     $("#field").css("height", (height / 1.5) + "px");
-    ctx = document.getElementById('field').getContext('2d')
+    ctx = document.getElementById('field').getContext('2d');
     ctx.canvas.width = width;
     ctx.canvas.height = height;
     ctx.clearRect(0, 0, width, height);
@@ -307,45 +305,21 @@ function init() {
     });
 }
 
-function clear() {
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "#FF0000";
-    if (flipped)
-        ctx.drawImage(imageFlipped, 0, 0, width, height);
-    else
-        ctx.drawImage(image, 0, 0, width, height);
-}
 
-var f;
 
-function create() {
-    var a = new Waypoint(new Translation2d(30, 30), 0, 0, 0)
-    var b = new Waypoint(new Translation2d(230, 30), 0, 30, 0)
-    var c = new Waypoint(new Translation2d(230, 230), 0, 0, 0)
-    var d = new Line(a, b);
-    var e = new Line(b, c);
-    f = new Arc(d, e);
-}
-
-function addPoint(counter) {
-    var prev;
-    if (waypoints.length > 0)
-        prev = waypoints[waypoints.length - 1].position;
-    else
-        prev = new Translation2d(50, 50);
-    //TODO: add prev
-    var input = counter - 1;
+function addPoint(x) {
+    var input = x - 1;
     var tables = document.getElementById(input);
     console.log(document.getElementById(input));
     var newRow = tables.insertRow(tables.rows.length - 1);
-    newRow.innerHTML = `
-        <td></td>
+    var rowID = "row" + x;
+    newRow.innerHTML = '<td class="cords" id="'+rowID+'"></td>';
+    newRow.innerHTML += `
         <td><input placeholder='X'></td>
         <td><input placeholder='Y'></td>
         <td><input placeholder='Speed'></td>
         <td class='comments'><input placeholder='Comments'></td>
         <td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td>`;
-    update();
     $('input').unbind("change paste keyup");
     $('input').bind("change paste keyup", function () {
         console.log("change");
@@ -358,24 +332,25 @@ function addPoint(counter) {
 
 var marker = 0;
 function update() {
-    const offsetX = 70;
-    const offsetY = 165;
-    waypoints = [[]];
-    var i;
-    for (i = 0; i < counter; i++) {
-        var tables = document.getElementById(i);
-        var rowNum = 0;
-        for (rowNum = 0; rowNum < tables.rows.length - 1; rowNum++) {
-            var x = tables.rows[1].cells[1].querySelector('input').value;
-            var y = tables.rows[1].cells[2].querySelector('input').value;
-            var speed = tables.rows[1].cells[3].querySelector('input').value;
-            var comment = tables.rows[1].cells[4].querySelector('input').value;
-            waypoints[i].push(new Waypoint(new Translation2d(parseFloat(x) + offsetX, parseFloat(y) + offsetY), speed, comment));
+    routines = [[]];
+    var a;
+    var routinesTable = document.getElementById("Routines");
+    for (a = 1; a < routinesTable.rows.length; a++) {
+        routines.push([]);
+        var tableNum = a - 1;
+        var tables = document.getElementById(tableNum.toString());
+        var i;
+        for (i = 1; i < tables.rows.length - 1; i++) {
+            var x = tables.rows[i].cells[1].querySelector('input').value;
+            var y = tables.rows[i].cells[2].querySelector('input').value;
+            var speed = tables.rows[i].cells[3].querySelector('input').value;
+            var comments = tables.rows[i].cells[4].querySelector('input').value;
+            var waypoint = {x, y, speed, comments};
+            routines[a - 1].push(waypoint);
         }
     }
-    console.log(waypoints);
-    drawPoints();
-    drawRobot();
+    console.log(routines);
+    drawLines();
 }
 
 function drawRobot() {
@@ -412,38 +387,12 @@ function drawRotatedRect(pos, w, h, angle, strokeColor, fillColor, noFill) {
 
 }
 
-function drawPoints() {
-    clear();
-    var i = 0;
-    ctx.beginPath();
-    do {
-        var a = Arc.fromPoints(getPoint(i), getPoint(i + 1), getPoint(i + 2));
-        a.fill();
-        i++;
-    } while (i < waypoints.length[0] - 2);
-    ctx.fill();
-    i = 0;
-    do {
-        var a = Arc.fromPoints(getPoint(i), getPoint(i + 1), getPoint(i + 2));
-        a.draw();
-        i++;
-    } while (i < waypoints.length[0] - 2);
-
-}
 
 function getPoint(i) {
     if (i >= waypoints.length)
         return waypoints[waypoints.length - 1];
     else
         return waypoints[i];
-}
-
-function split() {
-    routines.push("split");
-    $("tbody").append("<tr>"
-        + "<td colspan=\"5\"><input placeholder='Drive Path Routine' style=\"width: 300px;\"></td>"
-        + "<td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td></tr>"
-    );
 }
 
 const depotFromLeftY = 71.5, depotFromRightY = 72.0, level2FromRightY = 97.5, level2FromLeftY = 97.75,
@@ -611,10 +560,10 @@ public class ${title} extends AutoModeBase {
     public void preStart() {
 
     }
-    
+
     @Override
     public Routine getRoutine() {
-        return new SequentialRoutine(); 
+        return new SequentialRoutine();
     }
 `;
     var strRoutines = `
@@ -623,7 +572,7 @@ public class ${title} extends AutoModeBase {
     public String getKey() {
         return sAlliance.toString();
     }
-    
+
 	// ${importStr}
 	// IS_REVERSED: ${isReversed}
 	// FILE_NAME: ${title}
