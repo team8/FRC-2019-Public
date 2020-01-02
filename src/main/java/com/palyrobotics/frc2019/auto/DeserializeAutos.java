@@ -85,16 +85,19 @@ public class DeserializeAutos {
 					String[] typeSplit = typeParallel.split("\\.");
 					String[] paramNames;
 					String[] paramTypes;
+					String[] paramTypesChanon;
 					String newRoutineString = "new ";
 					if (typeSplit.length > 1) {
 						paramNames = getParamNames(typeSplit[1], typeSplit[0]).split(",");
 						paramTypes = getParamTypes(typeSplit[1], typeSplit[0]).split(",");
+						paramTypesChanon = getParamTypesChanonical(typeSplit[1], typeSplit[0]).split(",");
 						imports += "import com.palyrobotics.frc2019.behavior.routines." + typeSplit[0] + "."
 								+ typeSplit[1] + ";\n";
 						newRoutineString += typeSplit[1] + "(";
 					} else {
 						paramNames = getParamNames(typeSplit[0], "null").split(",");
 						paramTypes = getParamTypes(typeSplit[0], "null").split(",");
+						paramTypesChanon = getParamTypesChanonical(typeSplit[0], "null").split(",");
 						newRoutineString += typeSplit[0] + "(";
 						imports += "import com.palyrobotics.frc2019.behavior.routines." + typeSplit[0] + ";\n";
 					}
@@ -158,8 +161,7 @@ public class DeserializeAutos {
 
 						}
 
-
-							newRoutineString += paramNames[j] + routineObjectParallel.get(paramNames[j]);
+						newRoutineString += paramNames[j] + routineObjectParallel.get(paramNames[j]);
 						if (j != paramTypes.length - 1) {
 							newRoutineString += ",";
 						}
@@ -184,16 +186,19 @@ public class DeserializeAutos {
 				String[] typeSplit = type.split("\\.");
 				String[] paramNames;
 				String[] paramTypes;
+				String[] paramTypesChanon;
 				String newRoutineString = "new ";
 				if (typeSplit.length > 1) {
 					paramNames = getParamNames(typeSplit[1], typeSplit[0]).split(",");
 					paramTypes = getParamTypes(typeSplit[1], typeSplit[0]).split(",");
+					paramTypesChanon = getParamTypesChanonical(typeSplit[1], typeSplit[0]).split(",");
 					imports += "import com.palyrobotics.frc2019.behavior.routines." + typeSplit[0] + "." + typeSplit[1]
 							+ ";\n";
 					newRoutineString += typeSplit[1] + "(";
 				} else {
 					paramNames = getParamNames(typeSplit[0], "null").split(",");
 					paramTypes = getParamTypes(typeSplit[0], "null").split(",");
+					paramTypesChanon = getParamTypesChanonical(typeSplit[0], "null").split(",");
 					newRoutineString += typeSplit[0] + "(";
 					imports += "import com.palyrobotics.frc2019.behavior.routines." + typeSplit[0] + ";\n";
 				}
@@ -253,10 +258,12 @@ public class DeserializeAutos {
 							continue;
 						}
 
-
 					}
-					System.out.println(paramTypes[j] + j);
-						newRoutineString += paramTypes[j] + "." + routineObject.get(paramNames[j]);
+					String[] chanonSplit = paramTypesChanon[j].split("\\.");
+					String enumName = chanonSplit[chanonSplit.length - 1];
+					String subsystemName = chanonSplit[chanonSplit.length - 2];
+					newRoutineString += subsystemName + "." + enumName + "." + routineObject.get(paramNames[j]);
+					imports += "import com.palyrobotics.frc2019.subsystems." + subsystemName + ";\n";
 					if (j != paramTypes.length - 1) {
 						newRoutineString += ",";
 					}
@@ -323,6 +330,41 @@ public class DeserializeAutos {
 			if (constructorIndex != -1) {
 				for (var i = 0; i < aClass.getConstructors()[constructorIndex].getParameterTypes().length; i++) {
 					paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i].getSimpleName()
+							+ ",";
+				}
+				return paramTypes;
+			} else {
+				return "constructor not found";
+			}
+
+		} catch (ClassNotFoundException e) {
+			return "e";
+		}
+	}
+
+	String getParamTypesChanonical(String routineName, String routinePackage) {
+		try {
+			Class aClass;
+			if (routinePackage != "null") {
+				aClass = Class
+						.forName("com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
+			} else {
+				aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routineName);
+			}
+
+			String paramTypes = "";
+			int constructorIndex = -1;
+			for (var j = 0; j < aClass.getConstructors().length; j++) {
+				if (aClass.getConstructors()[j].getDeclaredAnnotations().length > 0) {
+					Annotation annot = aClass.getConstructors()[j].getAnnotation(JsonCreator.class);
+					if (annot instanceof JsonCreator) {
+						constructorIndex = j;
+					}
+				}
+			}
+			if (constructorIndex != -1) {
+				for (var i = 0; i < aClass.getConstructors()[constructorIndex].getParameterTypes().length; i++) {
+					paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i].getCanonicalName()
 							+ ",";
 				}
 				return paramTypes;
