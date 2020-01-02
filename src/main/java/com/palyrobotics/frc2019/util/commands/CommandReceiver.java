@@ -214,129 +214,137 @@ public class CommandReceiver implements RobotService {
 				try {
 					String routinePackage = parse.getString("routine_package");
 					String routineName = parse.getString("routine_name");
-					Class aClass;
-					if (routinePackage != "null") {
-						aClass = Class.forName(
-								"com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
-					} else {
-						aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routineName);
-					}
-
-					String paramTypes = "";
-					String paramNames = "";
-					String canonicalParamTypes = "";
-					int constructorIndex = -1;
-					for (var j = 0; j < aClass.getConstructors().length; j++) {
-						if (aClass.getConstructors()[j].getDeclaredAnnotations().length > 0) {
-							Annotation annot = aClass.getConstructors()[j].getAnnotation(JsonCreator.class);
-							if (annot instanceof JsonCreator) {
-								constructorIndex = j;
+					if(routineName.equals("ParallelRoutine") == false){
+						Class aClass = null;
+						if(routineName != "ParallelRoutine"){
+							if (routinePackage != "null") {
+								aClass = Class.forName(
+										"com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
+							} else {
+								aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routineName);
 							}
 						}
-					}
-					if (constructorIndex != -1) {
-						for (var i = 0; i < aClass.getConstructors()[constructorIndex]
-								.getParameterTypes().length; i++) {
-							paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i]
-									.getSimpleName() + ",";
-							canonicalParamTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i]
-									.getCanonicalName() + ",";
-							paramNames += aClass.getConstructors()[constructorIndex].getParameters()[i]
-									.getAnnotation(JsonProperty.class).value() + ",";
+
+
+						String paramTypes = "";
+						String paramNames = "";
+						String canonicalParamTypes = "";
+						int constructorIndex = -1;
+
+						for (var j = 0; j < aClass.getConstructors().length; j++) {
+							if (aClass.getConstructors()[j].getDeclaredAnnotations().length > 0) {
+								Annotation annot = aClass.getConstructors()[j].getAnnotation(JsonCreator.class);
+								if (annot instanceof JsonCreator) {
+									constructorIndex = j;
+								}
+							}
 						}
-					} else {
-						return "constructor not found";
-					}
-					System.out.println(paramTypes + " " + paramNames);
-					String rawJSON = "{";
-					String[] paramTypesSplit = paramTypes.split(",");
-					String[] paramNamesSplit = paramNames.split(",");
-					String[] paramChanonSplit = canonicalParamTypes.split(",");
-					if (routineName != "ParallelRoutine") {
-						rawJSON += "\"@type\": " + "\"" + routinePackage + "." + routineName + "\"";
-						if (paramTypesSplit.length > 0) {
-							rawJSON += ",";
+						if (constructorIndex != -1) {
+							for (var i = 0; i < aClass.getConstructors()[constructorIndex]
+									.getParameterTypes().length; i++) {
+								paramTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i]
+										.getSimpleName() + ",";
+								canonicalParamTypes += aClass.getConstructors()[constructorIndex].getParameterTypes()[i]
+										.getCanonicalName() + ",";
+								paramNames += aClass.getConstructors()[constructorIndex].getParameters()[i]
+										.getAnnotation(JsonProperty.class).value() + ",";
+							}
 						} else {
+							return "constructor not found";
+						}
+						System.out.println(paramTypes + " " + paramNames);
+						String rawJSON = "{";
+						String[] paramTypesSplit = paramTypes.split(",");
+						String[] paramNamesSplit = paramNames.split(",");
+						String[] paramChanonSplit = canonicalParamTypes.split(",");
+						if (routineName != "ParallelRoutine") {
+							rawJSON += "\"@type\": " + "\"" + routinePackage + "." + routineName + "\"";
+							if (paramTypesSplit.length > 0) {
+								rawJSON += ",";
+							} else {
+								rawJSON += "}";
+							}
+							for (var i = 0; i < paramTypesSplit.length; i++) {
+								switch (paramTypesSplit[i]) {
+									case "int": {
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "0";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+										continue;
+									}
+									case "double": {
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "0.0";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+										continue;
+									}
+									case "String": {
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "\"string\"";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+										continue;
+									}
+									case "boolean": {
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "false";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+										continue;
+									}
+									case "Path": {
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : "
+												+ "[{\"Waypoint\":[{\"x\":0},{\"y\":0},{\"speed\":0}]}]";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+										continue;
+									}
+									case "SparkDriveSignal": {
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : "
+												+ "[{\"leftOutput\":0.0},{\"rightOutput\":0.0}]";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+										continue;
+									}
+								}
+								String[] chanonSplit = paramChanonSplit[i].split("\\.");
+								String enumName = chanonSplit[chanonSplit.length - 1];
+								String subsystemName = chanonSplit[chanonSplit.length - 2];
+								Class subClass = Class.forName("com.palyrobotics.frc2019.subsystems." + subsystemName);
+
+								// Field enumVar = subClass.getField(enumName);
+								Class[] classes = subClass.getClasses();
+								for (var j = 0; j < classes.length; j++) {
+									String simpleName = classes[j].getSimpleName();
+									if (simpleName.equals(enumName)) {
+										String enumString = "";
+										for (var x = 0; x < classes[j].getEnumConstants().length; x++) {
+											enumString += classes[j].getEnumConstants()[x].toString() + " ";
+										}
+										rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "\""
+												+ enumString.split(" ")[0] + "\"";
+										if (i != paramTypesSplit.length - 1) {
+											rawJSON += ",";
+										}
+									}
+
+								}
+
+							}
 							rawJSON += "}";
+							return rawJSON;
 						}
-						for (var i = 0; i < paramTypesSplit.length; i++) {
-							switch (paramTypesSplit[i]) {
-								case "int": {
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "0";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-									continue;
-								}
-								case "double": {
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "0.0";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-									continue;
-								}
-								case "String": {
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "\"string\"";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-									continue;
-								}
-								case "boolean": {
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "false";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-									continue;
-								}
-								case "Path": {
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : "
-											+ "[{\"Waypoint\":[{\"x\":0},{\"y\":0},{\"speed\":0}]";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-									continue;
-								}
-								case "SparkDriveSignal": {
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : "
-											+ "[{\"leftOutput\":0.0},{\"rightOutput\":0.0}]";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-									continue;
-								}
-							}
-							String[] chanonSplit = paramChanonSplit[i].split("\\.");
-							String enumName = chanonSplit[chanonSplit.length - 1];
-							String subsystemName = chanonSplit[chanonSplit.length - 2];
-							Class subClass = Class.forName("com.palyrobotics.frc2019.subsystems." + subsystemName);
-
-							// Field enumVar = subClass.getField(enumName);
-							Class[] classes = subClass.getClasses();
-							for (var j = 0; j < classes.length; j++) {
-								String simpleName = classes[j].getSimpleName();
-								if (simpleName.equals(enumName)) {
-									String enumString = "";
-									for (var x = 0; x < classes[j].getEnumConstants().length; x++) {
-										enumString += classes[j].getEnumConstants()[x].toString() + " ";
-									}
-									rawJSON += "\"" + paramNamesSplit[i] + "\"" + " : " + "\""
-											+ enumString.split(" ")[0] + "\"";
-									if (i != paramTypesSplit.length - 1) {
-										rawJSON += ",";
-									}
-								}
-
-							}
-
-						}
-						rawJSON += "}";
 					} else {
-						rawJSON += "\"@type\":\"ParallelRoutine\",\"routines\":[]}";
+						return "{\"@type\":\"ParallelRoutine\",\"routines\":[]}";
 					}
-					return rawJSON;
+
 
 				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
 					return "e";
 				}
 
