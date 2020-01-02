@@ -14,7 +14,7 @@ public class KumquatCommandReciever {
 
 	Client client;
 	private AtomicString mResult = new AtomicString();
-	private KumquatCommandReciever.VisionData mVisionData = new KumquatCommandReciever.VisionData();
+	private static KumquatCommandReciever.VisionData sVisionData = new KumquatCommandReciever.VisionData();
 
 	public KumquatCommandReciever() {
 		client = new Client();
@@ -35,9 +35,9 @@ public class KumquatCommandReciever {
 				@Override
 				public void received(Connection connection, Object data) {
 					if (data instanceof VisionData) { // I might have to do
-														// 'data.getClass().getName().equals("VisionData");'
+						// 'data.getClass().getName().equals("VisionData");'
 						client.sendTCP(connection.getID());
-						mVisionData = (VisionData) data;
+						sVisionData = (VisionData) data;
 					} else {
 						System.out.println("not instance of VisionData");
 					}
@@ -47,6 +47,10 @@ public class KumquatCommandReciever {
 			exception.printStackTrace();
 		}
 		client.start();
+	}
+
+	public static KumquatCommandReciever.VisionData getVisionData() {
+		return sVisionData;
 	}
 
 	public static class VisionData extends AbstractConfig {

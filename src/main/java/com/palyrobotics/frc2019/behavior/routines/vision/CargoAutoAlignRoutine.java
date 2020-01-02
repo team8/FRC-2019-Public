@@ -19,14 +19,14 @@ import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
  */
 public class CargoAutoAlignRoutine extends Routine {
 
-	private final KumquatCommandReciever.VisionData mVisionData = new KumquatCommandReciever.VisionData();
+	private final KumquatCommandReciever.VisionData mVisionData = KumquatCommandReciever.getVisionData();
 	private SparkDriveSignal motor = new SparkDriveSignal();
+	private Boolean isFinished = false;
 
 	private final VisionConfig m_Config = Configs.get(VisionConfig.class);
 
 	@Override
 	public void start() {
-
 	}
 
 	@Override
@@ -36,6 +36,7 @@ public class CargoAutoAlignRoutine extends Routine {
 			if (Math.abs(pLoop) < 50) {
 				System.out.println("Completely aligned");
 				commands.wantedIntakeState = Intake.IntakeMacroState.DOWN_FOR_GROUND_INTAKE;
+				isFinished = true;
 			} else if (pLoop < 0) {
 				System.out.println("Turning left");
 				// motor.leftOutput.setPercentOutput(pLoop);
@@ -57,7 +58,7 @@ public class CargoAutoAlignRoutine extends Routine {
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return isFinished;
 	}
 
 	@Override
