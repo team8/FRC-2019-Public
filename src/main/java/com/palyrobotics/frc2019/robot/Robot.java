@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
 
 		mEnabledServices.forEach(RobotService::start);
 
-			sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
+		sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
 
 		Configs.listen(RobotConfig.class, config -> setIdleModes());
 		mHardwareUpdater.updateState(sRobotState);
