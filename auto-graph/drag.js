@@ -154,3 +154,8 @@ $("#canvas").mouseout(function (e) {
 function randomColor() {
     return ('#' + Math.floor(Math.random() * 16777215).toString(16));
 }
+
+function addTableDnD() {
+    $("table").tableDnD({
+    });
+}

@@ -3,6 +3,7 @@
 <head>
 	<title>Pure Pursuit Auto Grapher</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js" integrity="sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A=" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="script.js"></script>
 	<script type="text/javascript" src="drag.js"></script>
 	<script type="text/javascript" src="draw.js"></script>
@@ -180,11 +181,11 @@
 <!--		<button onclick="flipField()">Flip Field</button>-->
 <!--		<span style="font-size: 15px; float: right; color:#ffffff;">Is reversed: <input type="checkbox" id="isReversed"></span>-->
 	</div>
-	<table id="Routines">
+	<table>
 		<thead>
 			<tr><th>Routines</th></tr>
 		</thead>
-		<tbody></tbody>
+		<tbody id="Routines"></tbody>
 	</table>
 	<div style="text-align: center;">
 		<button onclick="addDrivePathRoutine()">Add Routine</button>

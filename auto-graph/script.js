@@ -249,9 +249,8 @@ class Arc {
 function addDrivePathRoutine() {
     var tables = document.getElementById("Routines");
     var newRow = tables.insertRow();
-    var tbodyID = "tbody" + counter;
-    var tableHTML = '<td><table id="' + counter + '">';
-    tableHTML +=`
+    var tableHTML = '<td><table class="path" id="' + counter + '">';
+    tableHTML += `
         <thead>
             <tr>
                 <td class='name'><input placeholder='Name' style=\"width: 150px;\"></td>
@@ -263,7 +262,7 @@ function addDrivePathRoutine() {
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr class="points">
                 <td></td>
                 <td><input placeholder='X'></td>
                 <td><input placeholder='Y'></td>
@@ -273,11 +272,11 @@ function addDrivePathRoutine() {
             </tr>
         </tbody>
         <tfoot>
-            <td colspan=\"6\"><div><button onclick=\"addPoint(Number(counter))\">Add Waypoint</button></div></td>
+<!--            <td colspan=\"6\"><div><button onclick=\"addPoint(Number(counter))\">Add Waypoint</button></div></td>-->
+                <td colspan=\"6\"><div><button class="waypoint">Add Waypoint</button></div></td>
         </tfoot></td>`;
     newRow.innerHTML = tableHTML;
-    console.log(counter);
-    counter++;
+    addTableDnD();
 }
 
 function init() {
@@ -305,32 +304,22 @@ function init() {
     });
 }
 
-
-
-function addPoint(x) {
-    var input = x - 1;
-    var tables = document.getElementById(input);
-    console.log(document.getElementById(input));
-    var newRow = tables.insertRow(tables.rows.length - 1);
-    var rowID = "row" + x;
-    newRow.innerHTML = '<td class="cords" id="'+rowID+'"></td>';
-    newRow.innerHTML += `
-        <td><input placeholder='X'></td>
-        <td><input placeholder='Y'></td>
-        <td><input placeholder='Speed'></td>
-        <td class='comments'><input placeholder='Comments'></td>
-        <td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td>`;
-    $('input').unbind("change paste keyup");
-    $('input').bind("change paste keyup", function () {
-        console.log("change");
-        clearTimeout(wto);
-        wto = setTimeout(function () {
-            // update();
-        }, 500);
+$(document).ready(function(){
+    $(document).on('click', '.waypoint', function(){
+        var newRow = `
+        <tr class="points">
+            <td></td>
+            <td><input placeholder='X'></td>
+            <td><input placeholder='Y'></td>
+            <td><input placeholder='Speed'></td>
+            <td class='comments'><input placeholder='Comments'></td>
+            <td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td>
+        </tr>`;
+        $(this).closest("table").find(".points:last").after(newRow);
+        addTableDnD();
     });
-}
+});
 
-var marker = 0;
 function update() {
     routines = [[]];
     var a;
@@ -654,3 +643,4 @@ function getNextSpeed(prev) {
     }
     return 0;
 }
+
