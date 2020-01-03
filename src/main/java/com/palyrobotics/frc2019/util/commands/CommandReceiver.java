@@ -214,17 +214,16 @@ public class CommandReceiver implements RobotService {
 				try {
 					String routinePackage = parse.getString("routine_package");
 					String routineName = parse.getString("routine_name");
-					if(routineName.equals("ParallelRoutine") == false){
+					if (routineName.equals("ParallelRoutine") == false) {
 						Class aClass = null;
-						if(routineName != "ParallelRoutine"){
+						if (routineName != "ParallelRoutine") {
 							if (routinePackage != "null") {
-								aClass = Class.forName(
-										"com.palyrobotics.frc2019.behavior.routines." + routinePackage + "." + routineName);
+								aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routinePackage
+										+ "." + routineName);
 							} else {
 								aClass = Class.forName("com.palyrobotics.frc2019.behavior.routines." + routineName);
 							}
 						}
-
 
 						String paramTypes = "";
 						String paramNames = "";
@@ -341,7 +340,6 @@ public class CommandReceiver implements RobotService {
 					} else {
 						return "{\"@type\":\"ParallelRoutine\",\"routines\":[]}";
 					}
-
 
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();

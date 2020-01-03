@@ -34,7 +34,7 @@ public class DriveTimeRoutine extends Routine {
 	@JsonCreator
 	public DriveTimeRoutine(@JsonProperty ("time") double time, @JsonProperty ("drivePower") SparkDriveSignal drivePower) {
 		// Keeps the offset prepared, when routine starts, will add FPGA timestamp
-		mEndTime = (long) (1000 * time);
+		mEndTime = (long) (time);
 		mDrivePower = drivePower;
 	}
 

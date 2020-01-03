@@ -160,8 +160,12 @@ public class DeserializeAutos {
 							}
 
 						}
-
-						newRoutineString += paramNames[j] + routineObjectParallel.get(paramNames[j]);
+						String[] chanonSplit = paramTypesChanon[j].split("\\.");
+						String enumName = chanonSplit[chanonSplit.length - 1];
+						String subsystemName = chanonSplit[chanonSplit.length - 2];
+						newRoutineString += subsystemName + "." + enumName + "."
+								+ routineObjectParallel.get(paramNames[j]);
+						imports += "import com.palyrobotics.frc2019.subsystems." + subsystemName + ";\n";
 						if (j != paramTypes.length - 1) {
 							newRoutineString += ",";
 						}

@@ -68,6 +68,7 @@ class HardwareUpdater {
 		HardwareAdapter.DrivetrainHardware driveHardware = HardwareAdapter.getInstance().getDrivetrain();
 
 		for (CANSparkMax spark : driveHardware.sparks) {
+			spark.setIdleMode(IdleMode.kCoast);
 			spark.restoreFactoryDefaults();
 			spark.enableVoltageCompensation(11.0);
 			spark.setSecondaryCurrentLimit(120);
@@ -77,6 +78,7 @@ class HardwareUpdater {
 			CANPIDController controller = spark.getPIDController();
 			controller.setOutputRange(-DrivetrainConstants.kDriveMaxClosedLoopOutput,
 					DrivetrainConstants.kDriveMaxClosedLoopOutput);
+
 		}
 
 		Configs.listen(DriveConfig.class, config -> {

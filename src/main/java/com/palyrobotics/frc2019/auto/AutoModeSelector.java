@@ -57,7 +57,7 @@ public class AutoModeSelector {
 	 */
 
 	public AutoModeBase getAutoModeOne() {
-		return mAutoModes.get(1);
+		return mAutoModes.get(0);
 	}
 
 	/**

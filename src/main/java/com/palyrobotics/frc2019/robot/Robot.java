@@ -1,51 +1,28 @@
 package com.palyrobotics.frc2019.robot;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.jsontype.NamedType;
-import org.codehaus.jackson.map.module.SimpleModule;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import com.palyrobotics.frc2019.auto.AutoModeBase;
 import com.palyrobotics.frc2019.auto.AutoModeSelector;
-import com.palyrobotics.frc2019.behavior.ParallelRoutine;
-import com.palyrobotics.frc2019.behavior.Routine;
 import com.palyrobotics.frc2019.behavior.RoutineManager;
-import com.palyrobotics.frc2019.behavior.SequentialRoutine;
-import com.palyrobotics.frc2019.behavior.routines.drive.BBTurnAngleRoutine;
-import com.palyrobotics.frc2019.behavior.routines.drive.DrivePathRoutine;
-import com.palyrobotics.frc2019.behavior.routines.drive.DriveTimeRoutine;
-import com.palyrobotics.frc2019.behavior.routines.elevator.ElevatorCustomPositioningRoutine;
-import com.palyrobotics.frc2019.behavior.routines.shooter.ShooterExpelRoutine;
 import com.palyrobotics.frc2019.config.Commands;
 import com.palyrobotics.frc2019.config.RobotConfig;
 import com.palyrobotics.frc2019.config.RobotState;
 import com.palyrobotics.frc2019.config.dashboard.LiveGraph;
 import com.palyrobotics.frc2019.config.driveteam.DriveTeam;
 import com.palyrobotics.frc2019.subsystems.*;
-import com.palyrobotics.frc2019.util.SparkDriveSignal;
-import com.palyrobotics.frc2019.util.SparkMaxOutput;
 import com.palyrobotics.frc2019.util.commands.CommandReceiver;
 import com.palyrobotics.frc2019.util.config.Configs;
 import com.palyrobotics.frc2019.util.csvlogger.CSVWriter;
-import com.palyrobotics.frc2019.util.deserializers.PathDeserializer;
-import com.palyrobotics.frc2019.util.deserializers.SparkDriveSignalDeserializer;
-import com.palyrobotics.frc2019.util.serializers.PathSerializer;
-import com.palyrobotics.frc2019.util.serializers.SparkDriveSignalSerializer;
 import com.palyrobotics.frc2019.util.service.RobotService;
-import com.palyrobotics.frc2019.util.trajectory.Path;
-import com.palyrobotics.frc2019.util.trajectory.Path.Waypoint;
 import com.palyrobotics.frc2019.util.trajectory.RigidTransform2d;
-import com.palyrobotics.frc2019.util.trajectory.Translation2d;
 import com.palyrobotics.frc2019.vision.Limelight;
 import com.palyrobotics.frc2019.vision.LimelightControlMode;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -63,6 +40,7 @@ public class Robot extends TimedRobot {
 	private LiveGraph mLiveGraph = LiveGraph.getInstance();
 	private OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 	private RoutineManager mRoutineManager = RoutineManager.getInstance();
+	boolean mAutoStarted = false;
 	/* Subsystems */
 	private Drive mDrive = Drive.getInstance();
 	private Elevator mElevator = Elevator.getInstance();
@@ -87,60 +65,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-
+		System.out.println(AutoModeSelector.getInstance().getAutoMode().getRoutine());
 		// ParseAutos pA = new ParseAutos();
 		// System.out.println(pA.parseAuto("RoutineTest"));
 		ObjectMapper mapper = new ObjectMapper().configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
-
-		mapper.enableDefaultTyping();
-		mapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, false);
-		mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
-		SimpleModule module = new SimpleModule("bruh", Version.unknownVersion());
-		module.addSerializer(Path.class, new PathSerializer(Path.class));
-		module.addSerializer(SparkDriveSignal.class, new SparkDriveSignalSerializer(SparkDriveSignal.class));
-		module.addDeserializer(Path.class, new PathDeserializer(Path.class));
-		module.addDeserializer(SparkDriveSignal.class, new SparkDriveSignalDeserializer(SparkDriveSignal.class));
-		// module.addDeserializer(SequentialRoutine.class, new
-		// SequentialRoutineDeserializer(SequentialRoutine.class));
-		mapper.registerModule(module);
-		mapper.registerSubtypes(new NamedType(BBTurnAngleRoutine.class, "BBTurnAngleRoutine"));
-		mapper.registerSubtypes(
-				new NamedType(ElevatorCustomPositioningRoutine.class, "ElevatorCustomPositioningRoutine"));
-		// mapper.registerModule(new Parameter);
-		// ;
-		List<Waypoint> path1 = new ArrayList<>();
-		path1.add(new Waypoint(new Translation2d(45, 21), 21));
-		path1.add(new Waypoint(new Translation2d(30, 21), 31));
-		path1.add(new Waypoint(new Translation2d(40, 30), 40));
-		Path path2 = new Path(path1);
-
-		BBTurnAngleRoutine t = new BBTurnAngleRoutine(51);
-		ElevatorCustomPositioningRoutine f = new ElevatorCustomPositioningRoutine(50, 50);
-		ShooterExpelRoutine i = new ShooterExpelRoutine(Shooter.ShooterState.IDLE, 0);
-		DrivePathRoutine m = new DrivePathRoutine(path2, false);
-		SparkMaxOutput sO = new SparkMaxOutput();
-		SparkMaxOutput leftSO = new SparkMaxOutput();
-		sO.setPercentOutput(0.1);
-		leftSO.setPercentOutput(0.6);
-		DriveTimeRoutine l = new DriveTimeRoutine(100, new SparkDriveSignal(leftSO, sO));
-		ParallelRoutine g = new ParallelRoutine(t, f, i, l, m);
-		SequentialRoutine nm = new SequentialRoutine(g, t, f);
-		Routine routineRoutine = AutoModeSelector.getInstance().getAutoModeByIndex(0).getRoutine();
-		System.out.println(path1.get(1).speed + "bruh");
-		try {
-			JSONObject jObject = new JSONObject(mapper.writeValueAsString(nm));
-			System.out.println(jObject.toString());
-			// BBTurnAngleRoutine y = mapper.readValue(jObject.toString(),
-			// BBTurnAngleRoutine.class);
-
-			// System.out.println(y.getWayPoints().get(1).speed);
-			// System.out.println(new
-			// System.out.println(new
-			// JSONObject(jObject.get("path").toString()).getJSONArray("path").toString());
-
-		} catch (IOException | JSONException e) {
-			e.printStackTrace();
-		}
 
 		setupSubsystemsAndServices();
 
@@ -166,12 +94,46 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		teleopInit();
+
+		sRobotState.gamePeriod = RobotState.GamePeriod.AUTO;
+		setupSubsystemsAndServices();
+
+		mHardwareUpdater.initHardware();
+
+		DriveTeam.configConstants();
+
+		mEnabledServices.forEach(RobotService::start);
+
+			sRobotState.matchStartTimeSeconds = Timer.getFPGATimestamp();
+
+		Configs.listen(RobotConfig.class, config -> setIdleModes());
+		mHardwareUpdater.updateState(sRobotState);
+		mRoutineManager.reset(sCommands);
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		teleopPeriodic();
+		if (!this.mAutoStarted) {
+
+			// Get the selected auto mode
+			System.out.println("auto not started");
+			AutoModeBase mode = AutoModeSelector.getInstance().getAutoMode();
+
+			// Prestart and run the auto mode
+			mode.preStart();
+			mRoutineManager.addNewRoutine(mode.getRoutine());
+
+			this.mAutoStarted = true;
+		}
+		if (this.mAutoStarted) {
+			System.out.println(sCommands.wantedShooterState);
+			sCommands = mRoutineManager.update((sCommands));
+			mHardwareUpdater.updateState(sRobotState);
+			for (Subsystem subsystem : mEnabledSubsystems) {
+				subsystem.update(sCommands, sRobotState);
+			}
+			mHardwareUpdater.updateHardware();
+		}
 	}
 
 	@Override
